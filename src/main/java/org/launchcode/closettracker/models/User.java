@@ -13,20 +13,23 @@ public class User {
 
     @Id
     @GeneratedValue
+    @Column(name = "user_id", nullable = false)
     private int id;
 
     @NotNull(message = "First Name is required")
     @NotBlank(message = "First Name is required")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @NotNull(message = "Last Name is required")
     @NotBlank(message = "Last Name is required")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Email(message = "Invalid email. Try again")
     @NotNull(message = "Email is required")
     @NotBlank(message = "Email is required")
-    @Column(unique = true)
+    @Column(name = "user_name", unique = true)
     private String email;
 
     @NotNull(message = "Password is required")
@@ -41,6 +44,7 @@ public class User {
     @Transient
     private String confirmPassword;
 
+    @Column(name = "pw_hash")
     private String pwHash;
 
 
@@ -100,15 +104,18 @@ public class User {
         return id;
     }
 
-    public void setEncodePassword(String password) {
+    // Compare input password with its encoded password and assign it in pw_hash
+    public boolean isEncodedPasswordEqualsInputPassword(String password) {
         String pwHashValue = encoder.encode(password);
 
         if(encoder.matches(password,pwHashValue)) {
             this.pwHash = pwHashValue;
+            return true;
         }
         else
         {
             this.pwHash = null;
+            return false;
         }
     }
 
