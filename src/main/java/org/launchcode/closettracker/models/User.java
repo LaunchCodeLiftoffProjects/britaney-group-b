@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Entity
 public class User {
 
-// Fields (only dealing with login/logout)
+// Fields
     @Id
     @GeneratedValue
     @Column(name = "user_id", nullable = false)
