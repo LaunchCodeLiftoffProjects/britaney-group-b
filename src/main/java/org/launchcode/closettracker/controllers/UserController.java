@@ -1,5 +1,7 @@
 package org.launchcode.closettracker.controllers;
 
+import org.launchcode.closettracker.data.UserRepository;
+import org.launchcode.closettracker.models.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
 
@@ -21,10 +23,11 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
-    public String displayAllCategories(Model model) {
-        model.addAttribute("title", "All Categories");
-        model.addAttribute("categories", eventCategoryRepository.findAll());
-        return "eventCategories/index";
+    // Logged in page
+    public String displayLoggedPage(Model model) {
+        model.addAttribute("title", "Success");
+        model.addAttribute("username", UserRepository.findByUsername(username));
+        return "home";
     }
 
 }
