@@ -23,11 +23,4 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
-    // Logged in page
-    public String displayLoggedPage(Model model) {
-        model.addAttribute("title", "Success");
-        model.addAttribute("username", UserRepository.findByUsername(username));
-        return "home";
-    }
-
 }
