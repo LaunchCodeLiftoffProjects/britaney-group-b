@@ -36,7 +36,7 @@ public class User {
     }
 
 // Constructors
-    // Blank constructor required for something I don't remember why
+    // Blank constructor required for something I don't remember what
     public User() {}
 
     // I feel like this constructor is needed but not sure why yet
@@ -50,7 +50,12 @@ public class User {
     User object by the username from the user db.
     It will be a User object but we only need to deal with the username/password fields
     But that method will have to also check the entered password against the hashed password
-    I also think I'll need to create a repository for User so I can access the db
+    I also think I'll need to create a repository for User to access the db
 */
     //
+
+    public boolean doesPasswordMatch(String password) {
+        return encoder.matches(password, pwHash);
+    }
+
 }
