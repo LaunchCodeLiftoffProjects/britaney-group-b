@@ -36,13 +36,10 @@ public class User {
     }
 
 // Constructors
+// Blank constructor required for something I don't remember why
     public User() {}
 
-    public User(String username, String password) {
-        this.username = username;
-        this.pwHash = password;
-    }
-
+// Constructor to
     public User(String username, String password) {
         this.username = username;
         this.pwHash = encoder.encode(password);
