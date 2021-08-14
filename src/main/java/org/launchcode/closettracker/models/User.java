@@ -2,7 +2,9 @@ package org.launchcode.closettracker.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -11,18 +13,34 @@ public class User {
 
 // Fields (only dealing with login/logout)
     @Id
+    @GeneratedValue
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
     @NotNull
+    @NotBlank
+    private String firstName;
+
+    @NotNull
+    @NotBlank
+    private String lastName;
+
+    @NotNull
+    @NotBlank
+    private String email;
+
+    @NotNull
+    @NotBlank
     private String username;
 
     @NotNull
+    @NotBlank
     private String pwHash;
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 // Getters & Setters
+
     public Integer getUserId() {
         return userId;
     }
@@ -31,15 +49,53 @@ public class User {
         this.userId = userId;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 // Constructors
-    // Blank constructor required for something I don't remember what
+    // Blank constructor needed, I think, for Spring Boot to handle the database partØ
     public User() {}
 
-    // I feel like this constructor is needed but not sure why yet
+    // Used by the CreateController
+    public User(Integer userId, String firstName, String lastName, String email,
+                String username, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.pwHash = encoder.encode(password);
+    }
+
+    // I feel like this constructor is needed only for logging in but not sure why yet
     public User(String username, String password) {
         this.username = username;
         this.pwHash = encoder.encode(password);
@@ -52,6 +108,9 @@ public class User {
     But that method will have to also check the entered password against the hashed password
     I also think I'll need to create a repository for User to access the db
 */
+    /* Needs methods to:
+
+    */
     public getUserInfo(String username) {
         //
     }
