@@ -5,31 +5,47 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@Entity
 public class User {
 
+    @Id
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
+
     @NotNull
-    @NotBlank
     private String username;
 
     @NotNull
-    @NotBlank
     private String pwHash;
 
-    public User(String username, String password) {
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        this.username = username;
-        this.pwHash = encoder.matches(password, pwHash);
-
+// Getters & Setters
+    public Integer getUserId() {
+        return userId;
     }
 
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+// Constructors
+    public User() {}
+
+    public User(String username, String password) {
         this.username = username;
+        this.pwHash = password;
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.pwHash = encoder.encode(password);
     }
 
 }
