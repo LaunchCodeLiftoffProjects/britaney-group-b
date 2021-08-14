@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Entity
 public class User {
 
+// Fields (only dealing with login/logout)
     @Id
     @Column(name = "user_id", nullable = false)
     private Integer userId;
@@ -44,7 +45,12 @@ public class User {
         this.pwHash = encoder.encode(password);
     }
 
-// Since this only handles logging in, will need a method to get the User object from the username
-// But that method will have to also check the entered password against the hashed password
-
+/*
+    Since this only handles logging in, will need a method to get the
+    User object by the username from the user db.
+    It will be a User object but we only need to deal with the username/password fields
+    But that method will have to also check the entered password against the hashed password
+    I also think I'll need to create a repository for User so I can access the db
+*/
+    //
 }
