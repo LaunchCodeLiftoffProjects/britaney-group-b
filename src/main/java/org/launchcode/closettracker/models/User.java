@@ -1,14 +1,12 @@
 package org.launchcode.closettracker.models;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 public class User {
@@ -28,25 +26,34 @@ public class User {
     @Email(message = "Invalid email. Try again")
     @NotNull(message = "Email is required")
     @NotBlank(message = "Email is required")
+    @Column(unique = true)
     private String email;
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
     @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Transient
     private String password;
 
     @NotNull(message = "Confirm Password is required")
     @NotBlank(message = "Confirm Password is required")
-    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Size(min=3, max = 15,  message = "Confirm Password must be between 3 and 15 characters long")
+    @Transient
     private String confirmPassword;
 
+    private String pwHash;
+
+
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     // CREATE: Capture user data to create a new account
-    public User(String firstname, String lastName, String email, String password, String confirmpassword ) {
+    public  User(String firstname, String lastName, String email, String password, String confirmPassword ) {
         this.firstName = firstname;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.confirmPassword = confirmpassword;
+        this.confirmPassword = confirmPassword;
+        this.pwHash = encoder.encode(password);
     }
 
     public String getFirstName() {
@@ -91,6 +98,18 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public void setEncodePassword(String password) {
+        String pwHashValue = encoder.encode(password);
+
+        if(encoder.matches(password,pwHashValue)) {
+            this.pwHash = pwHashValue;
+        }
+        else
+        {
+            this.pwHash = null;
+        }
     }
 
     public User() {

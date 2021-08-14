@@ -17,7 +17,7 @@ public class HomeController {
     }
 
     @GetMapping("create")
-    public String createmethod (Model model){
+    public String create (Model model){
         model.addAttribute("title","Create User");
         model.addAttribute(new User());
         return  "create";
