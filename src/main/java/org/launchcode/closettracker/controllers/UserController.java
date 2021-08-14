@@ -15,7 +15,8 @@ public class UserController {
     What should this controller do?
     - Capture login credentials from index.html upon submit
         * Get form field values of username and password
-    - Verify if credentials match an existing user
+    - Verify if username matches an existing user
+    - If so, verifies if password matches the stored hash of that user
         * Use doesPasswordMatch method in User model to verify if entered password and stored hash match
         - If so, show logged in page
             * Will need a template for that page but can redirect it to index.html or give it its own location
@@ -23,4 +24,9 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
+    public void validateUserInfo() {
+        if (getUsername(username)) {
+
+        }
+    }
 }

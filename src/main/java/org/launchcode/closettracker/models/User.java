@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.launchcode.closettracker.data.UserRepository;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
@@ -109,7 +112,9 @@ public class User {
         Check if provided password matches hashed password stored in user db
         Save user data to db
     */
-    public String getUserInfo(String username) {
+    public User getUserInfo(String username) {
+        UserRepository.findByUsername(username);
+
         return username;
     }
 
