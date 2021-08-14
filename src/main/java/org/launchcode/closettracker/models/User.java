@@ -52,7 +52,9 @@ public class User {
     But that method will have to also check the entered password against the hashed password
     I also think I'll need to create a repository for User to access the db
 */
-    //
+    public getUserInfo(String username) {
+        //
+    }
 
     public boolean doesPasswordMatch(String password) {
         return encoder.matches(password, pwHash);
