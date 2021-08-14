@@ -102,17 +102,15 @@ public class User {
     }
 
 /*
-    Since this only handles logging in, will need a method to get the
-    User object by the username from the user db.
-    It will be a User object but we only need to deal with the username/password fields
-    But that method will have to also check the entered password against the hashed password
     I also think I'll need to create a repository for User to access the db
 */
     /* Needs methods to:
-
+        Find User object by username
+        Check if provided password matches hashed password stored in user db
+        Save user data to db
     */
-    public getUserInfo(String username) {
-        //
+    public String getUserInfo(String username) {
+        return username;
     }
 
     public boolean doesPasswordMatch(String password) {
