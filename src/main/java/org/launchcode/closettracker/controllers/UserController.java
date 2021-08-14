@@ -28,6 +28,14 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
+    public User user = new.User;
+
+    public void getUserInfo() {
+        if (getUsername(username)) {
+
+        }
+    }
+
     public void validateUserInfo() {
         if (getUsername(username)) {
 
