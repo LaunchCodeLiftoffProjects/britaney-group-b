@@ -3,7 +3,6 @@ package org.launchcode.closettracker.models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -36,13 +35,16 @@ public class User {
     }
 
 // Constructors
-// Blank constructor required for something I don't remember why
+    // Blank constructor required for something I don't remember why
     public User() {}
 
-// Constructor to
+    // I feel like this constructor is needed but not sure why yet
     public User(String username, String password) {
         this.username = username;
         this.pwHash = encoder.encode(password);
     }
+
+// Since this only handles logging in, will need a method to get the User object from the username
+// But that method will have to also check the entered password against the hashed password
 
 }
