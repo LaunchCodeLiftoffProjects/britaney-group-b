@@ -88,7 +88,7 @@ public class User {
     // Blank constructor needed, I think, for Spring to handle the database part
     public User() {}
 
-    // Used by the CreateController
+    // Constructor for use by the Create controller
     public User(Integer userId, String firstName, String lastName, String email,
                 String username, String password) {
         this.firstName = firstName;
@@ -98,7 +98,7 @@ public class User {
         this.pwHash = encoder.encode(password);
     }
 
-    // I feel like this constructor is needed only for logging in but not sure why yet
+    // Constructor just for login info?
     public User(String username, String password) {
         this.username = username;
         this.pwHash = encoder.encode(password);
@@ -117,7 +117,7 @@ public class User {
     }
 
     public boolean doesPasswordMatch(String password) {
-        return encoder.matches(password, pwHash);
+        return encoder.matches(password, this.pwHash);
     }
 
 }
