@@ -36,7 +36,8 @@ public class UserController {
     public User user = new.User;
 
     public void getUserInfo() {
-        if (getUsername(username)) {
+        if (userRepository.findByUsername(username)) {
+            if (userRepository.findByUsername(username)) {
 
         }
     }
