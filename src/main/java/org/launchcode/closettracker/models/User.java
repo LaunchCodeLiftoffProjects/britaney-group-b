@@ -111,7 +111,7 @@ public class User {
     */
     // Retrieves
     public User getUserInfo(String username) {
-        User user = UserRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
         return user;
     }
 

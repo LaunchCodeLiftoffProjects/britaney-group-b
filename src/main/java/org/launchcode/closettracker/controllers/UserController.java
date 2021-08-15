@@ -33,26 +33,29 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
-    public void getUserInfo() {
-        if (userRepository) {
-            userRepository.findByUsername(username);
+    private User user;
 
+    public User getUserInfo(String username) {
+        if (userRepository.findByUsername(username)) {
+            //
         }
+        return user;
     }
 
-    public void validateUserInfo() {
-        if (User.doesPasswordsMatch(password)) {
+    public void validateUserInfo(String password) {
+        if (user.doesPasswordMatch(password)) {
 
         }
     }
 /* Login flow:
-    User enters username and password
-    Upon submit, something checks for valid input
-    If input valid, sends entered info to
-
-
-
-
+    User enters username and password on login page
+    User model checks for valid inputs
+    If inputs valid, allow submit
+    Upon allowed submit, capture user info and lookup user
+    If user found, call doesPasswordMatch to verify entered password
+    If no user found, display error message and redirect to login page
+    If password match stored hash, record user session and load account page
+    If password does not match, display error message and redirect to login page
  */
 
 
