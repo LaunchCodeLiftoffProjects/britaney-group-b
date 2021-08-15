@@ -109,6 +109,7 @@ public class User {
         Check if provided password matches hashed password stored in user db
         Save user data to db
     */
+    private UserRepository userRepository;
     // Retrieves
     public User getUserInfo(String username) {
         User user = userRepository.findByUsername(username);

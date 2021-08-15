@@ -36,7 +36,7 @@ public class UserController {
     private User user;
 
     public User getUserInfo(String username) {
-        if (userRepository.findByUsername(username)) {
+        if (true) {
             //
         }
         return user;
