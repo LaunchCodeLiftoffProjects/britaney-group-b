@@ -85,7 +85,7 @@ public class User {
     }
 
 // Constructors
-    // Blank constructor needed, I think, for Spring Boot to handle the database partØ
+    // Blank constructor needed, I think, for Spring to handle the database part
     public User() {}
 
     // Used by the CreateController
@@ -104,18 +104,15 @@ public class User {
         this.pwHash = encoder.encode(password);
     }
 
-/*
-    I also think I'll need to create a repository for User to access the db
-*/
-    /* Needs methods to:
+    /* Need methods to:
         Find User object by username
         Check if provided password matches hashed password stored in user db
         Save user data to db
     */
+    // Retrieves
     public User getUserInfo(String username) {
-        UserRepository.findByUsername(username);
-
-        return username;
+        User user = UserRepository.findByUsername(username);
+        return user;
     }
 
     public boolean doesPasswordMatch(String password) {

@@ -33,11 +33,9 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
-    public User user = new.User;
-
     public void getUserInfo() {
-        if (userRepository.findByUsername(username)) {
-            if (userRepository.findByUsername(username)) {
+        if (userRepository) {
+            userRepository.findByUsername(username);
 
         }
     }
@@ -47,7 +45,15 @@ public class UserController {
 
         }
     }
-// For Login, should
+/* Login flow:
+    User enters username and password
+    Upon submit, something checks for valid input
+    If input valid, sends entered info to
+
+
+
+
+ */
 
 
 // If user session is valid, processes login and shows account page
