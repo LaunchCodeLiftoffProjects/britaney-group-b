@@ -5,6 +5,11 @@ import org.launchcode.closettracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 public class UserController {
 
@@ -41,4 +46,19 @@ public class UserController {
 
         }
     }
+
+// If user session is valid, processes login and shows account page
+    @PostMapping("login")
+    public String processLoginForm(@ModelAttribute @Valid User user,
+                                       Errors errors, Model model) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("login", "Create Tag");
+            model.addAttribute(user);
+            return "account";
+        }
+
+        return "redirect:";
+    }
+
 }
