@@ -42,10 +42,12 @@ public class UserController {
     }
 
     public void validateUserInfo() {
-        if (getUsername(username)) {
+        if (User.doesPasswordsMatch(password)) {
 
         }
     }
+// For Login, should
+
 
 // If user session is valid, processes login and shows account page
     @PostMapping("login")
