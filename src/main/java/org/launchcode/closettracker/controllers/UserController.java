@@ -65,7 +65,7 @@ public class UserController {
                                        Errors errors, Model model) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("login", "Create Tag");
+            model.addAttribute("login", "Login");
             model.addAttribute(user);
             return "account";
         }
