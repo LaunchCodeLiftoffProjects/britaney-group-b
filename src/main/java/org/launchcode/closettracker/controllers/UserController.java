@@ -44,9 +44,9 @@ public class UserController {
 
 // If user session is valid, processes login and shows account page
     @PostMapping("login")
+    // Since the model ensures the input is valid, this process may not need to check it a user exists?
     public String processLoginForm(@ModelAttribute @Valid User user,
                                        Errors errors, Model model) {
-
 
         User fetchUserInfo = user.getUserInfo(user.getUsername());
 
