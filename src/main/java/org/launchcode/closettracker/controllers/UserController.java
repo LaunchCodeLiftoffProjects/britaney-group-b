@@ -55,6 +55,7 @@ public class UserController {
 
             }
         }
+
         if (errors.hasErrors()) {
             model.addAttribute("login", "Login");
             model.addAttribute(user);
