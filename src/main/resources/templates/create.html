@@ -5,38 +5,38 @@
     <title>Create Account</title>
 </head>
 <body>
-<header>Create Account</header>
+<header>${title}</header>
 
 <form method="post">
     <div class="form-group">
         <label>First Name
-            <input th:field="${user.firstName}" class="form-control">
+            <input th:field="${userDTO.firstName}" class="form-control">
         </label>
-        <p class="error" th:errors="${user.firstName}"></p>
+        <p class="error" th:errors="${userDTO.firstName}"></p>
     </div>
     <div class="form-group">
         <label>Last Name
-            <input th:field="${user.lastName}" class="form-control">
+            <input th:field="${userDTO.lastName}" class="form-control">
         </label>
-        <p class="error" th:errors="${user.lastName}"></p>
+        <p class="error" th:errors="${userDTO.lastName}"></p>
     </div>
     <div class="form-group">
         <label>Email
-            <input th:field="${user.email}" class="form-control">
+            <input th:field="${userDTO.email}" class="form-control">
         </label>
-        <p class="error" th:errors="${user.email}"></p>
+        <p class="error" th:errors="${userDTO.email}"></p>
     </div>
     <div class="form-group">
         <label>Password
-            <input th:field="${user.password}" class="form-control">
+            <input th:field="${userDTO.password}" class="form-control">
         </label>
-        <p class="error" th:errors="${user.password}"></p>
+        <p class="error" th:errors="${userDTO.password}" type="password"></p>
     </div>
     <div class="form-group">
         <label>Confirm Password
-            <input th:field="${user.confirmPassword}" class="form-control">
+            <input th:field="${userDTO.confirmPassword}" class="form-control">
         </label>
-        <p class="error" th:errors="${user.confirmPassword}"></p>
+        <p class="error" th:errors="${userDTO.confirmPassword}" type="password"></p>
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-success">
