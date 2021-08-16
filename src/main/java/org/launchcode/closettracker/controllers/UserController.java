@@ -50,10 +50,8 @@ public class UserController {
 
         User fetchUserInfo = user.getUserInfo(user.getUsername());
 
-        public void validateUserInfo(String password) {
-            if (user.doesPasswordMatch(password)) {
-
-            }
+        if (user.doesPasswordMatch(fetchUserInfo.password)) {
+            //
         }
 
         if (errors.hasErrors()) {
