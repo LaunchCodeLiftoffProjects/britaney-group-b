@@ -24,13 +24,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("create")
-    public String displayCreateAccountForm(Model model) {
-        model.addAttribute(new UserDTO());
-        model.addAttribute("title", "Create User Account");
-        return "create";
-    }
-
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -41,13 +34,13 @@ public class UserController {
                 return "create";
             }
 
-            User currentUser = userRepository.findByUsername(userDTO.getEmail());
+            //User currentUser = userRepository.findByUsername(userDTO.getEmail());
 
-            if (currentUser != null) {
-                errors.rejectValue("username", "username.exists", "An account with this email address already exists");
-                model.addAttribute("title", "Create User Account");
-                return "create";
-            }
+            //if (currentUser != null) {
+            //    errors.rejectValue("username", "username.exists", "An account with this email address already exists");
+            //    model.addAttribute("title", "Create User Account");
+           //     return "create";
+          //  }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 model.addAttribute("pwdError", "Passwords do not match");
