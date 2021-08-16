@@ -3,7 +3,6 @@ package org.launchcode.closettracker.controllers;
 import org.launchcode.closettracker.data.UserRepository;
 import org.launchcode.closettracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,9 +14,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
-    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-/*
+    /*
     I feel like this controller should be the one to get info from the User view (login page)
     and check it and then redirect to the account page or say invalid and retry
 
@@ -33,20 +30,6 @@ public class UserController {
             * Show errors on same page, no need to redirect
  */
 
-    private User user;
-
-    public User getUserInfo(String username) {
-        if (true) {
-            //
-        }
-        return user;
-    }
-
-    public void validateUserInfo(String password) {
-        if (user.doesPasswordMatch(password)) {
-
-        }
-    }
 /* Login flow:
     User enters username and password on login page
     User model checks for valid inputs
@@ -64,6 +47,14 @@ public class UserController {
     public String processLoginForm(@ModelAttribute @Valid User user,
                                        Errors errors, Model model) {
 
+
+        User fetchUserInfo = user.getUserInfo(user.getUsername());
+
+        public void validateUserInfo(String password) {
+            if (user.doesPasswordMatch(password)) {
+
+            }
+        }
         if (errors.hasErrors()) {
             model.addAttribute("login", "Login");
             model.addAttribute(user);
