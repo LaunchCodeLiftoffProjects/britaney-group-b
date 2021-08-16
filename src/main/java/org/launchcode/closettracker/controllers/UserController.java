@@ -50,7 +50,7 @@ public class UserController {
 
         User fetchUserInfo = user.getUserInfo(user.getUsername());
 
-        if (user.doesPasswordMatch(fetchUserInfo.password)) {
+        if (user.doesPasswordMatch(model.password)) {
             //
         }
 
