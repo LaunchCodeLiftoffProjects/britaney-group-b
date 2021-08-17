@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/closet-tracker.iml" filepath="$PROJECT_DIR$/.idea/modules/closet-tracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/closet-tracker.main.iml" filepath="$PROJECT_DIR$/.idea/modules/closet-tracker.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.launchcode.closet-tracker.test.iml" filepath="$PROJECT_DIR$/.idea/modules/org.launchcode.closet-tracker.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/closet-tracker.test.iml" filepath="$PROJECT_DIR$/.idea/modules/closet-tracker.test.iml" />
     </modules>
   </component>
 </project>
