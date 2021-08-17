@@ -1,21 +1,13 @@
-package org.launchcode.closettracker.models;
+package org.launchcode.closettracker.models.dto;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-public class User {
-
-    @Id
-    @GeneratedValue
-    @Column(name = "user_id", nullable = false)
-    private int id;
-
+public class UserDTO {
     @NotNull(message = "First Name is required")
     @NotBlank(message = "First Name is required")
     @Column(name = "first_name", nullable = false)
@@ -38,20 +30,11 @@ public class User {
     @Transient
     private String password;
 
-    @Column(name = "pw_hash")
-    private String pwHash;
-
-
-    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    // CREATE: Capture user data to create a new account
-    public  User(String firstname, String lastName, String email, String password) {
-        this.firstName = firstname;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.pwHash = encoder.encode(password);
-    }
+    @NotNull(message = "Confirm Password is required")
+    @NotBlank(message = "Confirm Password is required")
+    @Size(min=3, max = 15,  message = "Confirm Password must be between 3 and 15 characters long")
+    @Transient
+    private String confirmPassword;
 
     public String getFirstName() {
         return firstName;
@@ -85,25 +68,12 @@ public class User {
         this.password = password;
     }
 
-    public int getId() {
-        return id;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
-    // Compare input password with its encoded password and assign it in pw_hash
-    public boolean isEncodedPasswordEqualsInputPassword(String password) {
-        String pwHashValue = encoder.encode(password);
-
-        if(encoder.matches(password,pwHashValue)) {
-            this.pwHash = pwHashValue;
-            return true;
-        }
-        else
-        {
-            this.pwHash = null;
-            return false;
-        }
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
-    public User() {
-    }
 }
