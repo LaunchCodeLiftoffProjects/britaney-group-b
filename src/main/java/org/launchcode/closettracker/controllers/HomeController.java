@@ -1,5 +1,8 @@
 package org.launchcode.closettracker.controllers;
 
+
+import org.launchcode.closettracker.models.User;
+import org.launchcode.closettracker.models.dto.UserDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
