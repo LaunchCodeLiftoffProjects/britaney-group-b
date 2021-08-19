@@ -1,55 +1,56 @@
 package org.launchcode.closettracker.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import org.launchcode.closettracker.data.UserRepository;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.validation.constraints.Size;
 
 @Entity
 public class User {
 
-// Fields
     @Id
     @GeneratedValue
     @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    private int id;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "First Name is required")
+    @NotBlank(message = "First Name is required")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Last Name is required")
+    @NotBlank(message = "Last Name is required")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @NotNull
-    @NotBlank
+    @Email(message = "Invalid email. Try again")
+    @NotNull(message = "Email is required")
+    @NotBlank(message = "Email is required")
+    @Column(name = "user_name", unique = true)
     private String email;
 
-    @NotNull
-    @NotBlank
-    private String username;
+    @NotNull(message = "Password is required")
+    @NotBlank(message = "Password is required")
+    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Transient
+    private String password;
 
-    @NotNull
-    @NotBlank
+    @Column(name = "pw_hash")
     private String pwHash;
+
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-// Getters & Setters
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    // CREATE: Capture user data to create a new account
+    public  User(String firstname, String lastName, String email, String password) {
+        this.firstName = firstname;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.pwHash = encoder.encode(password);
     }
 
     public String getFirstName() {
@@ -58,6 +59,7 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+
     }
 
     public String getLastName() {
@@ -66,22 +68,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
 // Constructors
@@ -116,8 +102,25 @@ public class User {
         return user;
     }
 
-    public boolean doesPasswordMatch(String password) {
-        return encoder.matches(password, this.pwHash);
+    public int getId() {
+        return id;
     }
 
+    // Compare input password with its encoded password and assign it in pw_hash
+    public boolean isEncodedPasswordEqualsInputPassword(String password) {
+        String pwHashValue = encoder.encode(password);
+
+        if(encoder.matches(password,pwHashValue)) {
+            this.pwHash = pwHashValue;
+            return true;
+        }
+        else
+        {
+            this.pwHash = null;
+            return false;
+        }
+    }
+
+    public User() {
+    }
 }
