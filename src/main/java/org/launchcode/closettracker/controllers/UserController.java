@@ -34,13 +34,13 @@ public class UserController {
                 return "create";
             }
 
-            //User currentUser = userRepository.findByUsername(userDTO.getEmail());
+            User currentUser = userRepository.findByEmail(userDTO.getEmail());
 
-            //if (currentUser != null) {
-            //    errors.rejectValue("username", "username.exists", "An account with this email address already exists");
-            //    model.addAttribute("title", "Create User Account");
-           //     return "create";
-          //  }
+            if (currentUser != null) {
+                errors.rejectValue("email", "email.exists", "An account with this email address already exists");
+                model.addAttribute("title", "Create User Account");
+                return "create";
+            }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 model.addAttribute("pwdError", "Passwords do not match");
