@@ -90,5 +90,11 @@ public class HomeController {
         return "create";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request){
+        request.getSession().invalidate();
+        return "redirect:";
+    }
+
 
 }
