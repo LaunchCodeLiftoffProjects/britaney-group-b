@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @Controller
+
 public class UserController {
 
     @Autowired

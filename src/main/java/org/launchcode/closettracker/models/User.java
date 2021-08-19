@@ -59,6 +59,7 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+
     }
 
     public String getLastName() {
@@ -69,20 +70,36 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
+// Constructors
+    // Blank constructor needed, I think, for Spring to handle the database part
+    public User() {}
 
-    public void setEmail(String email) {
+    // Constructor for use by the Create controller
+    public User(Integer userId, String firstName, String lastName, String email,
+                String username, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
+        this.username = username;
+        this.pwHash = encoder.encode(password);
     }
 
-    public String getPassword() {
-        return password;
+    // Constructor just for login info?
+    public User(String username, String password) {
+        this.username = username;
+        this.pwHash = encoder.encode(password);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    /* Need methods to:
+        Find User object by username
+        Check if provided password matches hashed password stored in user db
+        Save user data to db
+    */
+    private UserRepository userRepository;
+    // Retrieves
+    public User getUserInfo(String username) {
+        User user = userRepository.findByUsername(username);
+        return user;
     }
 
     public int getId() {
