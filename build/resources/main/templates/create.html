@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
-<head>
+<head th:replace="fragments :: head">
     <meta charset="UTF-8">
     <title>Create Account</title>
 </head>
-<body>
-<header th:text="${title}"></header>
+<body class="container">
+<center>
+<h1><header th:text="${title}"></header></h1>
 
 <form method="post">
     <div class="form-group">
@@ -42,6 +43,6 @@
         <input type="submit" value="Create" class="btn btn-success">
     </div>
 </form>
-
+</center>
 </body>
 </html>
