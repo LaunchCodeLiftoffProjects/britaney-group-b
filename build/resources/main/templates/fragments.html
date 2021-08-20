@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Closet Tracker</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<nav th:fragment="navigation">
+    <h1 th:text="${title}">Closet Tracker</h1>
+    <ul class="nav" style="float:right;">
+        <li class="nav item"><a class="nav-link" href="/view">Home</a></li>
+        <li class="nav item"><a class="nav-link" href="/closet">My Closet</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
+    </ul>
+</nav>
+
+</body>
+</html>
