@@ -79,7 +79,7 @@ public class ItemController {
             Item item = result.get();
             model.addAttribute("title", item.getName() + " Details");
             model.addAttribute("item", item);
-            model.addAttribute("sizes", sizes.getTags());
+            model.addAttribute("sizes", sizes.getSizes());
         }
 
         return "detail";
@@ -106,7 +106,7 @@ public class ItemController {
     public String displayEditSizesForm(@RequestParam Integer sizeId, Model model){
         Optional<Size> result = sizeRepository.findById(sizeId);
         Size size = result.get();
-        model.addAttribute("title", "Add Tag to: " + size.getName());
+        model.addAttribute("title", "Select sizes: " + size.getName());
         model.addAttribute("sizes", sizeRepository.findAll());
         Size size = new Size();
         sizeRepository.setSize(size);
@@ -114,12 +114,12 @@ public class ItemController {
         return "sizes/add";
     }
 
-    // responds to /events/add-tag?eventId=13
+    // Edit sizes
     @PostMapping("sizes/edit")
     public String displayEditSizesForm(@RequestParam Integer sizeId, Model model){
         Optional<Size> result = sizeRepository.findById(sizeId);
         Size size = result.get();
-        model.addAttribute("title", "Add Tag to: " + size.getName());
+        model.addAttribute("title", "Select sizes: " + size.getName());
         model.addAttribute("sizes", sizeRepository.findAll());
         Size size = new Size();
         sizeRepository.setSize(size);
@@ -129,28 +129,28 @@ public class ItemController {
 
     // View available sizes page to edit size selections; would show full page with user choices already checked off
     @GetMapping("sizes/edit")
-    public String displayAddTagForm(@RequestParam Integer eventId, Model model){
-        Optional<Event> result = eventRepository.findById(eventId);
-        Event event = result.get();
-        model.addAttribute("title", "Add Tag to: " + event.getName());
-        model.addAttribute("tags", tagRepository.findAll());
-        EventTagDTO eventTag = new EventTagDTO();
-        eventTag.setEvent(event);
-        model.addAttribute("eventTag", eventTag);
-        return "events/add-tag.html";
+    public String displaySizeForm(@RequestParam Integer itemId, Model model){
+        Optional<Item> result = itemRepository.findById(itemId);
+        Item item = result.get();
+        model.addAttribute("title", "Select items: " + item.getName());
+        model.addAttribute("sizes", sizeRepository.findAll());
+        Size size = new Size();
+        item.setItem(item);
+        model.addAttribute("size", size);
+        return "xx";
     }
 
     // View available sizes page to edit size selections; would show full page with user choices already checked off
     @PostMapping("sizes/add")
-    public String displayAddTagForm(@RequestParam Integer eventId, Model model){
-        Optional<Event> result = eventRepository.findById(eventId);
-        Event event = result.get();
-        model.addAttribute("title", "Add Tag to: " + event.getName());
-        model.addAttribute("tags", tagRepository.findAll());
-        EventTagDTO eventTag = new EventTagDTO();
-        eventTag.setEvent(event);
-        model.addAttribute("eventTag", eventTag);
-        return "events/add-tag.html";
+    public String displaySizeForm(@RequestParam Integer itemId, Model model){
+        Optional<Item> result = itemRepository.findById(itemId);
+        Item item = result.get();
+        model.addAttribute("title", "Select items: " + item.getName());
+        model.addAttribute("sizes", sizeRepository.findAll());
+        Size size = new Size();
+        size.setSize(size);
+        model.addAttribute("size", size);
+        return "xx";
     }
 
 }
