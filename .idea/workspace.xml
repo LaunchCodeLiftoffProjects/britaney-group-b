@@ -4,42 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f317a36e-27ba-429c-822c-9cc3b6fac7c5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1.1/executionHistory/executionHistory.bin~main" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1.1/executionHistory/executionHistory.lock~main" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.bin~main" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock~main" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock~main" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/org.launchcode.closet-tracker.test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/dto/LoginFormDTO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/resources/main/static/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/resources/main/templates/fragments.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin~main" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/dto/LoginFormDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/closet-tracker.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/closet-tracker.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/closet-tracker.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/closet-tracker.test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/controllers/HomeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/controllers/HomeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/templates/closet.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/templates/closet.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/templates/create.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/templates/create.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/templates/view.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/templates/view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/controllers/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/controllers/HomeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/closet.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/closet.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/create.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/create.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/fragments.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/view.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/view.html" afterDir="false" />
-    </list>
+    <list default="true" id="f317a36e-27ba-429c-822c-9cc3b6fac7c5" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
