@@ -28,13 +28,12 @@ public class Item {
 
     private Date date;
 
-    public Item(String itemName, String type, String color, String size, String season, Date date) {
+    public Item(String itemName, String type, String color, String size, String season) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
         this.size = size;
         this.season = season;
-        this.date = date;
     }
 
     public Item(){
