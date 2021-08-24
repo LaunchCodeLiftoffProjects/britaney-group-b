@@ -7,9 +7,23 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
+
+    @ManyToMany
+    private final List<ClothSizes> sizes = new ArrayList<>();
+
+    public List<ClothSizes> getSizes() {
+        return sizes;
+    }
+
+    public void AddSize(ClothSizes size)
+    {
+            this.sizes.add(size);
+    }
 
     @Id
     @GeneratedValue
