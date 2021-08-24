@@ -1,6 +1,6 @@
 package org.launchcode.closettracker.models.dto;
 
-import org.launchcode.closettracker.models.ClothSizes;
+import org.launchcode.closettracker.models.Size;
 import org.launchcode.closettracker.models.User;
 
 import javax.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ public class UserClothingSizeDTO {
     @NotNull
     private User user;
     @NotNull
-    private ClothSizes clothingSizes;
+    private Size clothingSizes;
 
     public UserClothingSizeDTO() {
     }
@@ -23,11 +23,11 @@ public class UserClothingSizeDTO {
         this.user = user;
     }
 
-    public ClothSizes getClothingSizes() {
+    public Size getClothingSizes() {
         return clothingSizes;
     }
 
-    public void setClothingSizes(ClothSizes clothingSizes) {
+    public void setClothingSizes(Size clothingSizes) {
         this.clothingSizes = clothingSizes;
     }
 }
