@@ -11,9 +11,14 @@
       <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/controllers/HomeController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/controllers/UserController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/templates/closet.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/controllers/ItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/controllers/ItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/ClothSizes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/Size.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/Size.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/dto/UserClothingSizeDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/dto/UserClothingSizeDTO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
