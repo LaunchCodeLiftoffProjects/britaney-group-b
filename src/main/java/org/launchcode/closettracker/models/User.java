@@ -12,16 +12,16 @@ import java.util.List;
 @Entity
 public class User {
 
-    @ManyToMany
-    private final List<Size> sizes = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="user_id")
+    private List<Size> sizes;
 
     public List<Size> getSizes() {
         return sizes;
     }
 
-    public void AddSize(Size size)
-    {
-            this.sizes.add(size);
+    public void setSizes(List<Size> sizes) {
+        this.sizes = sizes;
     }
 
     @Id
