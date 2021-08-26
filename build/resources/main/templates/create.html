@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:replace="fragments :: head">
     <meta charset="UTF-8">
     <title>Create Account</title>
@@ -9,34 +9,29 @@
 <h1><header th:text="${title}"></header></h1>
 
 <form method="post">
-    <div class="form-group">
-        <label>First Name
-            <input th:field="${userDTO.firstName}" class="form-control">
-        </label>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.firstName}" class="form-control" id="floatingName" placeholder="First Name">
+            <label for="floatingName">First Name</label>
         <p class="error" th:errors="${userDTO.firstName}"></p>
     </div>
-    <div class="form-group">
-        <label>Last Name
-            <input th:field="${userDTO.lastName}" class="form-control">
-        </label>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.lastName}" class="form-control" id="floatingLastName" placeholder="Last Name">
+            <label for="floatingLastName">Last Name</label>
         <p class="error" th:errors="${userDTO.lastName}"></p>
     </div>
-    <div class="form-group">
-        <label>Email
-            <input th:field="${userDTO.email}" class="form-control">
-        </label>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.email}" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
         <p class="error" th:errors="${userDTO.email}"></p>
     </div>
-    <div class="form-group">
-        <label>Password
-            <input th:field="${userDTO.password}" class="form-control">
-        </label>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.password}" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
         <p class="error" th:errors="${userDTO.password}" type="password"></p>
     </div>
-    <div class="form-group">
-        <label>Confirm Password
-            <input th:field="${userDTO.confirmPassword}" class="form-control">
-        </label>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.confirmPassword}" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password">
+            <label for="floatingConfirmPassword">Confirm Password</label>
         <p class="error" th:errors="${userDTO.confirmPassword}" type="password"></p>
     </div>
     <div class="form-group">
