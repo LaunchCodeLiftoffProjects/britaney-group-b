@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
 <head th:replace="fragments :: head">
     <meta charset="UTF-8">
     <title th:text="${title}"></title>
@@ -32,7 +32,7 @@
     </div>
     <div class="form-group">
         <label>Item size
-            <input th:field="${user.sizes}" class="form-control" value="Sizes fetched from user database">
+            <input th:field="${user.sizes}" class="form-control" placeholder="Sizes fetched from user database">
         </label>
         <p class="error" th:errors="${user.sizes}"></p>
     </div>
@@ -48,12 +48,12 @@
     </div>
     <div class="form-group">
         <label>Date acquired
-            <input th:field="${item.date}" class="form-control" value="Not required. Date formats">
+            <input th:field="${item.date}" class="form-control" placeholder="Not required. Date formats">
         </label>
         <p class="error" th:errors="${item.date}" type="date"></p>
     </div>
     <div class="form-group">
-        <input type="submit" value="Save changes" class="btn btn-success">
+        <input type="submit" value="Create item" class="btn btn-success">
     </div>
 </form>
 </center>
