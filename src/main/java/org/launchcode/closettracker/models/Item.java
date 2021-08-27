@@ -6,11 +6,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-public class Item {
+public class Item extends AbstractEntity {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "item_id", nullable = false)
     private int id;
 
     @NotNull(message = "Name is required")

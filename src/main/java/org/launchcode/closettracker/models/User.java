@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User {
+public class User extends AbstractEntity {
 
     @ManyToMany
     private final List<Size> sizes = new ArrayList<>();
@@ -24,25 +24,18 @@ public class User {
             this.sizes.add(size);
     }
 
-    @Id
-    @GeneratedValue
     @Column(name = "user_id", nullable = false)
     private int id;
 
-    @NotNull(message = "First Name is required")
-    @NotBlank(message = "First Name is required")
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @NotNull(message = "Last Name is required")
-    @NotBlank(message = "Last Name is required")
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @NotNull(message = "Username is required")
+    @NotBlank(message = "Username is required")
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Email(message = "Invalid email. Try again")
     @NotNull(message = "Email is required")
     @NotBlank(message = "Email is required")
-    @Column(name = "user_name", unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull(message = "Password is required")
@@ -58,28 +51,19 @@ public class User {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public  User(String firstname, String lastName, String email, String password) {
-        this.firstName = firstname;
-        this.lastName = lastName;
+    public  User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.pwHash = encoder.encode(password);
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getUserName() {
+        return username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUserName(String userName) {
+        this.username = username;
     }
 
     public String getEmail() {
