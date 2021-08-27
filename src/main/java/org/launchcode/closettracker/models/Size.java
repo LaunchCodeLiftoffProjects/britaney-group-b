@@ -14,6 +14,16 @@ public class Size extends AbstractEntity {
     @NotBlank
     private String clothSize;
 
+<<<<<<< HEAD
+=======
+    @OneToMany(mappedBy = "sizes")
+    private final List<User> users = new ArrayList<>();
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+>>>>>>> Image-upload
     public Size(String clothSize) {
         this.clothSize = clothSize;
     }

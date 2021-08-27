@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:replace="fragments :: head">
     <meta charset="UTF-8"/>
     <title></title>
@@ -8,25 +8,31 @@
 <center>
     <h1><header th:text = "${title}"></header></h1>
 <form method="post">
-    <div class="form-group">
-        <label>Email
-            <input th:field="${loginFormDTO.email}" class="form-control">
-        </label>
+    <div class="form-floating w-25">
+        <input th:field="${loginFormDTO.email}" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <label for="floatingInput">Email address</label>
         <p class="error" th:errors="${loginFormDTO.email}"></p>
     </div>
+<<<<<<< HEAD
     <div class="form-group">
         <label>Password
             <input type="password" th:field="${loginFormDTO.password}" class="form-control">
         </label>
+=======
+    <div class="form-floating w-25">
+            <input type="password" th:field="${loginFormDTO.password}" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+>>>>>>> Image-upload
         <p class="error" th:errors="${loginFormDTO.password}" type="password"></p>
     </div>
+    <br>
     <div class="form-group">
     <input type="submit" class="btn btn-primary" value="Log In" />
     </div>
 </form>
 
     <p>Don't have an account? <a href="/create">Register for one.</a></p>
-</form>
+
 </center>
 </body>
 </html>
