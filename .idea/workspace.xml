@@ -10,15 +10,10 @@
       <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/Size.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/Size.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/templates/closet.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/dto/UserClothingSizeDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/models/dto/UserClothingSizeDTO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/controllers/ItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/controllers/ItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/ClothSizes.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/Size.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/Size.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/dto/UserClothingSizeDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/launchcode/closettracker/models/dto/UserClothingSizeDTO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +66,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/build/classes/java/main/org/launchcode/closettracker/repositories/SizeRepository.class" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1wmd2JIMV3gZ2WGq0pgRmmVVRen" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
