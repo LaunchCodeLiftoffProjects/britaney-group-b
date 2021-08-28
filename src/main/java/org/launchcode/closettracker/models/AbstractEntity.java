@@ -7,6 +7,7 @@ import java.util.Objects;
 
 @MappedSuperclass
 public abstract class AbstractEntity {
+
     @Id
     @GeneratedValue
     private int id;

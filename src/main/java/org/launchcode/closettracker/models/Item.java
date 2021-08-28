@@ -3,15 +3,9 @@ package org.launchcode.closettracker.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 @Entity
-public class Item {
-
-    @Id
-    @GeneratedValue
-    @Column(name = "item_id", nullable = false)
-    private int id;
+public class Item extends AbstractEntity{
 
     @NotNull(message = "Name is required")
     @NotBlank(message = "Name is required")
@@ -25,8 +19,6 @@ public class Item {
     private String size;
 
     private String season;
-
-    private Date date;
 
     public Item(String itemName, String type, String color, String size, String season) {
         this.itemName = itemName;
@@ -79,15 +71,4 @@ public class Item {
         this.season = season;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public int getId() {
-        return id;
-    }
 }

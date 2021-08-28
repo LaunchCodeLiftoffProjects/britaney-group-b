@@ -14,7 +14,6 @@
             <th>Color</th>
             <th>Size</th>
             <th>Season</th>
-            <th>Date acquired</th>
         </tr>
     </thead>
     <tr th:each="item : ${items}">
@@ -24,7 +23,6 @@
         <td th:text="${item.color}"></td>
         <td th:text="${item.size}"></td>
         <td th:text="${item.season}"></td>
-        <td th:text="${item.date}"></td>
     </tr>
 </table>
 

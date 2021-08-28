@@ -1,11 +1,8 @@
-/*
 package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.Item;
-import org.launchcode.closettracker.models.Size;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
-import org.launchcode.closettracker.repositories.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -22,16 +19,12 @@ public class ItemController {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Autowired
-    private SizeRepository sizeRepository;
-
     // CREATE ITEM: Show form
     @GetMapping("/items/create")
     public String displayCreateItemForm(Model model) {
             model.addAttribute(new Item());
             model.addAttribute("title", "Create User Account");
             return "/items/create";
-        }
     }
 
     // CREATE ITEM: Process form
@@ -78,9 +71,8 @@ public class ItemController {
             model.addAttribute("title", "Invalid Item ID: " + itemId);
         } else {
             Item item = result.get();
-            model.addAttribute("title", item.getName() + " Details");
+            model.addAttribute("title", item.getItemName() + " Details");
             model.addAttribute("item", item);
-            model.addAttribute("sizes", sizes.getSizes());
         }
 
         return "detail";
@@ -95,64 +87,11 @@ public class ItemController {
             model.addAttribute("title", "Invalid Item ID: " + itemId);
         } else {
             Item item = result.get();
-            model.addAttribute("title", item.getName() + " Details");
+            model.addAttribute("title", item.getItemName() + " Details");
             model.addAttribute("item", item);
             itemRepository.save(item);
         }
         return "detail";
     }
 
-    // Display upon account creation; would show full page for user to select desired choices
-    @GetMapping("sizes/add")
-    public String displayEditSizesForm(@RequestParam Integer sizeId, Model model){
-        Optional<Size> result = sizeRepository.findById(sizeId);
-        Size size = result.get();
-        model.addAttribute("title", "Select sizes: " + size.getName());
-        model.addAttribute("sizes", sizeRepository.findAll());
-        Size size = new Size();
-        sizeRepository.setSize(size);
-        model.addAttribute("size", size);
-        return "sizes/add";
-    }
-
-    // Edit sizes
-    @PostMapping("sizes/edit")
-    public String displayEditSizesForm(@RequestParam Integer sizeId, Model model){
-        Optional<Size> result = sizeRepository.findById(sizeId);
-        Size size = result.get();
-        model.addAttribute("title", "Select sizes: " + size.getName());
-        model.addAttribute("sizes", sizeRepository.findAll());
-        Size size = new Size();
-        sizeRepository.setSize(size);
-        model.addAttribute("size", size);
-        return "sizes/edit";
-    }
-
-    // View available sizes page to edit size selections; would show full page with user choices already checked off
-    @GetMapping("sizes/edit")
-    public String displaySizeForm(@RequestParam Integer itemId, Model model){
-        Optional<Item> result = itemRepository.findById(itemId);
-        Item item = result.get();
-        model.addAttribute("title", "Select items: " + item.getName());
-        model.addAttribute("sizes", sizeRepository.findAll());
-        Size size = new Size();
-        item.setItem(item);
-        model.addAttribute("size", size);
-        return "xx";
-    }
-
-    // View available sizes page to edit size selections; would show full page with user choices already checked off
-    @PostMapping("sizes/add")
-    public String displaySizeForm(@RequestParam Integer itemId, Model model){
-        Optional<Item> result = itemRepository.findById(itemId);
-        Item item = result.get();
-        model.addAttribute("title", "Select items: " + item.getName());
-        model.addAttribute("sizes", sizeRepository.findAll());
-        Size size = new Size();
-        size.setSize(size);
-        model.addAttribute("size", size);
-        return "xx";
-    }
-
 }
-*/

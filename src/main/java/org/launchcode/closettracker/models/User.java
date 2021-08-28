@@ -6,28 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-public class User {
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id")
-    private List<Size> sizes;
-
-    public List<Size> getSizes() {
-        return sizes;
-    }
-
-    public void setSizes(List<Size> sizes) {
-        this.sizes = sizes;
-    }
-
-    @Id
-    @GeneratedValue
-    @Column(name = "user_id", nullable = false)
-    private int id;
+public class User extends AbstractEntity{
 
     @NotNull(message = "First Name is required")
     @NotBlank(message = "First Name is required")
@@ -96,10 +77,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getId() {
-        return id;
     }
 
     // Compare input password with its encoded password and assign it in pw_hash
