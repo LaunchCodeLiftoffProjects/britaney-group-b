@@ -6,34 +6,34 @@ import org.launchcode.closettracker.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
 import java.util.Optional;
 
+@Controller
+@RequestMapping("items")
 public class ItemController {
 
     @Autowired
     private ItemRepository itemRepository;
 
     // CREATE ITEM: Show form
-    @GetMapping("/items/create")
+    @GetMapping("create")
     public String displayCreateItemForm(Model model) {
             model.addAttribute(new Item());
             model.addAttribute("title", "Create User Account");
-            return "/items/create";
+            return "items/create";
     }
 
     // CREATE ITEM: Process form
-    @PostMapping("/items/create")
+    @PostMapping("create")
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
                                          Errors errors, Model model) {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Item");
-            return "create";
+            return "items/create";
         }
 
         itemRepository.save(newItem);
@@ -45,7 +45,7 @@ public class ItemController {
     public String displayDeleteItemForm(Model model) {
         model.addAttribute("title", "Delete Items");
         model.addAttribute("items", itemRepository.findAll());
-        return "delete";
+        return "items/delete";
     }
 
     // DELETE ITEM(s): Process form
@@ -75,7 +75,7 @@ public class ItemController {
             model.addAttribute("item", item);
         }
 
-        return "detail";
+        return "items/detail";
     }
 
     @PostMapping("detail")
@@ -91,7 +91,7 @@ public class ItemController {
             model.addAttribute("item", item);
             itemRepository.save(item);
         }
-        return "detail";
+        return "items/detail";
     }
 
 }

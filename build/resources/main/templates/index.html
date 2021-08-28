@@ -13,16 +13,9 @@
         <label for="floatingInput">Email address</label>
         <p class="error" th:errors="${loginFormDTO.email}"></p>
     </div>
-<<<<<<< HEAD
-    <div class="form-group">
-        <label>Password
-            <input type="password" th:field="${loginFormDTO.password}" class="form-control">
-        </label>
-=======
     <div class="form-floating w-25">
             <input type="password" th:field="${loginFormDTO.password}" class="form-control" id="floatingPassword" placeholder="Password">
             <label for="floatingPassword">Password</label>
->>>>>>> Image-upload
         <p class="error" th:errors="${loginFormDTO.password}" type="password"></p>
     </div>
     <br>

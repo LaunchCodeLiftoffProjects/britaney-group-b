@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en" xmlns:th="https://www.thymeleaf.org/">
-=======
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
->>>>>>> Image-upload
 <head th:replace="fragments :: head">
     <meta charset="UTF-8">
     <title th:text="${title}"></title>
@@ -36,9 +32,9 @@
     </div>
     <div class="form-group">
         <label>Item size
-            <input th:field="${user.sizes}" class="form-control" value="Sizes fetched from user database">
+            <input th:field="${item.size}" class="form-control">
         </label>
-        <p class="error" th:errors="${user.sizes}"></p>
+        <p class="error" th:errors="${item.size}"></p>
     </div>
     <div class="form-group">
         <label for="seasons">Choose a season:</label>
@@ -49,12 +45,6 @@
             <option value="winter">Winter</option>
         </select>
         <p class="error" th:errors="${item.season}"></p>
-    </div>
-    <div class="form-group">
-        <label>Date acquired
-            <input th:field="${item.date}" class="form-control" value="Not required. Date formats">
-        </label>
-        <p class="error" th:errors="${item.date}" type="date"></p>
     </div>
     <div class="form-group">
         <input type="submit" value="Save changes" class="btn btn-success">
