@@ -1,6 +1,7 @@
 package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.User;
+import org.launchcode.closettracker.models.dto.ResetDTO;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,14 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("create")
+    @PostMapping("account/create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 model.addAttribute("errorMsg", "Bad data!");
-                return "create";
+                return "account/create";
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -39,12 +40,12 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return "account/create";
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 model.addAttribute("pwdError", "Passwords do not match");
-                return "create";
+                return "account/create";
             }
 
             User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
@@ -57,7 +58,51 @@ public class UserController {
             } else {
                 model.addAttribute("dbError", "Db Error");
             }
-            return "create";
+            return "account/create";
         }
     }
+
+    @GetMapping("account/reset")
+    public String displayResetPasswordForm(Model model) {
+        model.addAttribute(new ResetDTO());
+        model.addAttribute("title", "Reset Account Password");
+        return "account/reset";
+    }
+
+    @PostMapping("account/reset")
+    public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, UserDTO userDTO, Errors errors, Model model) throws IOException {
+        try {
+            if (errors.hasErrors()) {
+                model.addAttribute("title", "Reset Account Password");
+                model.addAttribute("errorMsg", "Info not correct.");
+                return "account/reset";
+            }
+
+            User currentUser = userRepository.findByEmail(userDTO.getEmail());
+
+            if (currentUser != null) {
+                errors.rejectValue("email", "email.exists", "An account with this email address already exists");
+                model.addAttribute("title", "Create User Account");
+                return "account/reset";
+            }
+
+            if (!resetDTO.getPasswordEntered().equals(resetDTO.getPasswordConfirm())) {
+                model.addAttribute("pwdError", "Passwords do not match. Please try again.");
+                return "account/reset";
+            }
+    userRepository.save(pwHash);
+            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
+            userRepository.save(newUser);
+            return "redirect:";
+
+        } catch (Exception exception) {
+            if (exception.toString().contains("constraint")) {
+                model.addAttribute("dbError", "Email exists. Try with new one!");
+            } else {
+                model.addAttribute("dbError", "Db Error");
+            }
+            return "account/reset";
+        }
+    }
+
 }
