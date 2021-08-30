@@ -20,12 +20,16 @@ public class Item extends AbstractEntity{
 
     private String season;
 
-    public Item(String itemName, String type, String color, String size, String season) {
+    @Lob
+    private byte[] itemImage;
+
+    public Item(String itemName, String type, String color, String size, String season, byte[] itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
         this.size = size;
         this.season = season;
+        this.itemImage = itemImage;
     }
 
     public Item() {
@@ -71,4 +75,11 @@ public class Item extends AbstractEntity{
         this.season = season;
     }
 
+    public byte[] getItemImage() {
+        return itemImage;
+    }
+
+    public void setItemImage(byte[] itemImage) {
+        this.itemImage = itemImage;
+    }
 }
