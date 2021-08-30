@@ -41,16 +41,19 @@ public class User {
     @Column(name = "pw_hash")
     private String pwHash;
 
+    private Boolean passwordReset = true;
+
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public  User(String firstname, String lastName, String email, String password) {
+    public  User(String firstname, String lastName, String email, String password, Boolean passwordReset) {
         this.firstName = firstname;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.pwHash = encoder.encode(password);
+        this.passwordReset = passwordReset;
     }
 
     public String getFirstName() {
@@ -85,6 +88,13 @@ public class User {
         this.password = password;
     }
 
+    public Boolean getPasswordReset() {
+        return passwordReset;
+    }
+
+    public void setPasswordReset(Boolean passwordReset) {
+        this.passwordReset = passwordReset;
+    }
     public int getId() {
         return id;
     }
