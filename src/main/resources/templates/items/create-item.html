@@ -6,7 +6,7 @@
 </head>
 <body class="container">
 <center>
-<h1><header th:text="${title}"></header></h1>
+<h1>Create Item</h1>
 
 <form method="post" enctype="multipart/form-data">
     <div class="form-group">
@@ -15,12 +15,12 @@
         </label>
         <p class="error" th:errors="${item.itemName}"></p>
     </div>
-<!--    <div class="form-group">
-        <label>Storage location
-            <input readonly th:field="${item.location}" class="form-control" value="Closet"/>
+    <div class="form-group">
+        <label>Clothing Type
+            <input th:field="${item.type}" class="form-control" value="type"/>
         </label>
-        <p class="error" th:errors="${item.location}"></p>
-    </div>-->
+        <p class="error" th:errors="${item.type}"></p>
+    </div>
     <div class="form-group">
         <label for="color">Select a color:</label>
         <select id="color" name="color" th:field="${item.color}">
