@@ -6,24 +6,36 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class User extends AbstractEntity{
+public class User extends AbstractEntity {
 
-    @NotNull(message = "First Name is required")
-    @NotBlank(message = "First Name is required")
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+/*    @ManyToMany
+    private final List<Size> sizes = new ArrayList<>();
 
-    @NotNull(message = "Last Name is required")
-    @NotBlank(message = "Last Name is required")
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    public List<Size> getSizes() {
+        return sizes;
+    }
+
+    public void AddSize(Size size)
+    {
+            this.sizes.add(size);
+    }*/
+
+    @Column(name = "user_id", nullable = false)
+    private int id;
+
+    @NotNull(message = "Username is required")
+    @NotBlank(message = "Username is required")
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Email(message = "Invalid email. Try again")
     @NotNull(message = "Email is required")
     @NotBlank(message = "Email is required")
-    @Column(name = "user_name", unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull(message = "Password is required")
@@ -39,28 +51,19 @@ public class User extends AbstractEntity{
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public  User(String firstname, String lastName, String email, String password) {
-        this.firstName = firstname;
-        this.lastName = lastName;
+    public  User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.pwHash = encoder.encode(password);
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getUserName() {
+        return username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUserName(String userName) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -77,6 +80,10 @@ public class User extends AbstractEntity{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getId() {
+        return id;
     }
 
     // Compare input password with its encoded password and assign it in pw_hash

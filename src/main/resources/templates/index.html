@@ -7,6 +7,7 @@
 <body class="container">
 <center>
     <h1><header th:text = "${title}"></header></h1>
+    <br>
 <form method="post">
     <div class="form-floating w-25">
         <input th:field="${loginFormDTO.email}" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
@@ -23,7 +24,7 @@
     <input type="submit" class="btn btn-primary" value="Log In" />
     </div>
 </form>
-
+<br>
     <p>Don't have an account? <a href="/create">Register for one.</a></p>
 
 </center>
