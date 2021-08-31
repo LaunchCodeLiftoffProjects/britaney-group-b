@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 public class User extends AbstractEntity {
 
-    @ManyToMany
+/*    @ManyToMany
     private final List<Size> sizes = new ArrayList<>();
 
     public List<Size> getSizes() {
@@ -22,7 +22,7 @@ public class User extends AbstractEntity {
     public void AddSize(Size size)
     {
             this.sizes.add(size);
-    }
+    }*/
 
     @Column(name = "user_id", nullable = false)
     private int id;
