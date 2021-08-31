@@ -14,16 +14,16 @@ public class Item extends AbstractEntity{
 
     private String type;
 
-    private String color;
+    private Color color;
 
     private String size;
 
-    private String season;
+    private Season season;
 
     @Lob
     private byte[] itemImage;
 
-    public Item(String itemName, String type, String color, String size, String season, byte[] itemImage) {
+    public Item(String itemName, String type, Color color, String size, Season season, byte[] itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
@@ -51,11 +51,11 @@ public class Item extends AbstractEntity{
         this.type = type;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 
@@ -67,11 +67,11 @@ public class Item extends AbstractEntity{
         this.size = size;
     }
 
-    public String getSeason() {
+    public Season getSeason() {
         return season;
     }
 
-    public void setSeason(String season) {
+    public void setSeason(Season season) {
         this.season = season;
     }
 

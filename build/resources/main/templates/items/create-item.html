@@ -24,9 +24,8 @@
     <div class="form-group">
         <label for="color">Select a color:</label>
         <select id="color" name="color">
-            <option value="rgb">Primary</option>
-            <option value="cmyk">Secondary</option>
-            <option value="multi">Multi</option>
+            <option th:each="color : ${T(org.launchcode.closettracker.models.Color).values()}"
+                    th:value="${color}" th:text="${color.displayName}"></option>
         </select>
         <p class="error" th:errors="${item.color}"></p>
     </div>
@@ -39,10 +38,8 @@
     <div class="form-group">
         <label for="seasons">Choose a season:</label>
         <select id="seasons" name="seasons">
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="fall">Fall</option>
-            <option value="winter">Winter</option>
+            <option th:each="season : ${T(org.launchcode.closettracker.models.Season).values()}"
+                    th:value="${season}" th:text="${season.displayName}"></option>
         </select>
         <p class="error" th:errors="${item.season}"></p>
     </div>

@@ -27,20 +27,20 @@ public class ItemController {
     private ItemRepository itemRepository;
 
     // CREATE ITEM: Show form
-    @GetMapping("create")
+    @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
             model.addAttribute(new Item());
             model.addAttribute("title", "Create User Account");
-            return "items/create";
+            return "items/create-item";
     }
 
     // CREATE ITEM: Process form
-    @PostMapping("create")
+    @PostMapping("create-item")
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
                                          Errors errors, Model model,@RequestParam("image") MultipartFile multipartFile) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Item");
-            return "items/create";
+            return "items/create-item";
         }
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -108,7 +108,6 @@ public class ItemController {
     @GetMapping
     public String displayAllItems(Model objModel)
     {
-//       objModel.addAttribute("events", EventData.getAll());
         objModel.addAttribute("items", itemRepository.findAll());
         return "items/closet";
     }
