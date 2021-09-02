@@ -12,8 +12,8 @@ public class ResetDTO {
     @Transient
     private String passwordEntered;
 
-    @NotNull(message = "Last Name is required")
-    @NotBlank(message = "Last Name is required")
+    @NotNull(message = "Confirm password is required")
+    @NotBlank(message = "Confirm password is required")
     @Size(min=6, max = 24,  message = "Password must be between 6 and 24 characters long")
     @Transient
     private String passwordConfirm;
@@ -30,4 +30,7 @@ public class ResetDTO {
         return passwordConfirm;
     }
 
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+    }
 }
