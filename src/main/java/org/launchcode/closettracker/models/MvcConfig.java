@@ -7,6 +7,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+//Makes path for directory files to be available for data access
+
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
     @Override

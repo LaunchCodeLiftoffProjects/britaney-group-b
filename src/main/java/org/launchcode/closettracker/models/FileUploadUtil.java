@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+//Directs path and creates directory if it doesn't exist to hold uploaded files
+
 public class FileUploadUtil {
 
     public static void saveFile(String uploadDirectory, String fileName,
