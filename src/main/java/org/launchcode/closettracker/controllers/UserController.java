@@ -28,7 +28,7 @@ public class UserController {
     public String displayCreateAccountForm(Model model) {
         model.addAttribute(new UserDTO());
         model.addAttribute("title", "Create New Account");
-        return "create";
+        return "user/create";
     }
 
 // User > Process new account
@@ -39,7 +39,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 model.addAttribute("errorMsg", "Bad data!");
-                return "create";
+                return "user/create";
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -47,12 +47,12 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return "user/create";
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 model.addAttribute("pwdError", "Passwords do not match");
-                return "create";
+                return "user/create";
             }
 
             User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
@@ -65,7 +65,7 @@ public class UserController {
             } else {
                 model.addAttribute("dbError", "Db Error");
             }
-            return "create";
+            return "user/create";
         }
     }
 
@@ -74,7 +74,7 @@ public class UserController {
     public String displayResetPasswordForm(Model model) {
         model.addAttribute(new ResetDTO());
         model.addAttribute("title", "Reset Account Password");
-        return "reset";
+        return "user/reset";
     }
 
 // User > Process reset password
@@ -84,7 +84,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Reset Account Password");
                 model.addAttribute("errorMsg", "Info not correct.");
-                return "reset";
+                return "user/reset";
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -110,7 +110,7 @@ public class UserController {
             } else {
                 model.addAttribute("dbError", "Db Error");
             }
-            return "reset";
+            return "user/reset";
         }
     }
 

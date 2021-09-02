@@ -78,15 +78,7 @@ public class HomeController {
         }
         setUserInSession(request.getSession(), theUser);
 
-        return "view";
-    }
-
-    //localhost:8080/create
-    @GetMapping("create")
-    public String displayCreateAccountForm(Model model) {
-        model.addAttribute(new UserDTO());
-        model.addAttribute("title", "Create User Account");
-        return "create";
+        return "user/view";
     }
 
     @GetMapping("/logout")

@@ -1,10 +1,48 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title></title>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head">
+    <meta charset="UTF-8">
+    <title>Create Account</title>
 </head>
-<body>
+<body class="container">
+<center>
+<h1><header th:text="${title}"></header></h1>
 
+<form method="post">
+    <div class="form-group">
+        <label>First Name
+            <input th:field="${userDTO.firstName}" class="form-control">
+        </label>
+        <p class="error" th:errors="${userDTO.firstName}"></p>
+    </div>
+    <div class="form-group">
+        <label>Last Name
+            <input th:field="${userDTO.lastName}" class="form-control">
+        </label>
+        <p class="error" th:errors="${userDTO.lastName}"></p>
+    </div>
+    <div class="form-group">
+        <label>Email
+            <input th:field="${userDTO.email}" class="form-control">
+        </label>
+        <p class="error" th:errors="${userDTO.email}"></p>
+    </div>
+    <div class="form-group">
+        <label>Password
+            <input th:field="${userDTO.password}" class="form-control">
+        </label>
+        <p class="error" th:errors="${userDTO.password}" type="password"></p>
+    </div>
+    <div class="form-group">
+        <label>Confirm Password
+            <input th:field="${userDTO.confirmPassword}" class="form-control">
+        </label>
+        <p class="error" th:errors="${userDTO.confirmPassword}" type="password"></p>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-success">
+    </div>
+</form>
+</center>
 </body>
 </html>
