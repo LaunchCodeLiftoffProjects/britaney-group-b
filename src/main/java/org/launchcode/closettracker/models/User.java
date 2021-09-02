@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class User extends AbstractEntity {
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
-    @javax.validation.constraints.Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     @Transient
     private String password;
 
@@ -51,7 +52,7 @@ public class User extends AbstractEntity {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public  User(String username, String email, String password) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
