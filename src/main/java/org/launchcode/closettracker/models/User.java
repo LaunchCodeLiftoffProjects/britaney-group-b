@@ -54,6 +54,7 @@ public class User {
         this.pwHash = encoder.encode(password);
     }
 
+// CREATE: Constructor for creating new user accounts including the password reset flag
     public  User(String firstname, String lastName, String email, String password, Boolean passwordReset) {
         this.firstName = firstname;
         this.lastName = lastName;
@@ -121,6 +122,7 @@ public class User {
         }
     }
 
+// Empty constructor for Spring
     public User() {
     }
 }

@@ -79,7 +79,9 @@ public class UserController {
 
 // User > Process reset password
     @PostMapping("reset")
-    public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, UserDTO userDTO, Errors errors, Model model) throws IOException {
+    @ExceptionHandler({SQLException.class, DataAccessException.class})
+    public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, UserDTO userDTO, Errors errors,
+                                           HttpServletRequest request, Model model) throws IOException {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Reset Account Password");
@@ -92,16 +94,16 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "reset";
+                return "user/reset";
             }
 
             if (!resetDTO.getPasswordEntered().equals(resetDTO.getPasswordConfirm())) {
                 model.addAttribute("pwdError", "Passwords do not match. Please try again.");
-                return "reset";
+                return "user/reset";
             }
-//    userRepository.save(email);
-            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
-            userRepository.save(newUser);
+
+//            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
+//            userRepository.save(newUser);
             return "redirect:";
 
         } catch (Exception exception) {
