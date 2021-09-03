@@ -12,7 +12,7 @@ public class ResetDTO {
     @NotBlank(message = "Email is required")
     @Email
     @Transient
-    private String userEmail;
+    private String email;
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
@@ -27,9 +27,9 @@ public class ResetDTO {
     private String passwordConfirm;
 
     // Getters & Setters
-    public String getEmail() { return userEmail; }
+    public String getEmail() { return email; }
 
-    public void setEmail(String email) { this.userEmail = userEmail; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getPasswordEntered() {
         return passwordEntered;

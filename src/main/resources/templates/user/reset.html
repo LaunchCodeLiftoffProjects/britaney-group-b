@@ -7,33 +7,38 @@
 <body class="container">
     <div align="center">
         <h1>Reset Password</h1>
-        <form method="post"><!--
+        <form method="post">
             <div class="form-group">
                 <label>Enter email
-                    <input th:field="${resetDTO.userEmail}" class="form-control">
+                    <input th:field="${resetDTO.email}" name="email" id="email" placeholder="Email address" class="form-control">
                 </label>
                 <p class="error" th:errors="${resetDTO.email}"></p>
-            </div>-->
+            </div>
             <div class="form-group">
                 <label>Enter password
-                    <input type="password" th:field="${resetDTO.passwordEntered}" class="form-control">
+                    <input type="password" th:field="${resetDTO.passwordEntered}" name="passwordEntered" id="passwordEntered" placeholder="Enter new password" class="form-control">
                 </label>
                 <p class="error" th:errors="${resetDTO.passwordEntered}"></p>
             </div>
             <div class="form-group">
                 <label>Confirm password
-                    <input type="password" th:field="${resetDTO.passwordConfirm}" class="form-control">
+                    <input type="password" th:field="${resetDTO.passwordConfirm}" name="passwordConfirm" id="passwordConfirm" placeholder="Confirm password" class="form-control">
                 </label>
                 <p class="error" th:errors="${resetDTO.passwordConfirm}"></p>
             </div>
+            <br>
             <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Reset password" />
+                <input type="submit" class="btn btn-primary" value="Reset password" />
             </div>
         </form>
-        <ol>Keep these in mind when you reset your password:
-            <li>Upon verification of your password, you will receive your temporary password sent to your account email address.</li>
-            <li>The next time you log into your account, you will be required to change your password.</li>
-        </ol>
+        <br>
+        <div style="border: thick dashed orange; padding: 30px; spacing: 30px; width: 50%">
+            <p>Keep these in mind when you reset your password:</p>
+            <ol style="text-align: left;">
+                <li>Upon verification of your password, you will receive your temporary password sent to your account email address.</li>
+                <li>The next time you log into your account, you will be required to change your password.</li>
+            </ol>
+        </div>
     </div>
 </body>
 </html>
