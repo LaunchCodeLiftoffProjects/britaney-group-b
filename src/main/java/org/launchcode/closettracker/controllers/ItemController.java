@@ -1,6 +1,8 @@
 package org.launchcode.closettracker.controllers;
 
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
@@ -37,17 +39,18 @@ public class ItemController {
     // CREATE ITEM: Process form
     @PostMapping("create-item")
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
-                                         Errors errors, Model model,@RequestParam("image") MultipartFile multipartFile) throws IOException {
+                                         Errors errors, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Item");
             return "items/create-item";
         }
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        byte[] image1 = multipartFile.getBytes();
-        newItem.setItemImage(multipartFile.getBytes());
+        newItem.setItemImage(fileName);
 
-        itemRepository.save(newItem);
+        Item savedItem = itemRepository.save(newItem);
+        String uploadDirectory = "item-photos/" + savedItem.getId();
+        FileUploadUtil.saveFile(uploadDirectory, fileName, multipartFile);
         return "redirect:";
     }
 
@@ -112,7 +115,7 @@ public class ItemController {
         return "items/closet";
     }
 
-    @GetMapping("/display/image/{id}")
+  /*  @GetMapping("/display/image/{id}")
     @ResponseBody
     public void showProductImage ( @PathVariable("id") int id,
                                    HttpServletResponse response) throws IOException {
@@ -124,7 +127,6 @@ public class ItemController {
         IOUtils.copy(is, response.getOutputStream());
 
         //Files.write(Paths.get("resources/image/" + imageGallery.get().getName() + "." + "jpg"), imageGallery.get().getPic());
-
-    }
+    }*/
 
 }

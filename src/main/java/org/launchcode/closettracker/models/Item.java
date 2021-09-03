@@ -20,16 +20,22 @@ public class Item extends AbstractEntity{
 
     private Season season;
 
-    @Lob
-    private byte[] itemImage;
+    private String itemImage;
 
-    public Item(String itemName, String type, Color color, String size, Season season, byte[] itemImage) {
+    public Item(String itemName, String type, Color color, String size, Season season, String itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
         this.size = size;
         this.season = season;
         this.itemImage = itemImage;
+    }
+
+    @Transient
+    public String getImagePath() {
+        if (itemImage == null) return null;
+
+        return "/item-photos/" + id + "/" + itemImage;
     }
 
     public Item() {
@@ -75,11 +81,11 @@ public class Item extends AbstractEntity{
         this.season = season;
     }
 
-    public byte[] getItemImage() {
+    public String getItemImage() {
         return itemImage;
     }
 
-    public void setItemImage(byte[] itemImage) {
+    public void setItemImage(String itemImage) {
         this.itemImage = itemImage;
     }
 }

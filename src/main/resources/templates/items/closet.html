@@ -3,6 +3,7 @@
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
+<h1><center>My Closet</center></h1>
 <header th:replace="fragments :: navigation"></header>
 
 <table class="table table-borderless table-hover">
@@ -24,7 +25,7 @@
         <td th:text="${item.color.displayName}"></td>
         <td th:text="${item.size}"></td>
         <td th:text="${item.season.displayName}"></td>
-        <td> <img class="card-img-top" th:src="@{${'/items/display/image/' + item.id}}" style="width:300px"></td>
+        <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
     </tr>
 </table>
 
