@@ -26,7 +26,7 @@ public class ResetDTO {
     @Transient
     private String passwordConfirm;
 
-    // G & S
+    // Getters & Setters
     public String getEmail() { return userEmail; }
 
     public void setEmail(String email) { this.userEmail = userEmail; }
