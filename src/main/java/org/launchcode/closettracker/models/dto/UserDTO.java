@@ -8,20 +8,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserDTO {
-    @NotNull(message = "First Name is required")
-    @NotBlank(message = "First Name is required")
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @NotNull(message = "Last Name is required")
-    @NotBlank(message = "Last Name is required")
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @NotNull(message = "User Name is required")
+    @NotBlank(message = "User Name is required")
+    @Column(name = "user_name", nullable = false)
+    private String username;
 
     @Email(message = "Invalid email. Try again")
     @NotNull(message = "Email is required")
     @NotBlank(message = "Email is required")
-    @Column(name = "user_name", unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull(message = "Password is required")
@@ -36,20 +31,12 @@ public class UserDTO {
     @Transient
     private String confirmPassword;
 
-    public String getFirstName() {
-        return firstName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

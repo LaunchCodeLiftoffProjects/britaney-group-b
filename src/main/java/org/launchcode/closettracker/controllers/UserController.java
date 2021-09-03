@@ -55,7 +55,7 @@ public class UserController {
                 return "user/create";
             }
 
-            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
+            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword());
             userRepository.save(newUser);
             return "redirect:";
 

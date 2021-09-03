@@ -6,78 +6,64 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class User {
+public class User extends AbstractEntity {
 
-    @Id
-    @GeneratedValue
+/*    @ManyToMany
+    private final List<Size> sizes = new ArrayList<>();
+
+    public List<Size> getSizes() {
+        return sizes;
+    }
+
+    public void AddSize(Size size)
+    {
+            this.sizes.add(size);
+    }*/
+
     @Column(name = "user_id", nullable = false)
     private int id;
 
-    @NotNull(message = "First Name is required")
-    @NotBlank(message = "First Name is required")
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @NotNull(message = "Last Name is required")
-    @NotBlank(message = "Last Name is required")
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @NotNull(message = "Username is required")
+    @NotBlank(message = "Username is required")
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Email(message = "Invalid email. Try again")
     @NotNull(message = "Email is required")
     @NotBlank(message = "Email is required")
-    @Column(name = "user_name", unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
-    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @javax.validation.constraints.Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     @Transient
     private String password;
 
     @Column(name = "pw_hash")
     private String pwHash;
 
-    private Boolean passwordReset = false;
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public  User(String firstname, String lastName, String email, String password) {
-        this.firstName = firstname;
-        this.lastName = lastName;
+    public  User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.pwHash = encoder.encode(password);
     }
 
-// CREATE: Constructor for creating new user accounts including the password reset flag
-    public  User(String firstname, String lastName, String email, String password, Boolean passwordReset) {
-        this.firstName = firstname;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.pwHash = encoder.encode(password);
-        this.passwordReset = passwordReset;
+    public String getUserName() {
+        return username;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUserName(String userName) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -96,13 +82,6 @@ public class User {
         this.password = password;
     }
 
-    public Boolean getPasswordReset() {
-        return passwordReset;
-    }
-
-    public void setPasswordReset(Boolean passwordReset) {
-        this.passwordReset = passwordReset;
-    }
     public int getId() {
         return id;
     }
@@ -122,7 +101,6 @@ public class User {
         }
     }
 
-// Empty constructor for Spring
     public User() {
     }
 }

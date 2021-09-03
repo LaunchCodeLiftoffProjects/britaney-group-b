@@ -78,7 +78,15 @@ public class HomeController {
         }
         setUserInSession(request.getSession(), theUser);
 
-        return "user/view";
+        return "items/closet";
+    }
+
+    //localhost:8080/create
+    @GetMapping("create")
+    public String displayCreateAccountForm(Model model) {
+        model.addAttribute(new UserDTO());
+        model.addAttribute("title", "Create User Account");
+        return "create";
     }
 
     @GetMapping("/logout")
