@@ -12,21 +12,6 @@ import java.util.List;
 @Entity
 public class User extends AbstractEntity {
 
-/*    @ManyToMany
-    private final List<Size> sizes = new ArrayList<>();
-
-    public List<Size> getSizes() {
-        return sizes;
-    }
-
-    public void AddSize(Size size)
-    {
-            this.sizes.add(size);
-    }*/
-
-    @Column(name = "user_id", nullable = false)
-    private int id;
-
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
     @Column(name = "username", nullable = false)
@@ -38,12 +23,6 @@ public class User extends AbstractEntity {
     @Column(name = "email", unique = true)
     private String email;
 
-    @NotNull(message = "Password is required")
-    @NotBlank(message = "Password is required")
-    @javax.validation.constraints.Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
-    @Transient
-    private String password;
-
     @Column(name = "pw_hash")
     private String pwHash;
 
@@ -54,7 +33,6 @@ public class User extends AbstractEntity {
     public  User(String username, String email, String password) {
         this.username = username;
         this.email = email;
-        this.password = password;
         this.pwHash = encoder.encode(password);
     }
 
@@ -74,31 +52,9 @@ public class User extends AbstractEntity {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     // Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {
-        String pwHashValue = encoder.encode(password);
-
-        if(encoder.matches(password,pwHashValue)) {
-            this.pwHash = pwHashValue;
-            return true;
-        }
-        else
-        {
-            this.pwHash = null;
-            return false;
-        }
+        return encoder.matches(password, pwHash);
     }
 
     public User() {
