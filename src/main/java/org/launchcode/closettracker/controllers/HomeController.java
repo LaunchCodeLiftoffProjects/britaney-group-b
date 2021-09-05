@@ -26,7 +26,7 @@ public class HomeController {
 
     private static final String userSessionKey = "user";
 
-    public User getUserFromSession(HttpSession session) {
+    public User getUserFromSession(@org.jetbrains.annotations.NotNull HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
             return null;
@@ -94,6 +94,5 @@ public class HomeController {
         request.getSession().invalidate();
         return "redirect:";
     }
-
 
 }

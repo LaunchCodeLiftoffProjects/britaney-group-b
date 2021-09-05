@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,8 +80,8 @@ public class UserController {
 
 // User > Process reset password
     @PostMapping("reset")
-    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, UserDTO userDTO, Errors errors,
+//    @ExceptionHandler({SQLException.class, DataAccessException.class})
+    public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, Errors errors,
                                            HttpServletRequest request, Model model) throws IOException {
         try {
             if (errors.hasErrors()) {
@@ -89,7 +90,7 @@ public class UserController {
                 return "user/reset";
             }
 
-            User currentUser = userRepository.findByEmail(userDTO.getEmail());
+            User currentUser = userRepository.findByEmail(resetDTO.getEmail());
 
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
@@ -102,6 +103,7 @@ public class UserController {
                 return "user/reset";
             }
 
+//            x
 //            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
 //            userRepository.save(newUser);
             return "redirect:";
@@ -116,4 +118,4 @@ public class UserController {
         }
     }
 
-}
+    }

@@ -6,7 +6,7 @@
 </head>
 <body class="container">
     <div align="center">
-        <h1>Reset Password</h1>
+        <h1 th:text="${title}"></h1>
         <form method="post">
             <div class="form-group">
                 <label>Enter email
@@ -32,7 +32,7 @@
             </div>
         </form>
         <br>
-        <div style="border: thick dashed orange; padding: 30px; spacing: 30px; width: 50%">
+        <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
             <p>Keep these in mind when you reset your password:</p>
             <ol style="text-align: left;">
                 <li>Upon verification of your password, you will receive your temporary password sent to your account email address.</li>
