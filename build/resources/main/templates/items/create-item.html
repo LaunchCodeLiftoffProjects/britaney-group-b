@@ -35,12 +35,14 @@
         </label>
         <p class="error" th:errors="${item.size}"></p>
     </div>
-    <div class="form-group">
-        <label for="seasons">Choose a season:</label>
-        <select id="seasons" name="seasons" th:field="${item.season}">
-            <option th:each="season : ${T(org.launchcode.closettracker.models.Season).values()}"
-                    th:value="${season}" th:text="${season.displayName}"></option>
-        </select>
+    <div class="form-group">Choose a season:
+        <ul id="no-bullets">
+            <li th:each="season : ${T(org.launchcode.closettracker.models.Season).values()}">
+                <input type = "checkbox" th:field="${item.season}"
+                       th:value="${season}"/>
+                <label th:text="${season.displayName}"><label/>
+            </li>
+        </ul>
         <p class="error" th:errors="${item.season}"></p>
     </div>
     <div>
