@@ -8,6 +8,12 @@ import javax.validation.constraints.Size;
 
 public class Reset1DTO {
     // Fields with annotations
+    @NotNull(message = "Email is required")
+    @NotBlank(message = "Email is required")
+    @Email
+    @Transient
+    private String email;
+
     @NotNull(message = "Temporary password is required")
     @NotBlank(message = "Temporary password is required")
     @Transient
@@ -26,6 +32,10 @@ public class Reset1DTO {
     private String passwordConfirm;
 
     // Getters & Setters
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
     public String getTempPassword() { return tempPassword; }
 
     public void setTempPassword(String email) { this.tempPassword = tempPassword; }

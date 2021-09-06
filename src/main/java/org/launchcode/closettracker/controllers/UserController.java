@@ -1,6 +1,7 @@
 package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.User;
+import org.launchcode.closettracker.models.dto.Reset1DTO;
 import org.launchcode.closettracker.models.dto.ResetDTO;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.UserRepository;
@@ -71,7 +72,7 @@ public class UserController {
         }
     }
 
-// User > Reset password
+// User > Show 1st reset password
     @GetMapping("reset")
     public String displayResetPasswordForm(Model model) {
         model.addAttribute(new ResetDTO());
@@ -79,7 +80,7 @@ public class UserController {
         return "user/reset";
     }
 
-// User > Process reset password
+// User > Process 1st reset password
     @PostMapping("reset")
 //    @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, Errors errors,
@@ -122,4 +123,55 @@ public class UserController {
         }
     }
 
+    // User > Show 2nd reset password
+    @GetMapping("reset1")
+    public String displayResetPasswordForm(Model model) {
+        model.addAttribute(new ResetDTO());
+        model.addAttribute("title", "Reset Account Password");
+        return "user/reset1";
     }
+
+    // User > Process reset password
+    @PostMapping("reset1")
+//    @ExceptionHandler({SQLException.class, DataAccessException.class})
+    public String processResetPasswordForm(@ModelAttribute @Valid Reset1DTO reset1DTO, Errors errors,
+                                           HttpServletRequest request, Model model) throws IOException {
+        try {
+            if (errors.hasErrors()) {
+                model.addAttribute("title", "Reset Account Password");
+                model.addAttribute("errorMsg", "Info not correct.");
+                return "user/reset1";
+            }
+
+            User currentUser = userRepository.findByEmail(reset1DTO.getEmail());
+// If the user account does not exist, show error
+            if (currentUser == null) {
+                errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
+                model.addAttribute("title", "Reset Account Password");
+                return "user/reset1";
+            }
+
+
+            if (!reset1DTO.getPasswordEntered().equals(reset1DTO.getPasswordConfirm())) {
+                model.addAttribute("title", "Reset Account Password");
+                model.addAttribute("pwdError", "Passwords do not match. Please try again.");
+                return "user/reset1";
+            }
+
+//            x
+//            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
+//            userRepository.save(newUser);
+
+            return "redirect:";
+
+        } catch (Exception exception) {
+            if (exception.toString().contains("constraint")) {
+                model.addAttribute("dbError", "Email exists. Try with new one!");
+            } else {
+                model.addAttribute("dbError", "Db Error");
+            }
+            return "user/reset1";
+        }
+    }
+
+}

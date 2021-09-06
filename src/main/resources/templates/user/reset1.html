@@ -9,6 +9,12 @@
         <h1 th:text="${title}"></h1>
         <form method="post">
             <div class="form-group">
+                <label>Enter email
+                    <input th:field="${reset1DTO.email}" name="email" id="email" placeholder="Email address" class="form-control">
+                </label>
+                <p class="error" th:errors="${reset1DTO.email}"></p>
+            </div>
+            <div class="form-group">
                 <label>Enter the temporary password provided in your reset email
                     <input th:field="${reset1DTO.tempPassword}" name="tempPassword" id="tempPassword" placeholder="Temporary password" class="form-control">
                 </label>
