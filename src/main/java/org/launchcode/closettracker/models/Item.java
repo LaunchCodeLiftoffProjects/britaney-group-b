@@ -20,8 +20,8 @@ public class Item extends AbstractEntity{
 
     private String season;
 
-/*    @ManyToOne
-    private User user;*/
+    @ManyToOne
+    private User user;
 
     @Lob
     private byte[] itemImage;
