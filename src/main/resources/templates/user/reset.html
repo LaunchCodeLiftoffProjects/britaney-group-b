@@ -14,18 +14,6 @@
                 </label>
                 <p class="error" th:errors="${resetDTO.email}"></p>
             </div>
-            <div class="form-group">
-                <label>Enter password
-                    <input type="password" th:field="${resetDTO.passwordEntered}" name="passwordEntered" id="passwordEntered" placeholder="Enter new password" class="form-control">
-                </label>
-                <p class="error" th:errors="${resetDTO.passwordEntered}"></p>
-            </div>
-            <div class="form-group">
-                <label>Confirm password
-                    <input type="password" th:field="${resetDTO.passwordConfirm}" name="passwordConfirm" id="passwordConfirm" placeholder="Confirm password" class="form-control">
-                </label>
-                <p class="error" th:errors="${resetDTO.passwordConfirm}"></p>
-            </div>
             <br>
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Reset password" />
