@@ -37,7 +37,8 @@ public class ItemController {
     // CREATE ITEM: Process form
     @PostMapping("create-item")
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
-                                         Errors errors, Model model,@RequestParam("image") MultipartFile multipartFile) throws IOException {
+                                         Errors errors, Model model,
+                                        @RequestParam("image") MultipartFile multipartFile) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Item");
             return "items/create-item";
@@ -48,7 +49,7 @@ public class ItemController {
         newItem.setItemImage(multipartFile.getBytes());
 
         itemRepository.save(newItem);
-        return "redirect:";
+        return "items/closet";
     }
 
     // DELETE ITEM(s): Show form
@@ -105,7 +106,7 @@ public class ItemController {
         return "items/detail";
     }
 
-    @GetMapping
+    @GetMapping("closet")
     public String displayAllItems(Model objModel)
     {
         objModel.addAttribute("items", itemRepository.findAll());

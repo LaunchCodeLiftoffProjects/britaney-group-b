@@ -30,7 +30,7 @@ public class UserController {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
-                model.addAttribute("errorMsg", "Bad data!");
+                /*model.addAttribute("errorMsg", "Bad data!");*/
                 return "create";
             }
 

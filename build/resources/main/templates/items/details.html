@@ -16,12 +16,6 @@
         <p class="error" th:errors="${item.name}"></p>
     </div>
     <div class="form-group">
-        <label>Storage location
-            <input readonly th:field="${item.location}" class="form-control" value="Closet">
-        </label>
-        <p class="error" th:errors="${item.location}"></p>
-    </div>
-    <div class="form-group">
         <label for="color">Select a color:</label>
         <select id="color" name="color">
             <option value="rgb">Primary</option>

@@ -26,6 +26,8 @@ public class User extends AbstractEntity {
     @Column(name = "pw_hash")
     private String pwHash;
 
+   /* @OneToMany(mappedBy = "user")
+    private final List<Item> items = new ArrayList<>();*/
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -51,6 +53,10 @@ public class User extends AbstractEntity {
     public void setEmail(String email) {
         this.email = email;
     }
+
+/*    public List<Item> getItems() {
+        return items;
+    }*/
 
     // Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {

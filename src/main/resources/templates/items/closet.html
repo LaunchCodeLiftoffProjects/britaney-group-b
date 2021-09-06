@@ -10,7 +10,6 @@
         <tr>
             <th>Name</th>
             <th>Clothing type</th>
-            <!--<th>Item location</th>-->
             <th>Color</th>
             <th>Size</th>
             <th>Season</th>
@@ -20,10 +19,9 @@
     <tr th:each="item : ${items}">
         <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
         <td th:text="${item.type}"></td>
-        <!--<td th:text="${item.location}"></td>-->
         <td th:text="${item.color.displayName}"></td>
         <td th:text="${item.size}"></td>
-        <td th:text="${item.season.displayName}"></td>
+        <td th:text="${item.season}"></td>
         <td> <img class="card-img-top" th:src="@{${'/items/display/image/' + item.id}}" style="width:300px"></td>
     </tr>
 </table>
