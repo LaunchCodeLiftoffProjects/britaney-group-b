@@ -18,7 +18,7 @@ public class Item extends AbstractEntity{
 
     private String size;
 
-    private String season;
+    private String[] season;
 
     @ManyToOne
     private User user;
@@ -26,7 +26,7 @@ public class Item extends AbstractEntity{
     @Lob
     private byte[] itemImage;
 
-    public Item(String itemName, String type, Color color, String size, String season, byte[] itemImage) {
+    public Item(String itemName, String type, Color color, String size, String[] season, byte[] itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
@@ -70,11 +70,11 @@ public class Item extends AbstractEntity{
         this.size = size;
     }
 
-    public String getSeason() {
+    public String[] getSeason() {
         return season;
     }
 
-    public void setSeason(String season) {
+    public void setSeason(String[] season) {
         this.season = season;
     }
 
