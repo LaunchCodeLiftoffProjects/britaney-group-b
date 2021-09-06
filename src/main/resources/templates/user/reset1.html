@@ -15,7 +15,7 @@
                 <p class="error" th:errors="${reset1DTO.email}"></p>
             </div>
             <div class="form-group">
-                <label>Enter the temporary password provided in your reset email
+                <label>Enter temporary password
                     <input th:field="${reset1DTO.tempPassword}" name="tempPassword" id="tempPassword" placeholder="Temporary password" class="form-control">
                 </label>
                 <p class="error" th:errors="${reset1DTO.tempPassword}"></p>
@@ -37,14 +37,6 @@
                 <input type="submit" class="btn btn-primary" value="Save new password" />
             </div>
         </form>
-        <br>
-        <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
-            <p>Keep these in mind when you reset your password:</p>
-            <ol style="text-align: left;">
-                <li>Upon verification of your password, you will receive your temporary password sent to your account email address.</li>
-                <li>The next time you log into your account, you will be required to change your password.</li>
-            </ol>
-        </div>
     </div>
 </body>
 </html>
