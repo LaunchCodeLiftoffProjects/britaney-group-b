@@ -136,7 +136,7 @@ public class UserController {
             // 4
                 userRepository.save(currentUser);
             // 5
-
+            User savedUser = userRepository.findByEmail(currentUser.getEmail());
 
                 return "index";
 
