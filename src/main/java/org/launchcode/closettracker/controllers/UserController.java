@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.Random;
 
 @Controller
 @RequestMapping("user")
@@ -74,16 +76,25 @@ public class UserController {
 
 // User > Show 1st reset password
     @GetMapping("reset")
-    public String displayResetPasswordForm(Model model) {
+    public String display1stResetPasswordForm(Model model) {
         model.addAttribute(new ResetDTO());
         model.addAttribute("title", "Reset Account Password");
         return "user/reset";
     }
 
+// A little function to generate a temporary password
+    public String createTemporaryPassword() {
+        byte[] array = new byte[8]; // length is bounded by 8
+        new Random().nextBytes(array);
+        String generatedString = new String(array, Charset.forName("UTF-8"));
+
+        return generatedString;
+    }
+
 // User > Process 1st reset password
     @PostMapping("reset")
 //    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String processResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, Errors errors,
+    public String process1stResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, Errors errors,
                                            HttpServletRequest request, Model model) throws IOException {
         try {
             if (errors.hasErrors()) {
@@ -100,16 +111,9 @@ public class UserController {
                 return "user/reset";
             }
 
-
-            if (!resetDTO.getPasswordEntered().equals(resetDTO.getPasswordConfirm())) {
-                model.addAttribute("title", "Reset Account Password");
-                model.addAttribute("pwdError", "Passwords do not match. Please try again.");
-                return "user/reset";
-            }
-
-//            x
-//            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
-//            userRepository.save(newUser);
+            if (currentUser != null) {
+                User currentUser = new User(resetDTO.getEmail(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
+                userRepository.save(currentUser);
 
             return "redirect:";
 
@@ -125,7 +129,7 @@ public class UserController {
 
     // User > Show 2nd reset password
     @GetMapping("reset1")
-    public String displayResetPasswordForm(Model model) {
+    public String display2ndResetPasswordForm(Model model) {
         model.addAttribute(new ResetDTO());
         model.addAttribute("title", "Reset Account Password");
         return "user/reset1";
@@ -134,7 +138,7 @@ public class UserController {
     // User > Process reset password
     @PostMapping("reset1")
 //    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String processResetPasswordForm(@ModelAttribute @Valid Reset1DTO reset1DTO, Errors errors,
+    public String process2ndResetPasswordForm(@ModelAttribute @Valid Reset1DTO reset1DTO, Errors errors,
                                            HttpServletRequest request, Model model) throws IOException {
         try {
             if (errors.hasErrors()) {

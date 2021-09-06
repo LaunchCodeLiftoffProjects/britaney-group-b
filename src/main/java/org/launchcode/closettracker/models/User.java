@@ -62,6 +62,13 @@ public class User extends AbstractEntity {
         this.passwordReset = false;
     }
 
+// Constructor used when starting the password reset process
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.pwHash = encoder.encode(password);
+    }
+
     public String getUserName() {
         return username;
     }
