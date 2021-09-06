@@ -111,8 +111,16 @@ public class UserController {
                 return "user/reset";
             }
 
+/* If the user exists:
+    1) Change the password reset flag to true
+    2) Generate a temporary password
+    3) Convert the temporary password to a password hash
+    4) Store it in the user db
+    5) Send an send
+ */
+
             if (currentUser != null) {
-                User currentUser = new User(resetDTO.getEmail(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
+                currentUser.pwHash = createTemporaryPassword());
                 userRepository.save(currentUser);
 
             return "redirect:";
