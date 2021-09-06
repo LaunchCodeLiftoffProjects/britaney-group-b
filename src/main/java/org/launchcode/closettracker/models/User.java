@@ -62,14 +62,6 @@ public class User extends AbstractEntity {
         this.passwordReset = false;
     }
 
-// Constructor used when starting the password reset process
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-        this.pwHash = encoder.encode(password);
-        this.passwordReset = true;
-    }
-
     public String getUserName() {
         return username;
     }
@@ -82,28 +74,22 @@ public class User extends AbstractEntity {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public boolean isPasswordReset() {
-        return passwordReset;
-    }
+    public String getPwHash() { return pwHash; }
+
+    public void setPwHash(String password) { this.pwHash = pwHash; }
+
+    public boolean isPasswordReset() { return passwordReset; }
 
     public void setPasswordReset(boolean passwordReset) {
         this.passwordReset = passwordReset;
-    }
-
-    public int getId() {
-        return id;
     }
 
     // Compare input password with its encoded password and assign it in pw_hash
