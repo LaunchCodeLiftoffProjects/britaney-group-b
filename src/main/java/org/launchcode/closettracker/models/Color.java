@@ -11,6 +11,9 @@ public enum Color {
     WHITE ("White"),
     TAN ("Tan"),
     GRAY ("Gray"),
+    STRIPED ("Striped"),
+    CHECKERED ("Checkered"),
+    MULTICOLOR ("Multicolor"),
     OTHER ("Other");
 
     private final String displayName;
