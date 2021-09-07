@@ -78,7 +78,7 @@ public class HomeController {
         }
         setUserInSession(request.getSession(), theUser);
 
-        return "items/closet";
+        return "redirect:items/closet";
     }
 
     //localhost:8080/create

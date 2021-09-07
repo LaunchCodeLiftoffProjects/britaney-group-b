@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User extends AbstractEntity {
+public class User{
+
+    @Id
+    @GeneratedValue
+    @Column(name = "user_id", nullable = false)
+    private int id;
 
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
@@ -26,7 +31,7 @@ public class User extends AbstractEntity {
     @Column(name = "pw_hash")
     private String pwHash;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private final List<Item> items = new ArrayList<>();
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -36,6 +41,14 @@ public class User extends AbstractEntity {
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserName() {

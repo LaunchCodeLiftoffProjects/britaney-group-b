@@ -21,12 +21,14 @@ public class Item extends AbstractEntity{
     private String[] season;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Lob
     private byte[] itemImage;
 
-    public Item(String itemName, String type, Color color, String size, String[] season, byte[] itemImage) {
+    public Item(User user, String itemName, String type, Color color, String size, String[] season, byte[] itemImage) {
+        this.user = user;
         this.itemName = itemName;
         this.type = type;
         this.color = color;
