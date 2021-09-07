@@ -54,6 +54,48 @@ public class ItemController {
         return "redirect:";
     }
 
+    //Displays all items in closet
+
+    @GetMapping
+    public String displayAllItems(Model objModel)
+    {
+        objModel.addAttribute("items", itemRepository.findAll());
+        return "items/closet";
+    }
+
+    // We are making View Item Details and Edit Item Details the same page
+    @GetMapping("details")
+    public String displayItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> result = itemRepository.findById(itemId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Item ID: " + itemId);
+        } else {
+            Item item = result.get();
+            model.addAttribute("title", item.getItemName() + " Details");
+            model.addAttribute("item", item);
+        }
+
+        return "items/details";
+    }
+
+    @PostMapping("details")
+    public String updateItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> result = itemRepository.findById(itemId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Item ID: " + itemId);
+        } else {
+            Item item = result.get();
+            model.addAttribute("title", item.getItemName() + " Details");
+            model.addAttribute("item", item);
+            itemRepository.save(item);
+        }
+        return "items/details";
+    }
+
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
     public String displayDeleteItemForm(Model model) {
@@ -73,46 +115,6 @@ public class ItemController {
         }
 
         return "redirect:";
-    }
-
-    // We are making View Item Details and Edit Item Details the same page
-    @GetMapping("detail")
-    public String displayItemDetails(@RequestParam Integer itemId, Model model) {
-
-        Optional<Item> result = itemRepository.findById(itemId);
-
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-        }
-
-        return "items/detail";
-    }
-
-    @PostMapping("detail")
-    public String updateItemDetails(@RequestParam Integer itemId, Model model) {
-
-        Optional<Item> result = itemRepository.findById(itemId);
-
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-            itemRepository.save(item);
-        }
-        return "items/detail";
-    }
-
-    @GetMapping
-    public String displayAllItems(Model objModel)
-    {
-        objModel.addAttribute("items", itemRepository.findAll());
-        return "items/closet";
     }
 
   /*  @GetMapping("/display/image/{id}")
