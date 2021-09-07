@@ -4,4 +4,5 @@ color:red
 
 #no-bullets {
   list-style-type: none;
+  text-indent: 0px;
 }
