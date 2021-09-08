@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,15 @@ public class User{
     @Column(name = "email", unique = true)
     private String email;
 
+<<<<<<< HEAD
+=======
+    @NotNull(message = "Password is required")
+    @NotBlank(message = "Password is required")
+    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Transient
+    private String password;
+
+>>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
     @Column(name = "pw_hash")
     private String pwHash;
 
@@ -37,7 +47,7 @@ public class User{
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public  User(String username, String email, String password) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);

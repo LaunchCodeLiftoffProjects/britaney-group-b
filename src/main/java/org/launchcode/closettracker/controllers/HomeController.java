@@ -47,14 +47,14 @@ public class HomeController {
     }
 
     //localhost:8080
-    @GetMapping("")
+    @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
         model.addAttribute(new LoginFormDTO());
         return "index";
     }
 
-    @PostMapping("")
+    @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
         if (errors.hasErrors()) {

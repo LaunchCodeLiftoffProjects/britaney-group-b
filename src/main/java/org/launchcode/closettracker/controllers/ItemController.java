@@ -1,6 +1,8 @@
 package org.launchcode.closettracker.controllers;
 
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
@@ -36,19 +38,84 @@ public class ItemController {
 
     // CREATE ITEM: Process form
     @PostMapping("create-item")
+<<<<<<< HEAD
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors,
                                         Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+=======
+    public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
+                                         Errors errors, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+>>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
         if(errors.hasErrors()) {
             /*model.addAttribute("title", "Create Item");*/
             return "items/create-item";
         }
+<<<<<<< HEAD
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             byte[] image1 = multipartFile.getBytes();
             newItem.setItemImage(multipartFile.getBytes());
             itemRepository.save(newItem);
             return "redirect:closet";
+=======
+
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        newItem.setItemImage(fileName);
+
+        Item savedItem = itemRepository.save(newItem);
+        String uploadDirectory = "item-photos/" + savedItem.getId();
+        FileUploadUtil.saveFile(uploadDirectory, fileName, multipartFile);
+        return "redirect:";
+>>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
     }
 
+    //Displays all items in closet
+
+    @GetMapping
+    public String displayAllItems(Model objModel)
+    {
+        objModel.addAttribute("items", itemRepository.findAll());
+        return "items/closet";
+    }
+
+    // We are making View Item Details and Edit Item Details the same page
+    @GetMapping("details")
+    public String displayItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> result = itemRepository.findById(itemId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Item ID: " + itemId);
+        } else {
+            Item item = result.get();
+            model.addAttribute("title", item.getItemName() + " Details");
+            model.addAttribute("item", item);
+        }
+
+        return "items/details";
+    }
+
+    @PostMapping("details")
+    public String updateItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> result = itemRepository.findById(itemId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Item ID: " + itemId);
+        } else {
+            Item item = result.get();
+            model.addAttribute("title", item.getItemName() + " Details");
+            model.addAttribute("item", item);
+            itemRepository.save(item);
+        }
+        return "items/details";
+    }
+
+<<<<<<< HEAD
+    @GetMapping("closet")
+    public String displayAllItems(Model objModel)
+    {
+        objModel.addAttribute("items", itemRepository.findAll());
+        return "items/closet";
+=======
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
     public String displayDeleteItemForm(Model model) {
@@ -68,49 +135,10 @@ public class ItemController {
         }
 
         return "redirect:";
+>>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
     }
 
-    // We are making View Item Details and Edit Item Details the same page
-    @GetMapping("detail")
-    public String displayItemDetails(@RequestParam Integer itemId, Model model) {
-
-        Optional<Item> result = itemRepository.findById(itemId);
-
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-        }
-
-        return "items/detail";
-    }
-
-    @PostMapping("detail")
-    public String updateItemDetails(@RequestParam Integer itemId, Model model) {
-
-        Optional<Item> result = itemRepository.findById(itemId);
-
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-            itemRepository.save(item);
-        }
-        return "items/detail";
-    }
-
-    @GetMapping("closet")
-    public String displayAllItems(Model objModel)
-    {
-        objModel.addAttribute("items", itemRepository.findAll());
-        return "items/closet";
-    }
-
-    @GetMapping("/display/image/{id}")
+  /*  @GetMapping("/display/image/{id}")
     @ResponseBody
     public void showProductImage ( @PathVariable("id") int id,
                                    HttpServletResponse response) throws IOException {
@@ -122,7 +150,6 @@ public class ItemController {
         IOUtils.copy(is, response.getOutputStream());
 
         //Files.write(Paths.get("resources/image/" + imageGallery.get().getName() + "." + "jpg"), imageGallery.get().getPic());
-
-    }
+    }*/
 
 }

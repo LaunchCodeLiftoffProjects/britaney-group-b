@@ -24,17 +24,27 @@ public class Item extends AbstractEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Lob
-    private byte[] itemImage;
+    private String itemImage;
 
+<<<<<<< HEAD
     public Item(User user, String itemName, String type, Color color, String size, String[] season, byte[] itemImage) {
         this.user = user;
+=======
+    public Item(String itemName, String type, Color color, String size, Season season, String itemImage) {
+>>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
         this.itemName = itemName;
         this.type = type;
         this.color = color;
         this.size = size;
         this.season = season;
         this.itemImage = itemImage;
+    }
+
+    @Transient
+    public String getImagePath() {
+        if (itemImage == null) return null;
+
+        return "/item-photos/" + id + "/" + itemImage;
     }
 
     public Item() {
@@ -80,11 +90,11 @@ public class Item extends AbstractEntity{
         this.season = season;
     }
 
-    public byte[] getItemImage() {
+    public String getItemImage() {
         return itemImage;
     }
 
-    public void setItemImage(byte[] itemImage) {
+    public void setItemImage(String itemImage) {
         this.itemImage = itemImage;
     }
 }
