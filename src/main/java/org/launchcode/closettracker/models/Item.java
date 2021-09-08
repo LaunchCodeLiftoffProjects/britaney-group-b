@@ -26,12 +26,7 @@ public class Item extends AbstractEntity{
 
     private String itemImage;
 
-<<<<<<< HEAD
-    public Item(User user, String itemName, String type, Color color, String size, String[] season, byte[] itemImage) {
-        this.user = user;
-=======
-    public Item(String itemName, String type, Color color, String size, Season season, String itemImage) {
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
+    public Item(String itemName, String type, Color color, String size, String[] season, String itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;

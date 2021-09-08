@@ -3,45 +3,6 @@
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
-<<<<<<< HEAD
-<form method="post">
-    <div class="form-group">
-        <label>Item name
-            <input th:field="${item.name}" class="form-control">
-        </label>
-        <p class="error" th:errors="${item.name}"></p>
-    </div>
-    <div class="form-group">
-        <label for="color">Select a color:</label>
-        <select id="color" name="color">
-            <option value="rgb">Primary</option>
-            <option value="cmyk">Secondary</option>
-            <option value="multi">Multi</option>
-        </select>
-        <p class="error" th:errors="${item.color}"></p>
-    </div>
-    <div class="form-group">
-        <label>Item size
-            <input th:field="${item.size}" class="form-control">
-        </label>
-        <p class="error" th:errors="${item.size}"></p>
-    </div>
-    <div class="form-group">
-        <label for="seasons">Choose a season:</label>
-        <select id="seasons" name="seasons">
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="fall">Fall</option>
-            <option value="winter">Winter</option>
-        </select>
-        <p class="error" th:errors="${item.season}"></p>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Save changes" class="btn btn-success">
-    </div>
-</form>
-</center>
-=======
 <h1><center>My Closet</center></h1>
 <header th:replace="fragments :: navigation"></header>
 
@@ -63,11 +24,11 @@
         <!--<td th:text="${item.location}"></td>-->
         <td th:text="${item.color.displayName}"></td>
         <td th:text="${item.size}"></td>
-        <td th:text="${item.season.displayName}"></td>
+        <td> <ul>
+            <li th:each= "season : ${item.season}" th:text="${season}"></li>
+        </ul></td>
         <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
     </tr>
 </table>
-
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
 </body>
 </html>

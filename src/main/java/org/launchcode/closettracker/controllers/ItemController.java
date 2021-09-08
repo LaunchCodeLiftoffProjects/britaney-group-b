@@ -38,24 +38,12 @@ public class ItemController {
 
     // CREATE ITEM: Process form
     @PostMapping("create-item")
-<<<<<<< HEAD
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors,
                                         Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
-=======
-    public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
-                                         Errors errors, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
         if(errors.hasErrors()) {
             /*model.addAttribute("title", "Create Item");*/
             return "items/create-item";
         }
-<<<<<<< HEAD
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            byte[] image1 = multipartFile.getBytes();
-            newItem.setItemImage(multipartFile.getBytes());
-            itemRepository.save(newItem);
-            return "redirect:closet";
-=======
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         newItem.setItemImage(fileName);
@@ -63,18 +51,12 @@ public class ItemController {
         Item savedItem = itemRepository.save(newItem);
         String uploadDirectory = "item-photos/" + savedItem.getId();
         FileUploadUtil.saveFile(uploadDirectory, fileName, multipartFile);
-        return "redirect:";
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
+        return "redirect:closet";
     }
 
     //Displays all items in closet
 
-    @GetMapping
-    public String displayAllItems(Model objModel)
-    {
-        objModel.addAttribute("items", itemRepository.findAll());
-        return "items/closet";
-    }
+
 
     // We are making View Item Details and Edit Item Details the same page
     @GetMapping("details")
@@ -109,13 +91,12 @@ public class ItemController {
         return "items/details";
     }
 
-<<<<<<< HEAD
     @GetMapping("closet")
-    public String displayAllItems(Model objModel)
-    {
+    public String displayAllItems(Model objModel) {
         objModel.addAttribute("items", itemRepository.findAll());
         return "items/closet";
-=======
+    }
+
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
     public String displayDeleteItemForm(Model model) {
@@ -135,7 +116,6 @@ public class ItemController {
         }
 
         return "redirect:";
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
     }
 
   /*  @GetMapping("/display/image/{id}")

@@ -22,15 +22,10 @@
         <td th:text="${item.type}"></td>
         <td th:text="${item.color.displayName}"></td>
         <td th:text="${item.size}"></td>
-<<<<<<< HEAD
         <td> <ul>
             <li th:each= "season : ${item.season}" th:text="${season}"></li>
         </ul></td>
-        <td> <img class="card-img-top" th:src="@{${'/items/display/image/' + item.id}}" style="width:300px"></td>
-=======
-        <td th:text="${item.season.displayName}"></td>
         <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
     </tr>
 </table>
 

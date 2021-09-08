@@ -29,15 +29,6 @@ public class User{
     @Column(name = "email", unique = true)
     private String email;
 
-<<<<<<< HEAD
-=======
-    @NotNull(message = "Password is required")
-    @NotBlank(message = "Password is required")
-    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
-    @Transient
-    private String password;
-
->>>>>>> f364c1b0f06ed67e963682f54f017d1eecad8741
     @Column(name = "pw_hash")
     private String pwHash;
 
