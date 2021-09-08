@@ -46,7 +46,7 @@ public class HomeController {
         session.setAttribute(userSessionKey, user.getId());
     }
 
-    //localhost:8080
+    //localhost:8080  Shows login form
     @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
@@ -78,7 +78,7 @@ public class HomeController {
         }
         setUserInSession(request.getSession(), theUser);
 
-        return "items/closet";
+        return "redirect:items";
     }
 
     //localhost:8080/create

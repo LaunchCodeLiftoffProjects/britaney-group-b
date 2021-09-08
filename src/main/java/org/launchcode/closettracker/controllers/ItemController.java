@@ -6,6 +6,7 @@ import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
+import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -27,6 +29,9 @@ public class ItemController {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // CREATE ITEM: Show form
     @GetMapping("create-item")
@@ -54,11 +59,20 @@ public class ItemController {
         return "redirect:";
     }
 
+    //get current users username - in progress
+
+    @RequestMapping(value = "/username", method = RequestMethod.GET)
+    @ResponseBody
+    public String currentUserName(Principal principal) {
+        return principal.getName();
+    }
+
     //Displays all items in closet
 
     @GetMapping
-    public String displayAllItems(Model objModel)
+    public String displayAllItems(Model objModel, Model model, Principal principal)
     {
+        model.addAttribute("title", "My Closet");
         objModel.addAttribute("items", itemRepository.findAll());
         return "items/closet";
     }

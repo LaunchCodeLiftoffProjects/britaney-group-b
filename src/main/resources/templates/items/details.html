@@ -3,31 +3,45 @@
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
-<h1><center>My Closet</center></h1>
 <header th:replace="fragments :: navigation"></header>
-
+<br>
+    <br>
+        <br>
+<div class="row">
+    <div class="column">
 <table class="table table-borderless table-hover">
-    <thead>
+
     <tr>
         <th>Name</th>
-        <th>Clothing type</th>
-        <!--<th>Item location</th>-->
-        <th>Color</th>
-        <th>Size</th>
-        <th>Season</th>
-        <th>Item Image</th>
-    </tr>
-    </thead>
-    <tr th:each="item : ${items}">
         <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
-        <td th:text="${item.type}"></td>
-        <!--<td th:text="${item.location}"></td>-->
-        <td th:text="${item.color.displayName}"></td>
-        <td th:text="${item.size}"></td>
-        <td th:text="${item.season.displayName}"></td>
-        <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
     </tr>
+        <tr>
+        <th>Clothing type</th>
+            <td th:text="${item.type}"></td>
+        </tr>
+        <!--<th>Item location</th>-->
+    <tr>
+        <th>Color</th>
+        <td th:text="${item.color.displayName}"></td>
+    </tr>
+    <tr>
+        <th>Size</th>
+        <td th:text="${item.size}"></td>
+    </tr>
+    <tr>
+        <th>Season</th>
+        <td th:text="${item.season.displayName}"></td>
+        </tr>
 </table>
+    </div>
+    <div class="column">
+        <table class="table table-borderless table-hover">
+    <tr>
+        <td class="zoom"> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
+    </tr>
+        </table>
+    </div>
+</div>
 
-</body>
+    </body>
 </html>
