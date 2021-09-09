@@ -7,13 +7,15 @@
 <br>
     <br>
         <br>
+            <br>
+                <br>
 <div class="row">
     <div class="column">
 <table class="table table-borderless table-hover">
 
     <tr>
         <th>Name</th>
-        <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
+        <td th:text="${item.itemName}"></td>
     </tr>
         <tr>
         <th>Clothing type</th>
@@ -42,6 +44,7 @@
         </table>
     </div>
 </div>
+<a th:href="'edit?itemId=' + ${item.id}"><button class="btn btn-success">Edit Item</button></a>
 
     </body>
 </html>

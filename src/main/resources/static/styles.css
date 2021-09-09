@@ -19,7 +19,7 @@ color:red
 
 .zoom {
 padding: 50px
-transition: transform .2s;
+transition: transform 1s;
 with:200px
 margin: 0 auto;
 }
@@ -27,3 +27,16 @@ margin: 0 auto;
 .zoom:hover {
 transform: scale(1.5)
 }
+
+.edit-group {
+    display:grid;
+    grid-template-columns: max-content max-content;
+    grid-gap:5px;
+}
+.edit-group label {
+    text-align:right;
+    }
+
+.edit-group label:after {
+    content: ":";
+    }

@@ -36,9 +36,9 @@ public class ItemController {
     // CREATE ITEM: Show form
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
-            model.addAttribute(new Item());
-            model.addAttribute("title", "Create User Account");
-            return "items/create-item";
+        model.addAttribute(new Item());
+        model.addAttribute("title", "Create User Account");
+        return "items/create-item";
     }
 
     // CREATE ITEM: Process form
@@ -46,7 +46,7 @@ public class ItemController {
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
                                          Errors errors, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
         if(errors.hasErrors()) {
-            model.addAttribute("title", "Create Item");
+            model.addAttribute("title", "Add Item");
             return "items/create-item";
         }
 
@@ -94,7 +94,23 @@ public class ItemController {
         return "items/details";
     }
 
-    @PostMapping("details")
+    @GetMapping("edit")
+    public String editItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> result = itemRepository.findById(itemId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Item ID: " + itemId);
+        } else {
+            Item item = result.get();
+            model.addAttribute("title", "Edit " + item.getItemName() + " Details");
+            model.addAttribute("item", item);
+        }
+
+        return "items/edit";
+    }
+
+    @PostMapping("edit")
     public String updateItemDetails(@RequestParam Integer itemId, Model model) {
 
         Optional<Item> result = itemRepository.findById(itemId);

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: navigation"></header>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="row">
+    <div class="column">
+        <table class="table table-borderless table-hover">
+            <form method="post" th:object="${item}" enctype="multipart/form-data">
+            <tr class="form-group">
+                <th>Name</th>
+                <td><input class="form-control" th:placeholder="${item.itemName}" th:field="${item.itemName}"/></td>
+                <p class="error" th:errors="${item.itemName}"></p>
+            </tr>
+            <tr class="form-group">
+                <th>Clothing type</th>
+                <td><input class="form-control" th:placeholder="${item.type}" th:field="${item.type}"/></td>
+                <p class="error" th:errors="${item.type}"></p>
+            </tr>
+            <!--<th>Item location</th>-->
+            <tr class="form-group">
+                <th>Color</th>
+                <td><select id="color" name="color" th:field="${item.color}">
+                    <option th:each="color : ${T(org.launchcode.closettracker.models.Color).values()}"
+                            th:value="${color}" th:text="${color.displayName}"></option>
+                </select></td>
+                <p class="error" th:errors="${item.color}"></p>
+
+            </tr>
+            <tr class="form-group">
+                <th>Size</th>
+                <td><input class="form-control" th:placeholder="${item.size}" th:field="${item.size}"/></td>
+                <p class="error" th:errors="${item.size}"></p>
+            </tr>
+            <tr>
+                <th>Season</th>
+                <td th:text="${item.season.displayName}"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="column">
+        <table class="table table-borderless table-hover">
+            <tr>
+                <td class="zoom"><img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="form-group">
+<button type="submit" class="btn btn-primary">Save Changes</button>
+</div>
+</form>
+</body>
+</html>

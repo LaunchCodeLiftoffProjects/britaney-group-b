@@ -24,7 +24,7 @@
         <td th:text="${item.color.displayName}"></td>
         <td th:text="${item.size}"></td>
         <td th:text="${item.season.displayName}"></td>
-        <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
+        <td><a th:href="'/items/details?itemId=' + ${item.id}"><img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></a></td>
     </tr>
 </table>
 
