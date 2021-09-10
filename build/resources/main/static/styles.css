@@ -40,3 +40,7 @@ transform: scale(1.5)
 .edit-group label:after {
     content: ":";
     }
+#no-bullets {
+  list-style-type: none;
+  text-indent: 0px;
+}

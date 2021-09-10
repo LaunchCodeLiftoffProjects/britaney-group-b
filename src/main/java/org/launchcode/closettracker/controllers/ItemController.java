@@ -43,8 +43,8 @@ public class ItemController {
 
     // CREATE ITEM: Process form
     @PostMapping("create-item")
-    public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
-                                         Errors errors, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors,
+                                        Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Add Item");
             return "items/create-item";
@@ -124,6 +124,12 @@ public class ItemController {
             itemRepository.save(item);
         }
         return "items/details";
+    }
+
+    @GetMapping("closet")
+    public String displayAllItems(Model objModel) {
+        objModel.addAttribute("items", itemRepository.findAll());
+        return "items/closet";
     }
 
     // DELETE ITEM(s): Show form
