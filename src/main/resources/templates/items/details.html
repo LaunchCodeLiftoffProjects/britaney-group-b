@@ -32,7 +32,7 @@
     </tr>
     <tr>
         <th>Season</th>
-        <td th:text="${item.season.displayName}"></td>
+        <td><li th:each= "season : ${item.season}" th:text="${season}"></li></td>
         </tr>
 </table>
     </div>

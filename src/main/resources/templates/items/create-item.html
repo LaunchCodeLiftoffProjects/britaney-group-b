@@ -5,47 +5,55 @@
     <title th:text="${title}"></title>
 </head>
 <body class="container">
+<header th:replace="fragments :: navigation"></header>
+<br>
+<br>
 <center>
-<h1><center>Create Item</center></h1>
-
 <form method="post" th:object="${item}" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>Item name
-            <input class="form-control" th:field="${item.itemName}"/>
-        </label>
+    <div class="form-floating w-25">
+            <input th:field="${item.itemName}" class="form-control" id="floatingItemName" placeholder="Item Name"/>
+        <label for="floatingItemName">Item name</label>
         <p class="error" th:errors="${item.itemName}"></p>
     </div>
-    <div class="form-group">
-        <label>Clothing Type
-            <input th:field="${item.type}" class="form-control" value="type"/>
-        </label>
+    <br>
+    <div class="form-floating w-25">
+            <input th:field="${item.type}" class="form-control"  id="floatingTypeName" placeholder="Clothing Type" value="type"/>
+        <label for="floatingTypeName">Clothing Type</label>
         <p class="error" th:errors="${item.type}"></p>
     </div>
-    <div class="form-group">
-        <label for="color">Select a color:</label>
-        <select id="color" name="color" th:field="${item.color}">
+    <br>
+    <div class="form-group w-25">
+        <option selected>Select a color:</option>
+        <select class="form-select" id="color" name="color" th:field="${item.color}">
             <option th:each="color : ${T(org.launchcode.closettracker.models.Color).values()}"
                     th:value="${color}" th:text="${color.displayName}"></option>
         </select>
         <p class="error" th:errors="${item.color}"></p>
     </div>
-    <div class="form-group">
-        <label>Item size
-            <input th:field="${item.size}" class="form-control"/>
-        </label>
+    <br>
+    <div class="form-floating w-25">
+            <input th:field="${item.size}" class="form-control"  id="floatingSize" placeholder="Clothing Type"/>
+        <label for="floatingSize">Item Size</label>
         <p class="error" th:errors="${item.size}"></p>
     </div>
-    <div class="form-group">Choose a season:
-        <label>Spring<input type = "checkbox" th:field="${item.season}" th:value="Spring"/></label>
-        <label>Summer<input type = "checkbox" th:field="${item.season}" th:value="Summer"/></label>
-        <label>Fall<input type = "checkbox" th:field="${item.season}" th:value="Fall"/></label>
-        <label>Winter<input type = "checkbox" th:field="${item.season}" th:value="Winter"/></label>
+    <br>
+    <label for="checkBoxSeason">Choose a season:</label>
+    <div class="custom-control custom-checkbox" id="checkBoxSeason">
+        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Spring" id="customCheck1"/></label>
+        <label class="custom-control-label" for="customCheck1">Spring</label>
+        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Summer" id="customCheck2"/></label>
+        <label class="custom-control-label" for="customCheck2">Summer</label>
+        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Fall" id="customCheck3"/></label>
+        <label class="custom-control-label" for="customCheck3">Fall</label>
+        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Winter" id="customCheck4"/></label>
+        <label class="custom-control-label" for="customCheck4">Winter</label>
         <p class="error" th:errors="${item.season}"></p>
     </div>
+    <br>
     <div>
-        <label > Image </label>
-        <div class="form-group" >
-            <input type="file" name="image" accept="image/png, image/jpeg" />
+        <div class="mb-3 w-25">
+            <label for="formFile" class="form-label">Add an Image</label>
+            <input class="form-control" type="file" name="image" accept="image/png, image/jpeg" id="formFile"/>
         </div>
     </div>
     <div class="form-group">

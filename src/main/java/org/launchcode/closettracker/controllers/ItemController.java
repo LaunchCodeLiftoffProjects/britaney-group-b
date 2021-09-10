@@ -2,6 +2,7 @@ package org.launchcode.closettracker.controllers;
 
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.launchcode.closettracker.models.Color;
 import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
 import org.launchcode.closettracker.models.dto.UserDTO;
@@ -37,7 +38,7 @@ public class ItemController {
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
         model.addAttribute(new Item());
-        model.addAttribute("title", "Create User Account");
+        model.addAttribute("title", "Add Item");
         return "items/create-item";
     }
 
@@ -77,6 +78,7 @@ public class ItemController {
         return "items/closet";
     }
 
+
     // We are making View Item Details and Edit Item Details the same page
     @GetMapping("details")
     public String displayItemDetails(@RequestParam Integer itemId, Model model) {
@@ -97,39 +99,30 @@ public class ItemController {
     @GetMapping("edit")
     public String editItemDetails(@RequestParam Integer itemId, Model model) {
 
-        Optional<Item> result = itemRepository.findById(itemId);
+        Optional<Item> itemToEdit = itemRepository.findById(itemId);
 
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
+            Item item = itemToEdit.get();
+            model.addAttribute("item", itemToEdit);
             model.addAttribute("title", "Edit " + item.getItemName() + " Details");
             model.addAttribute("item", item);
-        }
 
         return "items/edit";
     }
 
     @PostMapping("edit")
-    public String updateItemDetails(@RequestParam Integer itemId, Model model) {
+    public String updateItemDetails(@RequestParam @Valid Integer itemId, Model model)
+                                   // String itemName, String type, Color color, String size) // {
+    {
+   /*    Optional<Item> optionalItem = itemRepository.findById(itemId);
+      Item itemToEdit = optionalItem.get();
 
-        Optional<Item> result = itemRepository.findById(itemId);
+     itemToEdit.setItemName(itemName);
+     itemToEdit.setType(type);
+     itemToEdit.setColor(color);
+     itemToEdit.setSize(size);
+     itemToEdit.setSeason(season);*/
 
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-            itemRepository.save(item);
-        }
         return "items/details";
-    }
-
-    @GetMapping("closet")
-    public String displayAllItems(Model objModel) {
-        objModel.addAttribute("items", itemRepository.findAll());
-        return "items/closet";
     }
 
     // DELETE ITEM(s): Show form
