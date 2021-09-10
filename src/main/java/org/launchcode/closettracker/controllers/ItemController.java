@@ -102,7 +102,7 @@ public class ItemController {
         Optional<Item> itemToEdit = itemRepository.findById(itemId);
 
             Item item = itemToEdit.get();
-            model.addAttribute("item", itemToEdit);
+         //   model.addAttribute("item", itemToEdit);
             model.addAttribute("title", "Edit " + item.getItemName() + " Details");
             model.addAttribute("item", item);
 
@@ -110,17 +110,24 @@ public class ItemController {
     }
 
     @PostMapping("edit")
-    public String updateItemDetails(@RequestParam @Valid Integer itemId, Model model)
-                                   // String itemName, String type, Color color, String size) // {
-    {
-   /*    Optional<Item> optionalItem = itemRepository.findById(itemId);
-      Item itemToEdit = optionalItem.get();
+    public String updateItemDetails(@ModelAttribute @Valid Item item, Errors errors, Integer itemId, Model model,
+                                    String itemName, String type, Color color, String size, String[] season,
+                                    MultipartFile multipartFile)  {
 
-     itemToEdit.setItemName(itemName);
-     itemToEdit.setType(type);
-     itemToEdit.setColor(color);
-     itemToEdit.setSize(size);
-     itemToEdit.setSeason(season);*/
+        if(errors.hasErrors()) {
+            model.addAttribute("title", "Edit item Details");
+            return "items/edit";
+        }
+
+       Optional<Item> optionalItem = itemRepository.findById(itemId);
+       Item itemToEdit = optionalItem.get();
+
+        itemToEdit.setItemName(itemName);
+        itemToEdit.setType(type);
+        itemToEdit.setColor(color);
+        itemToEdit.setSize(size);
+        itemToEdit.setSeason(season);
+        Item savedItem = itemRepository.save(itemToEdit);
 
         return "items/details";
     }
