@@ -1,6 +1,5 @@
 package org.launchcode.closettracker.controllers;
 
-
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.models.dto.LoginFormDTO;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Controller
@@ -26,7 +26,7 @@ public class HomeController {
 
     private static final String userSessionKey = "user";
 
-    public User getUserFromSession(@org.jetbrains.annotations.NotNull HttpSession session) {
+    public User getUserFromSession(@NotNull HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
             return null;
@@ -62,6 +62,7 @@ public class HomeController {
             model.addAttribute("errorMsg", "Entry not valid!");
             return "index";
         }
+
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
         if (theUser == null) {
@@ -69,6 +70,7 @@ public class HomeController {
             model.addAttribute("title", "Welcome to Closet Tracker");
             return "index";
         }
+
         String password = loginFormDTO.getPassword();
 
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {

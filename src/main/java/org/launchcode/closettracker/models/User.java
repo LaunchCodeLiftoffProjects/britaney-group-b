@@ -62,6 +62,11 @@ public class User extends AbstractEntity {
         this.passwordReset = false;
     }
 
+    public User(String password) {
+        this.pwHash = encoder.encode(password);
+        this.passwordReset = false;
+    }
+
     public String getUserName() {
         return username;
     }
@@ -79,7 +84,7 @@ public class User extends AbstractEntity {
     public String getPassword() { return password; }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.pwHash = encoder.encode(password);
     }
 
     public String getPwHash() { return pwHash; }

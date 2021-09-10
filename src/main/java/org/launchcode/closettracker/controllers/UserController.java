@@ -1,12 +1,15 @@
 package org.launchcode.closettracker.controllers;
 
+import org.launchcode.closettracker.PasswordResetToken;
+import org.launchcode.closettracker.models.GenericResponse;
 import org.launchcode.closettracker.models.User;
-import org.launchcode.closettracker.models.dto.Reset1DTO;
-import org.launchcode.closettracker.models.dto.ResetDTO;
-import org.launchcode.closettracker.models.dto.UserDTO;
+import org.launchcode.closettracker.models.dto.*;
+import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -17,8 +20,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 @RequestMapping("user")
@@ -27,6 +29,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordTokenRepository passwordTokenRepository;
+
+    @Autowired
+    private MailSender mailSender;
+
+// CREATE START
 // User > Create new account
     @GetMapping("create")
     public String displayCreateAccountForm(Model model) {
@@ -80,7 +89,9 @@ public class UserController {
             return "user/create";
         }
     }
+// CREATE END
 
+// RESET START
 // User > Show 1st reset password
     @GetMapping("reset")
     public String display1stResetPasswordForm(Model model) {
@@ -201,5 +212,114 @@ public class UserController {
             return "user/reset1";
         }
     }
+// RESET END v1
+// ============================================================================================
+// RESET START v2
 
+// User --> Show new reset password
+@GetMapping("reset2")
+public String displayNewResetPasswordForm(Model model) {
+    model.addAttribute(new ResetEmailDTO());
+    model.addAttribute("title", "Reset Account Password");
+    return "user/reset2";
+}
+
+// User --> Process new reset password
+    @PostMapping("reset2")
+    public String resetPassword(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
+        User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
+
+// If the user account does not exist, show error
+        if (currentUser == null) {
+            errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
+            model.addAttribute("title", "Reset Account Password");
+            return "user/reset2";
+        }
+
+// Creates a unique token string
+        String token = UUID.randomUUID().toString();
+
+// Connects the above created token to the user and saves it to the token db
+        createPasswordResetTokenForUser(currentUser, token);
+//        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+
+        return "index";
+    }
+
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(user, token);
+        passwordTokenRepository.save(myToken);
+    }
+
+    private SimpleMailMessage constructResetTokenEmail(Locale locale, String token, User user) {
+        String url = "http://localhost:8080/user/changePassword?token=" + token;
+        String message = "This is a test email.";
+        return constructEmail("Reset Password", message + " \r\n" + url, user);
+    }
+
+    private SimpleMailMessage constructEmail(String subject, String body,
+                                             User user) {
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(body);
+        email.setTo(user.getEmail());
+        email.setFrom("no.support@no.way");
+        return email;
+    }
+
+// UPDATE PASSWORD START
+
+// User -> Update password
+    @GetMapping("update")
+    public String showChangePasswordPage(Model model) {//, @RequestParam("token") String token) {
+/*        String result = validatePasswordResetToken(token);
+        if(result != null) {
+            return "";
+        } else {
+            model.addAttribute("token", token);
+            return "";
+        } */
+        model.addAttribute(new UpdatePasswordDTO());
+        model.addAttribute("title", "Update Account Password");
+        return "user/update";
+    }
+
+    public String validatePasswordResetToken(String token) {
+        final PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
+
+        return "";
+    }
+
+    private boolean isTokenFound(PasswordResetToken passToken) {
+        return passToken != null;
+    }
+
+    private boolean isTokenExpired(PasswordResetToken passToken) {
+        final Calendar cal = Calendar.getInstance();
+        return passToken.getExpiryDate().before(cal.getTime());
+    }
+
+    @PostMapping("update")
+    public String savePassword(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors, Model model) {
+
+        String result = validatePasswordResetToken(updatePasswordDTO.getToken());
+
+        if(result != null) {
+            model.addAttribute("title", "Some title");
+            return "";
+        }
+
+        PasswordResetToken userByToken = passwordTokenRepository.findByToken(updatePasswordDTO.getToken());
+        User user = userRepository.findByEmail(userByToken.getUser().getEmail());
+
+        if(user != null) {
+            user.setPassword(updatePasswordDTO.getPasswordEntered());
+            userRepository.save(user);
+            return "";
+        } else {
+            return "";
+        }
+   }
+
+// RESET END v2
 }

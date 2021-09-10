@@ -1,0 +1,21 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+    <meta charset="UTF-8">
+    <title th:text="${title}"></title>
+</head>
+<body>
+<h1>reset</h1>
+<form method="post">
+    <div class="form-group">
+        <label>Email address
+            <input type="email" th:field="${resetEmailDTO.email}" value="bob@smith.org" name="email" id="email" placeholder="Email address" class="form-control">
+        </label>
+        <p class="error" th:errors="${resetEmailDTO.email}"></p>
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Start reset process" />
+    </div>
+</form>
+</body>
+
+</html>
