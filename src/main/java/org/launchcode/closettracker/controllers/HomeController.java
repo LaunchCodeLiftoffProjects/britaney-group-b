@@ -46,15 +46,15 @@ public class HomeController {
         session.setAttribute(userSessionKey, user.getId());
     }
 
-    //localhost:8080
-    @GetMapping("")
+    //localhost:8080  Shows login form
+    @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
         model.addAttribute(new LoginFormDTO());
         return "index";
     }
 
-    @PostMapping("")
+    @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
         if (errors.hasErrors()) {
@@ -78,7 +78,7 @@ public class HomeController {
         }
         setUserInSession(request.getSession(), theUser);
 
-        return "items/closet";
+        return "redirect:items/";
     }
 
     //localhost:8080/create

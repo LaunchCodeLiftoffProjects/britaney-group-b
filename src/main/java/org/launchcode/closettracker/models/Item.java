@@ -18,11 +18,15 @@ public class Item extends AbstractEntity{
 
     private String size;
 
-    private Season season;
+    private String[] season;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String itemImage;
 
-    public Item(String itemName, String type, Color color, String size, Season season, String itemImage) {
+    public Item(String itemName, String type, Color color, String size, String[] season, String itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
@@ -73,11 +77,11 @@ public class Item extends AbstractEntity{
         this.size = size;
     }
 
-    public Season getSeason() {
+    public String[] getSeason() {
         return season;
     }
 
-    public void setSeason(Season season) {
+    public void setSeason(String[] season) {
         this.season = season;
     }
 

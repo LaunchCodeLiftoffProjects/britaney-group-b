@@ -2,10 +2,12 @@ package org.launchcode.closettracker.controllers;
 
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.launchcode.closettracker.models.Color;
 import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
+import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,6 +21,7 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -28,20 +31,23 @@ public class ItemController {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     // CREATE ITEM: Show form
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
-            model.addAttribute(new Item());
-            model.addAttribute("title", "Create User Account");
-            return "items/create-item";
+        model.addAttribute(new Item());
+        model.addAttribute("title", "Add Item");
+        return "items/create-item";
     }
 
     // CREATE ITEM: Process form
     @PostMapping("create-item")
-    public String processCreateItemForm(@ModelAttribute @Valid Item newItem,
-                                         Errors errors, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors,
+                                        Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
         if(errors.hasErrors()) {
-            model.addAttribute("title", "Create Item");
+            model.addAttribute("title", "Add Item");
             return "items/create-item";
         }
 
@@ -52,6 +58,71 @@ public class ItemController {
         String uploadDirectory = "item-photos/" + savedItem.getId();
         FileUploadUtil.saveFile(uploadDirectory, fileName, multipartFile);
         return "redirect:";
+    }
+
+    //get current users username - in progress
+
+    @RequestMapping(value = "/username", method = RequestMethod.GET)
+    @ResponseBody
+    public String currentUserName(Principal principal) {
+        return principal.getName();
+    }
+
+    //Displays all items in closet
+
+    @GetMapping
+    public String displayAllItems(Model objModel, Model model, Principal principal)
+    {
+        model.addAttribute("title", "My Closet");
+        objModel.addAttribute("items", itemRepository.findAll());
+        return "items/closet";
+    }
+
+
+    // We are making View Item Details and Edit Item Details the same page
+    @GetMapping("details")
+    public String displayItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> result = itemRepository.findById(itemId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Item ID: " + itemId);
+        } else {
+            Item item = result.get();
+            model.addAttribute("title", item.getItemName() + " Details");
+            model.addAttribute("item", item);
+        }
+
+        return "items/details";
+    }
+
+    @GetMapping("edit")
+    public String editItemDetails(@RequestParam Integer itemId, Model model) {
+
+        Optional<Item> itemToEdit = itemRepository.findById(itemId);
+
+            Item item = itemToEdit.get();
+            model.addAttribute("item", itemToEdit);
+            model.addAttribute("title", "Edit " + item.getItemName() + " Details");
+            model.addAttribute("item", item);
+
+        return "items/edit";
+    }
+
+    @PostMapping("edit")
+    public String updateItemDetails(@RequestParam @Valid Integer itemId, Model model)
+                                   // String itemName, String type, Color color, String size) // {
+    {
+   /*    Optional<Item> optionalItem = itemRepository.findById(itemId);
+      Item itemToEdit = optionalItem.get();
+
+     itemToEdit.setItemName(itemName);
+     itemToEdit.setType(type);
+     itemToEdit.setColor(color);
+     itemToEdit.setSize(size);
+     itemToEdit.setSeason(season);*/
+
+        return "items/details";
     }
 
     // DELETE ITEM(s): Show form
@@ -73,46 +144,6 @@ public class ItemController {
         }
 
         return "redirect:";
-    }
-
-    // We are making View Item Details and Edit Item Details the same page
-    @GetMapping("detail")
-    public String displayItemDetails(@RequestParam Integer itemId, Model model) {
-
-        Optional<Item> result = itemRepository.findById(itemId);
-
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-        }
-
-        return "items/detail";
-    }
-
-    @PostMapping("detail")
-    public String updateItemDetails(@RequestParam Integer itemId, Model model) {
-
-        Optional<Item> result = itemRepository.findById(itemId);
-
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Item ID: " + itemId);
-        } else {
-            Item item = result.get();
-            model.addAttribute("title", item.getItemName() + " Details");
-            model.addAttribute("item", item);
-            itemRepository.save(item);
-        }
-        return "items/detail";
-    }
-
-    @GetMapping
-    public String displayAllItems(Model objModel)
-    {
-        objModel.addAttribute("items", itemRepository.findAll());
-        return "items/closet";
     }
 
   /*  @GetMapping("/display/image/{id}")
