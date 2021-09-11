@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("/")
 public class UserController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class UserController {
 
 // CREATE START
 // User > Create new account
-    @GetMapping("create")
+    @GetMapping("user/create")
     public String displayCreateAccountForm(Model model) {
         model.addAttribute(new UserDTO());
         model.addAttribute("title", "Create New Account");
@@ -45,7 +45,7 @@ public class UserController {
     }
 
 // User > Process new account
-    @PostMapping("create")
+    @PostMapping("user/create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String processCreateAccountForm(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
         try {
@@ -93,7 +93,7 @@ public class UserController {
 
 // RESET START
 // User > Show 1st reset password
-    @GetMapping("reset")
+    @GetMapping("user/reset")
     public String display1stResetPasswordForm(Model model) {
         model.addAttribute(new ResetDTO());
         model.addAttribute("title", "Reset Account Password");
@@ -110,7 +110,7 @@ public class UserController {
     }
 
 // User > Process 1st reset password
-    @PostMapping("reset")
+    @PostMapping("user/reset")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String process1stResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, Errors errors,
                                            HttpServletRequest request, Model model) throws IOException {
@@ -163,7 +163,7 @@ public class UserController {
     }
 
     // User > Show 2nd reset password
-    @GetMapping("reset1")
+    @GetMapping("user/reset1")
     public String display2ndResetPasswordForm(Model model) {
         model.addAttribute(new ResetDTO());
         model.addAttribute("title", "Reset Account Password");
@@ -171,7 +171,7 @@ public class UserController {
     }
 
     // User > Process reset password
-    @PostMapping("reset1")
+    @PostMapping("user/reset1")
 //    @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String process2ndResetPasswordForm(@ModelAttribute @Valid Reset1DTO reset1DTO, Errors errors,
                                            HttpServletRequest request, Model model) throws IOException {
@@ -217,7 +217,7 @@ public class UserController {
 // RESET START v2
 
 // User --> Show new reset password
-@GetMapping("reset2")
+@GetMapping("user/reset2")
 public String displayNewResetPasswordForm(Model model) {
     model.addAttribute(new ResetEmailDTO());
     model.addAttribute("title", "Reset Account Password");
@@ -225,7 +225,7 @@ public String displayNewResetPasswordForm(Model model) {
 }
 
 // User --> Process new reset password
-    @PostMapping("reset2")
+    @PostMapping("user/reset2")
     public String resetPassword(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
@@ -243,6 +243,8 @@ public String displayNewResetPasswordForm(Model model) {
         createPasswordResetTokenForUser(currentUser, token);
 //        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
 
+        model.addAttribute(new LoginFormDTO());
+        model.addAttribute("title", "Welcome to Closet Tracker!");
         return "index";
     }
 
@@ -252,7 +254,7 @@ public String displayNewResetPasswordForm(Model model) {
     }
 
     private SimpleMailMessage constructResetTokenEmail(Locale locale, String token, User user) {
-        String url = "http://localhost:8080/user/changePassword?token=" + token;
+        String url = "http://localhost:8080/user/update?token=" + token;
         String message = "This is a test email.";
         return constructEmail("Reset Password", message + " \r\n" + url, user);
     }
@@ -270,7 +272,7 @@ public String displayNewResetPasswordForm(Model model) {
 // UPDATE PASSWORD START
 
 // User -> Update password
-    @GetMapping("update")
+    @GetMapping("user/update")
     public String showChangePasswordPage(Model model) {//, @RequestParam("token") String token) {
 /*        String result = validatePasswordResetToken(token);
         if(result != null) {
@@ -280,18 +282,17 @@ public String displayNewResetPasswordForm(Model model) {
             return "";
         } */
         model.addAttribute(new UpdatePasswordDTO());
-        model.addAttribute("title", "Update Account Password");
         return "user/update";
     }
 
-    public String validatePasswordResetToken(String token) {
-        final PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
-
-        return "";
-    }
-
-    private boolean isTokenFound(PasswordResetToken passToken) {
-        return passToken != null;
+    public boolean validatePasswordResetToken(String token) {
+        PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
+        if(passToken != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(PasswordResetToken passToken) {
@@ -299,25 +300,47 @@ public String displayNewResetPasswordForm(Model model) {
         return passToken.getExpiryDate().before(cal.getTime());
     }
 
-    @PostMapping("update")
-    public String savePassword(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors, Model model) {
+    @PostMapping("user/update")
+    public String savePassword(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
+                               HttpServletRequest request, Model model) {
 
-        String result = validatePasswordResetToken(updatePasswordDTO.getToken());
+        if (updatePasswordDTO.getPasswordEntered().isEmpty() || updatePasswordDTO.getPasswordConfirm().isEmpty()) {
+            model.addAttribute("title", "Update Account Password");
+            return "user/update";
+        }
 
-        if(result != null) {
-            model.addAttribute("title", "Some title");
-            return "";
+        if (!updatePasswordDTO.getPasswordEntered().equals(updatePasswordDTO.getPasswordConfirm())) {
+            model.addAttribute("passwordEntered", updatePasswordDTO.getPasswordEntered());
+            model.addAttribute("passwordConfirm", updatePasswordDTO.getPasswordConfirm());
+            model.addAttribute("title", "Update Account Password");
+            errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Passwords do not match. Please try again.");
+            return "user/update";
+        }
+
+        boolean result = validatePasswordResetToken(updatePasswordDTO.getToken());
+
+        if(!result) {
+            model.addAttribute("title", "Update Account Password");
+            errors.rejectValue("token", "token.equals", "Token is not valid. Please try again.");
+            return "user/update";
         }
 
         PasswordResetToken userByToken = passwordTokenRepository.findByToken(updatePasswordDTO.getToken());
         User user = userRepository.findByEmail(userByToken.getUser().getEmail());
 
         if(user != null) {
+            String oldPwHash = user.getPwHash();
             user.setPassword(updatePasswordDTO.getPasswordEntered());
+            user.setPasswordReset(false);
             userRepository.save(user);
-            return "";
+            passwordTokenRepository.deleteById(userByToken.getId());
+            model.addAttribute(new LoginFormDTO());
+            model.addAttribute("title", "Welcome to Closet Tracker!");
+            return "index";
         } else {
-            return "";
+            model.addAttribute("title", "Update Account Password");
+            model.addAttribute("pwdError", "User not found. Please try again.");
+            return "user/update";
         }
    }
 

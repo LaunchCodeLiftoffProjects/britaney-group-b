@@ -41,7 +41,7 @@ public class User extends AbstractEntity {
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
-    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Size(min=6, max = 24,  message = "Password must be between 6 and 24 characters long")
     @Transient
     private String password;
 
@@ -64,6 +64,7 @@ public class User extends AbstractEntity {
 
     public User(String password) {
         this.pwHash = encoder.encode(password);
+        this.password = password;
         this.passwordReset = false;
     }
 
@@ -84,7 +85,7 @@ public class User extends AbstractEntity {
     public String getPassword() { return password; }
 
     public void setPassword(String password) {
-        this.pwHash = encoder.encode(password);
+        this.password = password; this.pwHash = encoder.encode(password);
     }
 
     public String getPwHash() { return pwHash; }
