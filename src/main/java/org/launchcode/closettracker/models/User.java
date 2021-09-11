@@ -54,12 +54,12 @@ public class User extends AbstractEntity {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, boolean pwReset) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.pwHash = encoder.encode(password);
-        this.passwordReset = false;
+        this.passwordReset = pwReset;
     }
 
     public User(String password) {

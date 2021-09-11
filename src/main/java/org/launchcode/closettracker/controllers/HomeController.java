@@ -1,8 +1,10 @@
 package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.User;
+import org.launchcode.closettracker.models.dto.UpdatePasswordDTO;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.models.dto.LoginFormDTO;
+import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,9 @@ public class HomeController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     private static final String userSessionKey = "user";
 
@@ -65,6 +70,15 @@ public class HomeController {
 
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
+// Is the user has reset their password, this checks to see if the flag is true and displays an error message
+        if (theUser.isPasswordReset()) {
+            model.addAttribute(new UpdatePasswordDTO());
+//            errors.rejectValue("title", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
+            model.addAttribute("title", "Update User Password");
+            return "user/update";
+            }
+
+// If the user is found to be null, displays error message
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
@@ -73,13 +87,17 @@ public class HomeController {
 
         String password = loginFormDTO.getPassword();
 
+// Is the entered and confirm password don't match, displays error message
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
             model.addAttribute("title", "Welcome to Closet Tracker");
             return "index";
         }
+// Once all errors are handled, allows the user to login and sets the browser session
         setUserInSession(request.getSession(), theUser);
 
+        model.addAttribute("title", "My Closet");
+        model.addAttribute("items", itemRepository.findAll());
         return "items/closet";
     }
 

@@ -1,7 +1,6 @@
 package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.PasswordResetToken;
-import org.launchcode.closettracker.models.GenericResponse;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
 import org.launchcode.closettracker.repositories.PasswordTokenRepository;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -58,14 +56,14 @@ public class UserController {
 // Checks user db for match
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
 
-// If match is found, aborts create new user
+// If match is found, displays an error message
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
                 return "user/create";
             }
 
-// If entered passwords don't match, show error and stop create
+// If entered passwords don't match, display error message
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
@@ -73,7 +71,7 @@ public class UserController {
             }
 
 // When everything is fine, create a new user object
-            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword());
+            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false);
 // Save the new user to the user db
             userRepository.save(newUser);
 // Upon complete process, show closet page
@@ -92,140 +90,20 @@ public class UserController {
 // CREATE END
 
 // RESET START
-// User > Show 1st reset password
-    @GetMapping("user/reset")
-    public String display1stResetPasswordForm(Model model) {
-        model.addAttribute(new ResetDTO());
-        model.addAttribute("title", "Reset Account Password");
-        return "user/reset";
-    }
 
-// A little function to generate a temporary password
-    public String createTemporaryPassword() {
-        byte[] array = new byte[6]; // length is bounded by 8
-        new Random().nextBytes(array);
-        String generatedString = new String(array, Charset.forName("UTF-8"));
-
-        return generatedString;
-    }
-
-// User > Process 1st reset password
-    @PostMapping("user/reset")
-    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String process1stResetPasswordForm(@ModelAttribute @Valid ResetDTO resetDTO, Errors errors,
-                                           HttpServletRequest request, Model model) throws IOException {
-        try {
-            if (errors.hasErrors()) {
-                model.addAttribute("title", "Reset Account Password");
-                model.addAttribute("errorMsg", "Info not correct.");
-                return "user/reset";
-            }
-
-            User currentUser = userRepository.findByEmail(resetDTO.getEmail());
-
-// If the user account does not exist, show error
-            if (currentUser == null) {
-                errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
-                model.addAttribute("title", "Reset Account Password");
-                return "user/reset";
-            }
-
-//            User userToUpdate = userRepository.findById(currentUser.getId());
-
-/* If the user exists:
-    1) Change the password reset flag to true
-    2) Generate a temporary password
-    3) Convert the temporary password to a password hash
-    4) Store it in the user db
-    5) Send an email
- */
-            // 1
-            currentUser.setPasswordReset(true);
-            // 2 & 3
-//                String password = createTemporaryPassword();
-//                currentUser.setPwHash(password);
-            // 4
-                userRepository.save(currentUser);
-            // 5
-            User savedUser = userRepository.findByEmail(currentUser.getEmail());
-
-                return "index";
-
-        } catch (Exception exception) {
-            if (exception.toString().contains("constraint")) {
-                model.addAttribute("dbError", "Email exists. Try with new one!");
-            } else {
-                model.addAttribute("dbError", "Db Error");
-            }
-            return "user/reset";
-        }
-
-    }
-
-    // User > Show 2nd reset password
-    @GetMapping("user/reset1")
-    public String display2ndResetPasswordForm(Model model) {
-        model.addAttribute(new ResetDTO());
-        model.addAttribute("title", "Reset Account Password");
-        return "user/reset1";
-    }
-
-    // User > Process reset password
-    @PostMapping("user/reset1")
-//    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String process2ndResetPasswordForm(@ModelAttribute @Valid Reset1DTO reset1DTO, Errors errors,
-                                           HttpServletRequest request, Model model) throws IOException {
-        try {
-            if (errors.hasErrors()) {
-                model.addAttribute("title", "Reset Account Password");
-                model.addAttribute("errorMsg", "Info not correct.");
-                return "user/reset1";
-            }
-
-            User currentUser = userRepository.findByEmail(reset1DTO.getEmail());
-// If the user account does not exist, show error
-            if (currentUser == null) {
-                errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
-                model.addAttribute("title", "Reset Account Password");
-                return "user/reset1";
-            }
-
-
-            if (!reset1DTO.getPasswordEntered().equals(reset1DTO.getPasswordConfirm())) {
-                model.addAttribute("title", "Reset Account Password");
-                model.addAttribute("pwdError", "Passwords do not match. Please try again.");
-                return "user/reset1";
-            }
-
-//            x
-//            User newUser = new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
-//            userRepository.save(newUser);
-
-            return "redirect:";
-
-        } catch (Exception exception) {
-            if (exception.toString().contains("constraint")) {
-                model.addAttribute("dbError", "Email exists. Try with new one!");
-            } else {
-                model.addAttribute("dbError", "Db Error");
-            }
-            return "user/reset1";
-        }
-    }
-// RESET END v1
 // ============================================================================================
-// RESET START v2
+// RESET START
 
-// User --> Show new reset password
-@GetMapping("user/reset2")
+// User --> Show reset password - Part 1 (enter email to generate token needed for step 2
+@GetMapping("user/reset")
 public String displayNewResetPasswordForm(Model model) {
     model.addAttribute(new ResetEmailDTO());
     model.addAttribute("title", "Reset Account Password");
-    return "user/reset2";
+    return "user/reset";
 }
 
 // User --> Process new reset password
-    @PostMapping("user/reset2")
+    @PostMapping("user/reset")
     public String resetPassword(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
@@ -233,7 +111,7 @@ public String displayNewResetPasswordForm(Model model) {
         if (currentUser == null) {
             errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
             model.addAttribute("title", "Reset Account Password");
-            return "user/reset2";
+            return "user/reset";
         }
 
 // Creates a unique token string
@@ -242,6 +120,11 @@ public String displayNewResetPasswordForm(Model model) {
 // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
 //        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+        String tempPwHashHolder = currentUser.getPwHash();
+        currentUser.setPassword("asdasd");
+        currentUser.setPwHash(tempPwHashHolder);
+        currentUser.setPasswordReset(true);
+        userRepository.save(currentUser);
 
         model.addAttribute(new LoginFormDTO());
         model.addAttribute("title", "Welcome to Closet Tracker!");
@@ -269,11 +152,11 @@ public String displayNewResetPasswordForm(Model model) {
         return email;
     }
 
-// UPDATE PASSWORD START
+// UPDATE PASSWORD START - Recovery part 2
 
 // User -> Update password
     @GetMapping("user/update")
-    public String showChangePasswordPage(Model model) {//, @RequestParam("token") String token) {
+    public String showChangePasswordPage(Model model) { // }, @RequestParam("token") String token) {
 /*        String result = validatePasswordResetToken(token);
         if(result != null) {
             return "";
@@ -329,7 +212,6 @@ public String displayNewResetPasswordForm(Model model) {
         User user = userRepository.findByEmail(userByToken.getUser().getEmail());
 
         if(user != null) {
-            String oldPwHash = user.getPwHash();
             user.setPassword(updatePasswordDTO.getPasswordEntered());
             user.setPasswordReset(false);
             userRepository.save(user);
