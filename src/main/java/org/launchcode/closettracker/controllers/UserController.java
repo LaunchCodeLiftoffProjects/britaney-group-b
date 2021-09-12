@@ -117,7 +117,7 @@ public class UserController {
 
 // RESET START
 
-// User --> Show reset password - Part 1 (enter email to generate token needed for step 2
+// User --> Show reset password - Part 1 (enter email to generate token needed for step 2)
 @GetMapping("user/reset")
 public String displayPasswordResetForm(Model model) {
     model.addAttribute(new ResetEmailDTO());
@@ -127,7 +127,7 @@ public String displayPasswordResetForm(Model model) {
 
 // User --> Process new reset password
     @PostMapping("user/reset")
-    public String processRPasswordResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
+    public String processPasswordResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
 // If the user account does not exist, show error
@@ -144,7 +144,17 @@ public String displayPasswordResetForm(Model model) {
         createPasswordResetTokenForUser(currentUser, token);
 // Creates and sends an email to the user
     // Currently disabled due to an issue with using Gmail outgoing server authentication
-        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+        try {
+            mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+        }
+        catch (Exception exception) {
+            if (exception.toString().contains("not accepted")) {
+                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+            } else {
+                errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
+            }
+            return "user/reset";
+        }
 
 // While the User model does not persist the 'password' field, it is still required. So we need to...
     // 2) Since 'password' is still a required field, use a randomw string to set the password value and replace the hash
@@ -165,8 +175,14 @@ public String displayPasswordResetForm(Model model) {
 
     private SimpleMailMessage constructResetTokenEmail(Locale locale, String token, User user) {
         String url = "http://localhost:8080/user/update?token=" + token;
-        String message = "This is a test email.";
-        return constructEmail("Reset Password", message + " \r\n" + url, user);
+        String message = "This automated message is to inform you that the password for your account at Closet Tracker has been reset." +
+                "\n\nIf this was not you, then someone else has access to your account and that's not good." +
+                "\n\nIf this was started by you then that's much better." +
+                "\n\nYour unique reset token is: " + token + "\n\n" +
+                "You can follow this link (http://localhost:8080/user/update) and enter the provided token manually to " +
+                "reset your password or follow the link below to be taken to the same page with the token already filled in." +
+                "\n\n(The prefill feature does not work yet. We sincerely apologize for the virtual inconvenience.)";
+        return constructEmail("Your Closet Tracker password has been reset!", message + " \r\n\n" + url, user);
     }
 
     private SimpleMailMessage constructEmail(String subject, String body,

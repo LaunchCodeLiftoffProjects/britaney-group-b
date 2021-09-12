@@ -70,11 +70,14 @@ public class HomeController {
 
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
-// Is the user has reset their password, this checks to see if the flag is true and displays an error message
+// Is the user has reset their password, this checks to see if the flag is true.
+    // If true, the user is redirected to the update page to choose a new password
         if (theUser.isPasswordReset()) {
             model.addAttribute(new UpdatePasswordDTO());
+// May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
 //            errors.rejectValue("title", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
             model.addAttribute("title", "Update User Password");
+            model.addAttribute(new UpdatePasswordDTO());
             return "user/update";
             }
 
