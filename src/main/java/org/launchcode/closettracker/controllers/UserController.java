@@ -143,7 +143,8 @@ public String displayPasswordResetForm(Model model) {
 // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
 // Creates and sends an email to the user
-    // Currently disabled due to an issue with using Gmail outgoing server authentication
+    // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
+        // login credentials in the properties file
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
         }
