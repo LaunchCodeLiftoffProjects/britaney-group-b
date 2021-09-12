@@ -142,9 +142,9 @@ public String displayPasswordResetForm(Model model) {
 
 // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
-// Creates and send an email to the user
+// Creates and sends an email to the user
     // Currently disabled due to an issue with using Gmail outgoing server authentication
-//        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
 
 // While the User model does not persist the 'password' field, it is still required. So we need to...
     // 2) Since 'password' is still a required field, use a randomw string to set the password value and replace the hash
