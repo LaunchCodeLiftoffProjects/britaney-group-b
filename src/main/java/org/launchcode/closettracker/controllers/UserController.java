@@ -1,8 +1,10 @@
 package org.launchcode.closettracker.controllers;
 
+import net.bytebuddy.utility.RandomString;
 import org.launchcode.closettracker.PasswordResetToken;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
+import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,12 @@ import java.util.*;
 @RequestMapping("/")
 public class UserController {
 
+// Repositories
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     private PasswordTokenRepository passwordTokenRepository;
@@ -33,6 +39,21 @@ public class UserController {
     @Autowired
     private MailSender mailSender;
 
+// A function to generate a random string of letters and numbers
+    public String createRandomString(int strLength) {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = strLength;
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return generatedString;
+    }
 // CREATE START
 // User > Create new account
     @GetMapping("user/create")
@@ -65,6 +86,7 @@ public class UserController {
 
 // If entered passwords don't match, display error message
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+                errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
                 return "user/create";
@@ -75,6 +97,8 @@ public class UserController {
 // Save the new user to the user db
             userRepository.save(newUser);
 // Upon complete process, show closet page
+            model.addAttribute("items", itemRepository.findAll());
+            model.addAttribute("title", "My Closet");
             return "items/closet";
 
         } catch (Exception ex) {
@@ -89,14 +113,13 @@ public class UserController {
     }
 // CREATE END
 
-// RESET START
-
 // ============================================================================================
+
 // RESET START
 
 // User --> Show reset password - Part 1 (enter email to generate token needed for step 2
 @GetMapping("user/reset")
-public String displayNewResetPasswordForm(Model model) {
+public String displayPasswordResetForm(Model model) {
     model.addAttribute(new ResetEmailDTO());
     model.addAttribute("title", "Reset Account Password");
     return "user/reset";
@@ -104,7 +127,7 @@ public String displayNewResetPasswordForm(Model model) {
 
 // User --> Process new reset password
     @PostMapping("user/reset")
-    public String resetPassword(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
+    public String processRPasswordResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
 // If the user account does not exist, show error
@@ -119,16 +142,20 @@ public String displayNewResetPasswordForm(Model model) {
 
 // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
+// Creates and send an email to the user
+    // Currently disabled due to an issue with using Gmail outgoing server authentication
 //        mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
-        String tempPwHashHolder = currentUser.getPwHash();
-        currentUser.setPassword("asdasd");
-        currentUser.setPwHash(tempPwHashHolder);
+
+// While the User model does not persist the 'password' field, it is still required. So we need to...
+    // 2) Since 'password' is still a required field, use a randomw string to set the password value and replace the hash
+        currentUser.setPassword(createRandomString(8));
+    // 3) To ensure the user will have to update their password upon next login, set the flag to true
         currentUser.setPasswordReset(true);
+    // 4) Persist the finished User object
         userRepository.save(currentUser);
 
-        model.addAttribute(new LoginFormDTO());
-        model.addAttribute("title", "Welcome to Closet Tracker!");
-        return "index";
+// Load the intermediate reset page
+        return "user/reset-int";
     }
 
     public void createPasswordResetTokenForUser(User user, String token) {
@@ -156,7 +183,7 @@ public String displayNewResetPasswordForm(Model model) {
 
 // User -> Update password
     @GetMapping("user/update")
-    public String showChangePasswordPage(Model model) { // }, @RequestParam("token") String token) {
+    public String showChangePasswordForm(Model model) { // }, @RequestParam("token") String token) {
 /*        String result = validatePasswordResetToken(token);
         if(result != null) {
             return "";
@@ -184,7 +211,7 @@ public String displayNewResetPasswordForm(Model model) {
     }
 
     @PostMapping("user/update")
-    public String savePassword(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
+    public String processChangePasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
                                HttpServletRequest request, Model model) {
 
         if (updatePasswordDTO.getPasswordEntered().isEmpty() || updatePasswordDTO.getPasswordConfirm().isEmpty()) {
