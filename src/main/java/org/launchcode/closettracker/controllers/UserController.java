@@ -253,5 +253,8 @@ public String displayPasswordResetForm(Model model) {
         }
    }
 
-// RESET END v2
+// UPDATE PASSWORD END
+
+// RESET END
+
 }
