@@ -1,6 +1,5 @@
 package org.launchcode.closettracker.controllers;
 
-import net.bytebuddy.utility.RandomString;
 import org.launchcode.closettracker.PasswordResetToken;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
@@ -158,11 +157,11 @@ public String displayPasswordResetForm(Model model) {
         }
 
 // While the User model does not persist the 'password' field, it is still required. So we need to...
-    // 2) Since 'password' is still a required field, use a randomw string to set the password value and replace the hash
+    // 1) Since 'password' is still a required field, use a randomw string to set the password value and replace the hash
         currentUser.setPassword(createRandomString(8));
-    // 3) To ensure the user will have to update their password upon next login, set the flag to true
+    // 2) To ensure the user will have to update their password upon next login, set the flag to true
         currentUser.setPasswordReset(true);
-    // 4) Persist the finished User object
+    // 3) Persist the finished User object
         userRepository.save(currentUser);
 
 // Load the intermediate reset page
@@ -200,14 +199,11 @@ public String displayPasswordResetForm(Model model) {
 
 // User -> Update password
     @GetMapping("user/update")
-    public String showChangePasswordForm(Model model) { // }, @RequestParam("token") String token) {
-/*        String result = validatePasswordResetToken(token);
-        if(result != null) {
-            return "";
-        } else {
+    public String showChangePasswordForm(Model model, @RequestParam("token") String token) {
+        boolean result = validatePasswordResetToken(token);
+        if(result) {
             model.addAttribute("token", token);
-            return "";
-        } */
+        }
         model.addAttribute(new UpdatePasswordDTO());
         return "user/update";
     }
@@ -231,11 +227,21 @@ public String displayPasswordResetForm(Model model) {
     public String processChangePasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
                                HttpServletRequest request, Model model) {
 
-        if (updatePasswordDTO.getPasswordEntered().isEmpty() || updatePasswordDTO.getPasswordConfirm().isEmpty()) {
+// If the 1st password field is empty, display error message
+        if (updatePasswordDTO.getPasswordEntered().isEmpty()) {
             model.addAttribute("title", "Update Account Password");
+            errors.rejectValue("passwordEntered", "passwordEntered.notMatch", "Passwords is required. Please try again.");
             return "user/update";
         }
 
+// If the 2nd password field is empty, display error message
+        if (updatePasswordDTO.getPasswordConfirm().isEmpty()) {
+            model.addAttribute("title", "Update Account Password");
+            errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Password is required. Please try again.");
+            return "user/update";
+        }
+
+// If both passwords do not match, display error message
         if (!updatePasswordDTO.getPasswordEntered().equals(updatePasswordDTO.getPasswordConfirm())) {
             model.addAttribute("passwordEntered", updatePasswordDTO.getPasswordEntered());
             model.addAttribute("passwordConfirm", updatePasswordDTO.getPasswordConfirm());
@@ -244,13 +250,12 @@ public String displayPasswordResetForm(Model model) {
             return "user/update";
         }
 
-        boolean result = validatePasswordResetToken(updatePasswordDTO.getToken());
-
-        if(!result) {
+        if(!validatePasswordResetToken(updatePasswordDTO.getToken())) {
             model.addAttribute("title", "Update Account Password");
             errors.rejectValue("token", "token.equals", "Token is not valid. Please try again.");
             return "user/update";
         }
+        int checkTokenSize = updatePasswordDTO.getToken().length();
 
         PasswordResetToken userByToken = passwordTokenRepository.findByToken(updatePasswordDTO.getToken());
         User user = userRepository.findByEmail(userByToken.getUser().getEmail());
