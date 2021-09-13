@@ -45,6 +45,8 @@
     </div>
 </div>
 <a th:href="'edit?itemId=' + ${item.id}"><button class="btn btn-success">Edit Item</button></a>
-
+<form method="post">
+<button type="submit" class="btn btn-danger" onclick="return confirm('Delete this item?')">Delete Item</button>
+</form>
     </body>
 </html>

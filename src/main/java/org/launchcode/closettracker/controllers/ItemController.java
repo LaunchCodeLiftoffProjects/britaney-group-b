@@ -102,7 +102,7 @@ public class ItemController {
         Optional<Item> itemToEdit = itemRepository.findById(itemId);
 
             Item item = itemToEdit.get();
-         //   model.addAttribute("item", itemToEdit);
+            model.addAttribute("item", itemToEdit);
             model.addAttribute("title", "Edit " + item.getItemName() + " Details");
             model.addAttribute("item", item);
 
@@ -119,8 +119,8 @@ public class ItemController {
             return "items/edit";
         }
 
-       Optional<Item> optionalItem = itemRepository.findById(itemId);
-       Item itemToEdit = optionalItem.get();
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        Item itemToEdit = optionalItem.get();
 
         itemToEdit.setItemName(itemName);
         itemToEdit.setType(type);
@@ -143,6 +143,19 @@ public class ItemController {
     // DELETE ITEM(s): Process form
     @PostMapping("delete")
     public String processDeleteItemsForm(@RequestParam(required = false) int[] itemIds) {
+
+        if (itemIds != null) {
+            for (int id : itemIds) {
+                itemRepository.deleteById(id);
+            }
+        }
+
+        return "redirect:";
+    }
+
+
+    @PostMapping("details")
+    public String processDeleteOneItemForm(@RequestParam(value="itemId", required = false) int[] itemIds) {
 
         if (itemIds != null) {
             for (int id : itemIds) {

@@ -60,6 +60,14 @@
             <tr>
                 <td class="zoom"><img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
             </tr>
+            <tr>
+                <td>
+            <div class="mb-3 w-50">
+                <label for="formFile" class="form-label">Update Image</label>
+                <input class="form-control" type="file" name="image" accept="image/png, image/jpeg" id="formFile"/>
+            </div>
+                </td>
+            </tr>
         </table>
     </div>
 </div>
@@ -67,5 +75,8 @@
 <button type="submit" class="btn btn-primary">Save Changes</button>
 </div>
 </form>
+<div class="form-group">
+    <a th:href="'details?itemId=' + ${item.id}"><button class="btn btn-success">Cancel</button></a>
+</div>
 </body>
 </html>
