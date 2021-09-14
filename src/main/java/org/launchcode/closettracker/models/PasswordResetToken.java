@@ -1,7 +1,5 @@
 package org.launchcode.closettracker.models;
 
-import org.launchcode.closettracker.models.User;
-
 import javax.persistence.*;
 import java.util.Date;
 
