@@ -1,4 +1,4 @@
-package org.launchcode.closettracker;
+package org.launchcode.closettracker.models;
 
 import org.launchcode.closettracker.models.User;
 

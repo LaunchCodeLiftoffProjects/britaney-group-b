@@ -1,6 +1,6 @@
 package org.launchcode.closettracker.controllers;
 
-import org.launchcode.closettracker.PasswordResetToken;
+import org.launchcode.closettracker.models.PasswordResetToken;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
 import org.launchcode.closettracker.repositories.ItemRepository;
