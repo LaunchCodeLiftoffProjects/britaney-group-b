@@ -25,7 +25,7 @@ public class User extends AbstractEntity {
             this.sizes.add(size);
     }*/
 
-    @Column(name = "user_id", nullable = false)
+//    @Column(name = "user_id", nullable = false)
     private int id;
 
     @NotNull(message = "Username is required")

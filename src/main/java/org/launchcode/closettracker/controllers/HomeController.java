@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -47,9 +49,25 @@ public class HomeController {
 
     }
 
-    private static void setUserInSession(HttpSession session, User user) {
-        session.setAttribute(userSessionKey, user.getId());
+    public String home(HttpServletResponse response) {
+        //create a cookie with name 'website' and value 'javapointers'
+        Cookie cookie = new Cookie("website", "javapointers");
+        //set the expiration time
+        //1 hour = 60 seconds x 60 minutes
+        cookie.setMaxAge(60 * 60);
+        //add the cookie to the  response
+        response.addCookie(cookie);
+        //return the jsp with the response
+        return "home";
     }
+
+    private static void setUserInSession(HttpSession session, User user) {
+/*        User blah = user;
+        int blahblab = user.getId();
+        String asjdsad = userSessionKey;
+        int asjdsad1 = userSessionKey.getValue();
+        session.setAttribute(userSessionKey, user.getId());
+  */  }
 
     //localhost:8080
     @GetMapping("")
@@ -87,7 +105,6 @@ public class HomeController {
             model.addAttribute("title", "Welcome to Closet Tracker");
             return "index";
         }
-
         String password = loginFormDTO.getPassword();
 
 // Is the entered and confirm password don't match, displays error message

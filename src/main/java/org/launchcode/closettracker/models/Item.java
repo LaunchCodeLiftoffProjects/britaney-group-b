@@ -3,9 +3,10 @@ package org.launchcode.closettracker.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @Entity
-public class Item extends AbstractEntity{
+public class Item extends AbstractEntity {
 
     @NotNull(message = "Name is required")
     @NotBlank(message = "Name is required")
@@ -19,6 +20,10 @@ public class Item extends AbstractEntity{
     private String size;
 
     private Season season;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
+    private User user;
 
     @Lob
     private byte[] itemImage;
@@ -82,4 +87,8 @@ public class Item extends AbstractEntity{
     public void setItemImage(byte[] itemImage) {
         this.itemImage = itemImage;
     }
+
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
 }

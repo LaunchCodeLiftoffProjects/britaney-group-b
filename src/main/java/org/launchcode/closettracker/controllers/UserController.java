@@ -54,6 +54,7 @@ public class UserController {
         return generatedString;
     }
 // CREATE START
+
 // User > Create new account
     @GetMapping("user/create")
     public String displayCreateAccountForm(Model model) {
@@ -157,7 +158,7 @@ public String displayPasswordResetForm(Model model) {
         }
 
 // While the User model does not persist the 'password' field, it is still required. So we need to...
-    // 1) Since 'password' is still a required field, use a randomw string to set the password value and replace the hash
+    // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
         currentUser.setPassword(createRandomString(8));
     // 2) To ensure the user will have to update their password upon next login, set the flag to true
         currentUser.setPasswordReset(true);
