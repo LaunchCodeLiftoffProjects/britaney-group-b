@@ -54,10 +54,10 @@ public class ItemController {
         byte[] image1 = multipartFile.getBytes();
         newItem.setItemImage(multipartFile.getBytes());
 
-        getUserSession
+//        Object userSession = HomeController.getUserFromSession(session);
 
-        Object currentUserObj = session.getAttribute("user");
-        User currentUser = userRepository.findById(currentUserObj.valueOf());
+        Object sessionObj = session.getAttribute(HomeController.userSessionKey);
+
 //        newItem.setUser(currentUser);
         itemRepository.save(newItem);
         return "redirect:";
