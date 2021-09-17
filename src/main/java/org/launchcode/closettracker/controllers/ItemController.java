@@ -44,7 +44,7 @@ public class ItemController {
     // CREATE ITEM: Process form
     @PostMapping("create-item")
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors, Model model,
-                                        @RequestParam("image") MultipartFile multipartFile, HttpServletRequest request) throws IOException {
+                                        @RequestParam("image") MultipartFile multipartFile, HttpSession session, HttpServletRequest request) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Item");
             return "items/create-item";
@@ -53,9 +53,12 @@ public class ItemController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         byte[] image1 = multipartFile.getBytes();
         newItem.setItemImage(multipartFile.getBytes());
-        Object currentUser = request.getAttribute("user");
-//        newItem.setUser();
 
+        getUserSession
+
+        Object currentUserObj = session.getAttribute("user");
+        User currentUser = userRepository.findById(currentUserObj.valueOf());
+//        newItem.setUser(currentUser);
         itemRepository.save(newItem);
         return "redirect:";
     }

@@ -62,24 +62,7 @@ public class HomeController {
     }
 
     private static void setUserInSession(HttpSession session, User user) {
-    // Is User object present?
-        User blah = user;
-    // Does extracting the user's unique ID work?
-        Integer blah2 = user.getId();
-    // Is the session key name correct?
-        String blah3 = userSessionKey;
-    // What values does the set session function save?
-        String checkSessionKeyName = userSessionKey;
-        int checkUserIdValue = user.getId();
         session.setAttribute(userSessionKey, user.getId());
-    // Is User object present?
-        User blah4 = user;
-    // Does extracting the user's unique ID work?
-        int blah5 = user.getId();
-    // Is the session key name correct?
-        String blah6 = userSessionKey;
-    // For whatever reason, when pulling the key in the key/value pair, an object is returned
-        Object blah7 = session.getAttribute(userSessionKey);
     }
 
     //localhost:8080
