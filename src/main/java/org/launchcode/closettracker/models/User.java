@@ -68,6 +68,15 @@ public class User extends AbstractEntity {
         this.passwordReset = false;
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getUserName() {
         return username;
     }
