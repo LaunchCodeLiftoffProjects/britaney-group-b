@@ -1,10 +1,12 @@
 package org.launchcode.closettracker.controllers;
 
 import org.apache.tomcat.util.http.fileupload.FileUpload;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.launchcode.closettracker.models.Color;
 import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
+import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
@@ -18,9 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -44,19 +50,19 @@ public class ItemController {
 
     // CREATE ITEM: Process form
     @PostMapping("create-item")
-    public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors,
-                                        Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    public String processCreateItemForm(@ModelAttribute @Valid Item item, Errors errors,
+                                        Model model, @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Add Item");
             return "items/create-item";
         }
 
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        newItem.setItemImage(fileName);
+        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+        item.setItemImage(fileName);
 
-        Item savedItem = itemRepository.save(newItem);
-        String uploadDirectory = "item-photos/" + savedItem.getId();
-        FileUploadUtil.saveFile(uploadDirectory, fileName, multipartFile);
+        itemRepository.save(item);
+        String uploadDirectory = "item-photos/" + item.getId();
+        FileUploadUtil.saveFile(uploadDirectory, fileName, image);
         return "redirect:";
     }
 
@@ -79,7 +85,8 @@ public class ItemController {
     }
 
 
-    // We are making View Item Details and Edit Item Details the same page
+    // View Item Details
+
     @GetMapping("details")
     public String displayItemDetails(@RequestParam Integer itemId, Model model) {
 
@@ -96,41 +103,60 @@ public class ItemController {
         return "items/details";
     }
 
+    //Edit Item Details
+
     @GetMapping("edit")
-    public String editItemDetails(@RequestParam Integer itemId, Model model) {
+    public String displayEditItemDetailsForm(@RequestParam Integer itemId, Model model) {
 
         Optional<Item> itemToEdit = itemRepository.findById(itemId);
 
+
             Item item = itemToEdit.get();
-            model.addAttribute("item", itemToEdit);
+            model.addAttribute(item);
             model.addAttribute("title", "Edit " + item.getItemName() + " Details");
             model.addAttribute("item", item);
 
         return "items/edit";
     }
 
-    @PostMapping("edit")
-    public String updateItemDetails(@ModelAttribute @Valid Item item, Errors errors, Integer itemId, Model model,
-                                    String itemName, String type, Color color, String size, String[] season,
-                                    MultipartFile multipartFile)  {
+   @PostMapping("edit")
+    public String processUpdateItemDetails(@ModelAttribute @Valid Item item, Errors errors, Integer itemId, Model model,
+                                           String itemName, String type, Color color, String size, String[] season, @RequestParam(value = "image", required = false)
+                                           MultipartFile image) throws IOException {
 
-        if(errors.hasErrors()) {
-            model.addAttribute("title", "Edit item Details");
-            return "items/edit";
-        }
+       if (errors.hasErrors()) {
+           model.addAttribute("title", "Edit " + item.getItemName() + "Details");
+           return "items/edit";
+       }
 
-        Optional<Item> optionalItem = itemRepository.findById(itemId);
-        Item itemToEdit = optionalItem.get();
 
-        itemToEdit.setItemName(itemName);
-        itemToEdit.setType(type);
-        itemToEdit.setColor(color);
-        itemToEdit.setSize(size);
-        itemToEdit.setSeason(season);
-        Item savedItem = itemRepository.save(itemToEdit);
+       model.addAttribute("title", item.getItemName() + " Details");
+       model.addAttribute("item", item);
 
-        return "items/details";
-    }
+       Optional<Item> optionalItem = itemRepository.findById(itemId);
+       Item itemToEdit = optionalItem.get();
+
+       String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+       itemToEdit.setItemImage(fileName);
+
+       itemToEdit.setItemName(itemName);
+       itemToEdit.setType(type);
+       itemToEdit.setColor(color);
+       itemToEdit.setSize(size);
+       itemToEdit.setSeason(season);
+
+       Item savedItem = itemRepository.save(itemToEdit);
+
+      // Files.delete(Path.of("item-photos/" + fileName));
+      // Files.deleteIfExists(Path.of("item-photos/" + savedItem.getId()));
+       String uploadDirectory = "item-photos/" + savedItem.getId();
+     //  FileUtils.deleteDirectory(new File("item-photos/" + savedItem.getId()));
+       FileUploadUtil.saveFile(uploadDirectory, fileName, image);
+
+
+
+       return "items/details";
+   }
 
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
@@ -160,6 +186,8 @@ public class ItemController {
         if (itemIds != null) {
             for (int id : itemIds) {
                 itemRepository.deleteById(id);
+                //need to delete photo from filesystem as well
+                // FileUtils.deleteDirectory("item-photos/" + itemImage.getId());
             }
         }
 

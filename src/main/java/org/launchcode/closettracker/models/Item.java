@@ -3,8 +3,11 @@ package org.launchcode.closettracker.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+
 public class Item extends AbstractEntity{
 
     @NotNull(message = "Name is required")
@@ -24,6 +27,8 @@ public class Item extends AbstractEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    // @NotNull(message = "Image is required")
     private String itemImage;
 
     public Item(String itemName, String type, Color color, String size, String[] season, String itemImage) {
