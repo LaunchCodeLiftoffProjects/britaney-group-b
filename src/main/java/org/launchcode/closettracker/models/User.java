@@ -51,15 +51,19 @@ public class User extends AbstractEntity {
     @Column(name = "pw_reset")
     private boolean passwordReset;
 
+    @Column(name = "new_user")
+    private boolean isNewUser;
+
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public User(String username, String email, String password, boolean pwReset) {
+    public User(String username, String email, String password, boolean pwReset, boolean newUser) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.pwHash = encoder.encode(password);
         this.passwordReset = pwReset;
+        this.isNewUser = newUser;
     }
 
     public User(String password) {
@@ -103,9 +107,13 @@ public class User extends AbstractEntity {
 
     public boolean isPasswordReset() { return passwordReset; }
 
+    public boolean isNewUser() { return isNewUser; }
+
     public void setPasswordReset(boolean passwordReset) {
         this.passwordReset = passwordReset;
     }
+
+    public void setNewUser(boolean newUser) { isNewUser = newUser; }
 
     // Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {

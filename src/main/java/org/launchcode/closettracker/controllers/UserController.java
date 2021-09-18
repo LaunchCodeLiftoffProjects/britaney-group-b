@@ -93,7 +93,7 @@ public class UserController {
             }
 
 // When everything is fine, create a new user object
-            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false);
+            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
 // Save the new user to the user db
             userRepository.save(newUser);
 // Upon complete process, show closet page
