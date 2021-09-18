@@ -44,7 +44,8 @@ public class ItemController {
     // CREATE ITEM: Process form
     @PostMapping("create-item")
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors, Model model,
-                                        @RequestParam("image") MultipartFile multipartFile, HttpSession session, HttpServletRequest request) throws IOException {
+                                        @RequestParam("image") MultipartFile multipartFile, HttpSession session,
+                                        HttpServletRequest request) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Item");
             return "items/create-item";
@@ -56,10 +57,10 @@ public class ItemController {
 
     // Retrieve userId stored in session key "user"
         HomeController homeController;
-        User currentUser = homeController.getUserFromSession(session);
+        User currentUser = HomeController.getUserFromSession(session);
 
     // If retrieval is successful, extract user object and return
-        if(currentUser) {
+        if(currentUser != null) {
             newItem.setUser(currentUser);
 //            User itemUser = newItem.getUser();
             itemRepository.save(newItem);

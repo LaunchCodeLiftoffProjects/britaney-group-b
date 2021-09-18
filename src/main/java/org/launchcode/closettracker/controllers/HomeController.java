@@ -33,7 +33,7 @@ public class HomeController {
 
     public static final String userSessionKey = "user";
 
-    public static final User getUserFromSession(HttpSession session) {
+    public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
