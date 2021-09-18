@@ -155,7 +155,7 @@ public class ItemController {
 
 
 
-       return "items/details";
+       return "redirect:details?itemId=" + itemId;
    }
 
     // DELETE ITEM(s): Show form
