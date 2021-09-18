@@ -53,13 +53,15 @@ public class ItemController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         byte[] image1 = multipartFile.getBytes();
         newItem.setItemImage(multipartFile.getBytes());
+
     // Retrieve userId stored in session key "user"
-        Integer currentUserId = (Integer) HomeController.getUserFromSession(session);
-    // Use stored value to retrieve user from user table
-        Optional<User> currentUser = userRepository.findById(currentUserId);
-        if(currentUser.isPresent()) {
-            newItem.setUser(currentUser.get());
-            User itemUser = newItem.getUser();
+        HomeController homeController;
+        User currentUser = homeController.getUserFromSession(session);
+
+    // If retrieval is successful, extract user object and return
+        if(currentUser) {
+            newItem.setUser(currentUser);
+//            User itemUser = newItem.getUser();
             itemRepository.save(newItem);
             return "redirect:";
         }
