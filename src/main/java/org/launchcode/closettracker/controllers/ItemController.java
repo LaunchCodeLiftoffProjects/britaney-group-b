@@ -53,14 +53,21 @@ public class ItemController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         byte[] image1 = multipartFile.getBytes();
         newItem.setItemImage(multipartFile.getBytes());
+    // Retrieve userId stored in session key "user"
+        Integer currentUserId = (Integer) session.getAttribute(HomeController.userSessionKey);
 
-//        Object userSession = HomeController.getUserFromSession(session);
-
-        Object sessionObj = session.getAttribute(HomeController.userSessionKey);
-
-//        newItem.setUser(currentUser);
-        itemRepository.save(newItem);
-        return "redirect:";
+    // Use stored value to retrieve user from user table
+        Optional<User> currentUser = userRepository.findById(currentUserId);
+        if(currentUser.isPresent()) {
+            newItem.setUser(currentUser.get());
+            User itemUser = newItem.getUser();
+            itemRepository.save(newItem);
+            return "redirect:";
+        }
+        else {
+            model.addAttribute("title", "Create Item");
+            return "items/create-item";
+        }
     }
 
     // DELETE ITEM(s): Show form
