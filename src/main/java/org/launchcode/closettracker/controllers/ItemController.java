@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Optional;
 
+import static org.launchcode.closettracker.controllers.HomeController.userSessionKey;
+
 @Controller
 @RequestMapping("items")
 public class ItemController {
@@ -32,6 +34,17 @@ public class ItemController {
 
     @Autowired
     private UserRepository userRepository;
+
+    public User getUserFromSession(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute(userSessionKey);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        else {
+            return null;
+        }
+    }
 
     // CREATE ITEM: Show form
     @GetMapping("create-item")
@@ -56,13 +69,11 @@ public class ItemController {
         newItem.setItemImage(multipartFile.getBytes());
 
     // Retrieve userId stored in session key "user"
-        HomeController homeController;
-        User currentUser = HomeController.getUserFromSession(session);
+        User currentUser = getUserFromSession(session);
 
     // If retrieval is successful, extract user object and return
         if(currentUser != null) {
             newItem.setUser(currentUser);
-//            User itemUser = newItem.getUser();
             itemRepository.save(newItem);
             return "redirect:";
         }
