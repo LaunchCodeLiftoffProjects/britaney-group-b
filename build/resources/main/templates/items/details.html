@@ -1,55 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-<head th:replace="fragments :: head">
-    <meta charset="UTF-8">
-    <title th:text="${title}"></title>
-</head>
+<head th:replace="fragments :: head"></head>
 <body class="container">
-<center>
-<h1><header th:text="${title}"></header></h1>
 
-<form method="post">
-    <div class="form-group">
-        <label>Item name
-            <input th:field="${item.name}" class="form-control">
-        </label>
-        <p class="error" th:errors="${item.name}"></p>
+<header th:replace="fragments :: navigation"></header>
+<br>
+    <br>
+        <br>
+            <br>
+                <br>
+<div class="row">
+    <div class="column">
+<table class="table table-borderless table-hover">
+
+    <tr>
+        <th>Name</th>
+        <td th:text="${item.itemName}"></td>
+    </tr>
+        <tr>
+        <th>Clothing type</th>
+            <td th:text="${item.type}"></td>
+        </tr>
+        <!--<th>Item location</th>-->
+    <tr>
+        <th>Color</th>
+        <td th:text="${item.color.displayName}"></td>
+    </tr>
+    <tr>
+        <th>Size</th>
+        <td th:text="${item.size}"></td>
+    </tr>
+    <tr>
+        <th>Season</th>
+        <td><li th:each= "season : ${item.season}" th:text="${season}"></li></td>
+        </tr>
+</table>
     </div>
-    <div class="form-group">
-        <label>Storage location
-            <input readonly th:field="${item.location}" class="form-control" value="Closet">
-        </label>
-        <p class="error" th:errors="${item.location}"></p>
+    <div class="column">
+        <table class="table table-borderless table-hover">
+    <tr>
+        <td class="zoom"> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
+    </tr>
+        </table>
     </div>
-    <div class="form-group">
-        <label for="color">Select a color:</label>
-        <select id="color" name="color">
-            <option value="rgb">Primary</option>
-            <option value="cmyk">Secondary</option>
-            <option value="multi">Multi</option>
-        </select>
-        <p class="error" th:errors="${item.color}"></p>
-    </div>
-    <div class="form-group">
-        <label>Item size
-            <input th:field="${item.size}" class="form-control">
-        </label>
-        <p class="error" th:errors="${item.size}"></p>
-    </div>
-    <div class="form-group">
-        <label for="seasons">Choose a season:</label>
-        <select id="seasons" name="seasons">
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="fall">Fall</option>
-            <option value="winter">Winter</option>
-        </select>
-        <p class="error" th:errors="${item.season}"></p>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Save changes" class="btn btn-success">
-    </div>
-</form>
-</center>
-</body>
+</div>
+<a th:href="'edit?itemId=' + ${item.id}"><button class="btn btn-success">Edit Item</button></a>
+
+    </body>
 </html>

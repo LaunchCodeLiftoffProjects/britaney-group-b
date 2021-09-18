@@ -19,22 +19,37 @@ public class Item extends AbstractEntity {
 
     private String size;
 
-    private Season season;
+    private String[] season;
 
+<<<<<<< HEAD
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     @Lob
     private byte[] itemImage;
+=======
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+>>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
 
-    public Item(String itemName, String type, Color color, String size, Season season, byte[] itemImage) {
+    private String itemImage;
+
+    public Item(String itemName, String type, Color color, String size, String[] season, String itemImage) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
         this.size = size;
         this.season = season;
         this.itemImage = itemImage;
+    }
+
+    @Transient
+    public String getImagePath() {
+        if (itemImage == null) return null;
+
+        return "/item-photos/" + id + "/" + itemImage;
     }
 
     public Item() {
@@ -72,19 +87,19 @@ public class Item extends AbstractEntity {
         this.size = size;
     }
 
-    public Season getSeason() {
+    public String[] getSeason() {
         return season;
     }
 
-    public void setSeason(Season season) {
+    public void setSeason(String[] season) {
         this.season = season;
     }
 
-    public byte[] getItemImage() {
+    public String getItemImage() {
         return itemImage;
     }
 
-    public void setItemImage(byte[] itemImage) {
+    public void setItemImage(String itemImage) {
         this.itemImage = itemImage;
     }
 

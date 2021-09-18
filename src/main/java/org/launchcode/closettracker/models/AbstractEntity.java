@@ -10,7 +10,7 @@ public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue
-    private int id;
+    public int id;
 
     public int getId() {
         return id;
