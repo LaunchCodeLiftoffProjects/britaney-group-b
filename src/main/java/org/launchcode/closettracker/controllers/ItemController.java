@@ -54,8 +54,7 @@ public class ItemController {
         byte[] image1 = multipartFile.getBytes();
         newItem.setItemImage(multipartFile.getBytes());
     // Retrieve userId stored in session key "user"
-        Integer currentUserId = (Integer) session.getAttribute(HomeController.userSessionKey);
-
+        Integer currentUserId = (Integer) HomeController.getUserFromSession(session);
     // Use stored value to retrieve user from user table
         Optional<User> currentUser = userRepository.findById(currentUserId);
         if(currentUser.isPresent()) {

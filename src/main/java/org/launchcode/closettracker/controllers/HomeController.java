@@ -35,18 +35,13 @@ public class HomeController {
 
     public User getUserFromSession(@NotNull HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
-            return null;
-        }
-
         Optional<User> user = userRepository.findById(userId);
-
-        if (user.isEmpty()) {
+        if (user.isPresent()) {
+            return user.get();
+        }
+        else {
             return null;
         }
-
-        return user.get();
-
     }
 
     public String home(HttpServletResponse response) {
