@@ -139,34 +139,40 @@ public String displayPasswordResetForm(Model model) {
 
 // Creates a unique token string
         String token = UUID.randomUUID().toString();
-
+// Delete any previous tokens for the user
+       try {
+           passwordTokenRepository.deleteById(currentUser.getId());
+       }
+       catch (Exception exception) {
+           //
+       }
 // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
-// Creates and sends an email to the user
-    // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
-        // login credentials in the properties file
-        try {
-            mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
-        }
-        catch (Exception exception) {
-            if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-            } else {
-                errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
-            }
-            return "user/reset";
-        }
 
 // While the User model does not persist the 'password' field, it is still required. So we need to...
     // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
         currentUser.setPassword(createRandomString(8));
-    // 2) To ensure the user will have to update their password upon next login, set the flag to true
+    // 2) To ensure the user will have to update their password upon next login so set the flag to true
         currentUser.setPasswordReset(true);
     // 3) Persist the finished User object
         userRepository.save(currentUser);
 
-// Load the intermediate reset page
-        return "user/reset-int";
+        // Creates and sends an email to the user
+    // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
+        // login credentials in the properties file
+        try {
+            mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+            return "user/reset-int";
+        }
+        catch (Exception exception) {
+            if (exception.toString().contains("not accepted")) {
+                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+                return "user/reset-int";
+            } else {
+                errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
+                return "user/reset";
+            }
+        }
     }
 
     public void createPasswordResetTokenForUser(User user, String token) {
