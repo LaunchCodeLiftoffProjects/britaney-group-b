@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head">
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+</head>
+<body class="container">
+<center>
+<h1><header th:text="${title}"></header></h1>
+<br>
+<form method="post">
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.username}" class="form-control" id="floatingName" placeholder="Username">
+            <label for="floatingName">Username</label>
+        <p class="error" th:errors="${userDTO.username}"></p>
+    </div>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.email}" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+        <p class="error" th:errors="${userDTO.email}"></p>
+    </div>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.password}" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        <p class="error" th:errors="${userDTO.password}" type="password"></p>
+    </div>
+    <div class="form-floating w-25">
+            <input th:field="${userDTO.confirmPassword}" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password">
+            <label for="floatingConfirmPassword">Confirm Password</label>
+        <p class="error" th:errors="${userDTO.confirmPassword}" type="password"></p>
+    </div>
+    <br>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-success">
+    </div>
+</form>
+    <br>
+    <a href="index">Go Back</a>
+</center>
+</body>
+</html>

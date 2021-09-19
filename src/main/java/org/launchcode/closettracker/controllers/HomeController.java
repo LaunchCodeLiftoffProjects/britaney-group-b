@@ -7,9 +7,11 @@ import org.launchcode.closettracker.models.dto.LoginFormDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 @Controller
@@ -106,14 +110,9 @@ public class HomeController {
         }
 // Once all errors are handled, allows the user to login and sets the browser session
         setUserInSession(request.getSession(), theUser);
-
-<<<<<<< HEAD
         model.addAttribute("title", "My Closet");
         model.addAttribute("items", itemRepository.findAll());
         return "items/closet";
-=======
-        return "redirect:items/";
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
     }
 
     //localhost:8080/create
@@ -122,6 +121,54 @@ public class HomeController {
         model.addAttribute(new UserDTO());
         model.addAttribute("title", "Create User Account");
         return "create";
+    }
+
+    @PostMapping("create")
+    @ExceptionHandler({SQLException.class, DataAccessException.class})
+    public String processCreateAccountForm(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
+        try {
+            if (errors.hasErrors()) {
+                model.addAttribute("title", "Create User Account");
+                model.addAttribute("errorMsg", "Bad data!");
+                return "create";
+            }
+
+// Checks user db for match
+            User currentUser = userRepository.findByEmail(userDTO.getEmail());
+
+// If match is found, displays an error message
+            if (currentUser != null) {
+                errors.rejectValue("email", "email.exists", "An account with this email address already exists");
+                model.addAttribute("title", "Create User Account");
+                return "create";
+            }
+
+// If entered passwords don't match, display error message
+            if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+                errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
+                model.addAttribute("pwdError", "Passwords do not match");
+                model.addAttribute("title", "Create User Account");
+                return "create";
+            }
+
+// When everything is fine, create a new user object
+            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
+// Save the new user to the user db
+            userRepository.save(newUser);
+// Upon complete process, show closet page
+            model.addAttribute("items", itemRepository.findAll());
+            model.addAttribute("title", "My Closet");
+            return "items/closet";
+
+        } catch (Exception ex) {
+            model.addAttribute("title", "Create User Account");
+            if (ex.toString().contains("constraint")) {
+                model.addAttribute("dbError", "Email exists. Try with new one!");
+            } else {
+                model.addAttribute("dbError", "Db Error");
+            }
+            return "create";
+        }
     }
 
     @GetMapping("/logout")

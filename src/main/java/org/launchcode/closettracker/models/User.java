@@ -11,16 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User{
+public class User extends AbstractEntity{
 
-<<<<<<< HEAD
 //    @Column(name = "user_id", nullable = false)
-=======
-    @Id
-    @GeneratedValue
-    @Column(name = "user_id", nullable = false)
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
-    private int id;
+    /*private int id;*/
 
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
@@ -33,7 +27,6 @@ public class User{
     @Column(name = "email", unique = true)
     private String email;
 
-<<<<<<< HEAD
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
     @Size(min=6, max = 24,  message = "Password must be between 6 and 24 characters long")
@@ -48,22 +41,14 @@ public class User{
 
     @Column(name = "new_user")
     private boolean isNewUser;
-=======
-    @Column(name = "pw_hash")
-    private String pwHash;
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private final List<Item> items = new ArrayList<>();
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-<<<<<<< HEAD
     public User(String username, String email, String password, boolean pwReset, boolean newUser) {
-=======
-    public User(String username, String email, String password) {
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);
@@ -86,14 +71,6 @@ public class User{
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getUserName() {
         return username;
     }
@@ -108,7 +85,6 @@ public class User{
 
     public void setEmail(String email) { this.email = email; }
 
-<<<<<<< HEAD
     public String getPassword() { return password; }
 
     public void setPassword(String password) {
@@ -123,12 +99,12 @@ public class User{
 
     public boolean isNewUser() { return isNewUser; }
 
-    public void setPasswordReset(boolean passwordReset) {
-        this.passwordReset = passwordReset;
-=======
+    public void setPasswordReset(boolean passwordReset){
+            this.passwordReset = passwordReset;
+        }
+
     public List<Item> getItems() {
         return items;
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
     }
 
     public void setNewUser(boolean newUser) { isNewUser = newUser; }

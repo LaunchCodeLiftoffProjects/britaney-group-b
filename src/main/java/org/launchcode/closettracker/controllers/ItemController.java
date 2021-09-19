@@ -23,11 +23,7 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-<<<<<<< HEAD
-import java.util.Enumeration;
-=======
 import java.security.Principal;
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
 import java.util.Optional;
 
 import static org.launchcode.closettracker.controllers.HomeController.userSessionKey;
@@ -42,7 +38,6 @@ public class ItemController {
     @Autowired
     private UserRepository userRepository;
 
-<<<<<<< HEAD
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         Optional<User> user = userRepository.findById(userId);
@@ -54,8 +49,6 @@ public class ItemController {
         }
     }
 
-=======
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
     // CREATE ITEM: Show form
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
@@ -66,14 +59,9 @@ public class ItemController {
 
     // CREATE ITEM: Process form
     @PostMapping("create-item")
-<<<<<<< HEAD
     public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors, Model model,
                                         @RequestParam("image") MultipartFile multipartFile, HttpSession session,
                                         HttpServletRequest request) throws IOException {
-=======
-    public String processCreateItemForm(@ModelAttribute @Valid Item newItem, Errors errors,
-                                        Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
         if(errors.hasErrors()) {
             model.addAttribute("title", "Add Item");
             return "items/create-item";
@@ -82,7 +70,6 @@ public class ItemController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         newItem.setItemImage(fileName);
 
-<<<<<<< HEAD
     // Retrieve userId stored in session key "user"
         User currentUser = getUserFromSession(session);
 
@@ -96,12 +83,7 @@ public class ItemController {
             model.addAttribute("title", "Create Item");
             return "items/create-item";
         }
-=======
-        Item savedItem = itemRepository.save(newItem);
-        String uploadDirectory = "item-photos/" + savedItem.getId();
-        FileUploadUtil.saveFile(uploadDirectory, fileName, multipartFile);
-        return "redirect:";
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
+
     }
 
     //get current users username - in progress

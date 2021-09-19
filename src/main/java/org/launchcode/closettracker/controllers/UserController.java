@@ -70,13 +70,8 @@ public class UserController {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
-<<<<<<< HEAD
                 model.addAttribute("errorMsg", "Bad data!");
                 return "user/create";
-=======
-                /*model.addAttribute("errorMsg", "Bad data!");*/
-                return "create";
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
             }
 
 // Checks user db for match

@@ -21,18 +21,9 @@ public class Item extends AbstractEntity {
 
     private String[] season;
 
-<<<<<<< HEAD
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
-
-    @Lob
-    private byte[] itemImage;
-=======
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
->>>>>>> 35704606d2f543f5108d431733e8c2a81410c14e
 
     private String itemImage;
 
