@@ -71,15 +71,26 @@ public class ItemController {
     // Retrieve userId stored in session key "user"
         User currentUser = getUserFromSession(session);
 
-    // If retrieval is successful, extract user object and return
+    // If User retrieval successful, attach user to new item object
         if(currentUser != null) {
             newItem.setUser(currentUser);
             itemRepository.save(newItem);
             return "redirect:";
         }
         else {
-            model.addAttribute("title", "Create Item");
-            return "items/create-item";
+            try {
+                model.addAttribute("title", "Create Item");
+                errors.rejectValue("itemName", "email.exists", "An account with this email address already exists");
+                return "items/create-item";
+            }
+            catch (Exception exception) {
+                if (exception.toString().contains("given id")) {
+                    errors.rejectValue("itemName", "session.expired", "Your session has expired. You'll need to log in again to continue creating items.");
+                } else {
+                    errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
+                }
+                return "user/reset";
+            }
         }
     }
 
