@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -39,13 +40,21 @@ public class HomeController {
 
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        else {
+        if (userId == null) {
             return null;
         }
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            return null;
+        }
+
+        return user.get();
+    }
+
+    private static void setUserInSession(HttpSession session, User user) {
+        session.setAttribute(userSessionKey, user.getId());
     }
 
     public String home(HttpServletResponse response) {
@@ -58,10 +67,6 @@ public class HomeController {
         response.addCookie(cookie);
         //return the jsp with the response
         return "home";
-    }
-
-    private static void setUserInSession(HttpSession session, User user) {
-        session.setAttribute(userSessionKey, user.getId());
     }
 
     //localhost:8080  Shows login form
@@ -85,10 +90,13 @@ public class HomeController {
 
 // Is the user has reset their password, this checks to see if the flag is true.
     // If true, the user is redirected to the update page to choose a new password
+
         if (theUser.isPasswordReset()) {
             model.addAttribute(new UpdatePasswordDTO());
+
 // May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
 //            errors.rejectValue("title", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
+
             model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
             return "user/update";
@@ -110,65 +118,9 @@ public class HomeController {
         }
 // Once all errors are handled, allows the user to login and sets the browser session
         setUserInSession(request.getSession(), theUser);
-        model.addAttribute("title", "My Closet");
-        model.addAttribute("items", itemRepository.findAll());
-        return "items/closet";
-    }
-
-    //localhost:8080/create
-    @GetMapping("create")
-    public String displayCreateAccountForm(Model model) {
-        model.addAttribute(new UserDTO());
-        model.addAttribute("title", "Create User Account");
-        return "create";
-    }
-
-    @PostMapping("create")
-    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String processCreateAccountForm(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
-        try {
-            if (errors.hasErrors()) {
-                model.addAttribute("title", "Create User Account");
-                model.addAttribute("errorMsg", "Bad data!");
-                return "create";
-            }
-
-// Checks user db for match
-            User currentUser = userRepository.findByEmail(userDTO.getEmail());
-
-// If match is found, displays an error message
-            if (currentUser != null) {
-                errors.rejectValue("email", "email.exists", "An account with this email address already exists");
-                model.addAttribute("title", "Create User Account");
-                return "create";
-            }
-
-// If entered passwords don't match, display error message
-            if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-                errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
-                model.addAttribute("pwdError", "Passwords do not match");
-                model.addAttribute("title", "Create User Account");
-                return "create";
-            }
-
-// When everything is fine, create a new user object
-            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
-// Save the new user to the user db
-            userRepository.save(newUser);
-// Upon complete process, show closet page
-            model.addAttribute("items", itemRepository.findAll());
-            model.addAttribute("title", "My Closet");
-            return "items/closet";
-
-        } catch (Exception ex) {
-            model.addAttribute("title", "Create User Account");
-            if (ex.toString().contains("constraint")) {
-                model.addAttribute("dbError", "Email exists. Try with new one!");
-            } else {
-                model.addAttribute("dbError", "Db Error");
-            }
-            return "create";
-        }
+   /*     model.addAttribute("title", "My Closet");
+        model.addAttribute("items", itemRepository.findAll());*/
+        return "redirect:items/";
     }
 
     @GetMapping("/logout")

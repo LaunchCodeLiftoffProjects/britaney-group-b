@@ -1,6 +1,9 @@
 package org.launchcode.closettracker.models;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;
@@ -9,7 +12,12 @@ import java.util.Objects;
 public abstract class AbstractEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.AUTO,
+            generator="native")
+    @GenericGenerator(
+            name = "native",
+            strategy = "native"
+    )
     public int id;
 
     public int getId() {

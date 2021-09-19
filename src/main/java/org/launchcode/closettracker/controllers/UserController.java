@@ -56,22 +56,22 @@ public class UserController {
 // CREATE START
 
 // User > Create new account
-    @GetMapping("user/create")
+    @GetMapping("create")
     public String displayCreateAccountForm(Model model) {
         model.addAttribute(new UserDTO());
-        model.addAttribute("title", "Create New Account");
-        return "user/create";
+        model.addAttribute("title", "Create User Account");
+        return "create";
     }
 
 // User > Process new account
-    @PostMapping("user/create")
+    @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String processCreateAccountForm(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
-                model.addAttribute("errorMsg", "Bad data!");
-                return "user/create";
+                model.addAttribute("errorMsg", "Something went wrong, try again!");
+                return "create";
             }
 
 // Checks user db for match
@@ -81,25 +81,27 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "user/create";
+                return "create";
             }
 
 // If entered passwords don't match, display error message
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-                errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
+             //   errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
-                model.addAttribute("title", "Create User Account");
-                return "user/create";
+             //   model.addAttribute("title", "Create User Account");
+                return "create";
             }
 
 // When everything is fine, create a new user object
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
+
 // Save the new user to the user db
             userRepository.save(newUser);
+
 // Upon complete process, show closet page
-            model.addAttribute("items", itemRepository.findAll());
-            model.addAttribute("title", "My Closet");
-            return "items/closet";
+         /*   model.addAttribute("items", itemRepository.findAll());
+            model.addAttribute("title", "My Closet");*/
+            return "redirect:";
 
         } catch (Exception ex) {
             model.addAttribute("title", "Create User Account");
@@ -108,7 +110,7 @@ public class UserController {
             } else {
                 model.addAttribute("dbError", "Db Error");
             }
-            return "user/create";
+            return "create";
         }
     }
 // CREATE END

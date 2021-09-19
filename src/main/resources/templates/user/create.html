@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:replace="fragments :: head">
     <meta charset="UTF-8">
-    <title>Create Account</title>
+    <title>Create User Account</title>
 </head>
 <body class="container">
 <center>
@@ -28,6 +28,7 @@
             <input th:field="${userDTO.confirmPassword}" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password">
             <label for="floatingConfirmPassword">Confirm Password</label>
         <p class="error" th:errors="${userDTO.confirmPassword}" type="password"></p>
+        <p class="error" th:errors="${userDTO.password}" type="password"></p>
     </div>
     <br>
     <div class="form-group">
