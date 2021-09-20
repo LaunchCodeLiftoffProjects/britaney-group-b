@@ -136,22 +136,38 @@ public class ItemController {
        Optional<Item> optionalItem = itemRepository.findById(itemId);
        Item itemToEdit = optionalItem.get();
 
-       String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-       itemToEdit.setItemImage(fileName);
+       if (image.isEmpty()) {
 
-       itemToEdit.setItemName(itemName);
-       itemToEdit.setType(type);
-       itemToEdit.setColor(color);
-       itemToEdit.setSize(size);
-       itemToEdit.setSeason(season);
+           itemToEdit.setItemName(itemName);
+           itemToEdit.setType(type);
+           itemToEdit.setColor(color);
+           itemToEdit.setSize(size);
+           itemToEdit.setSeason(season);
+           Item savedItem = itemRepository.save(itemToEdit);
 
-       Item savedItem = itemRepository.save(itemToEdit);
+           return "redirect:details?itemId=" + itemId;
 
-      // Files.delete(Path.of("item-photos/" + fileName));
-      // Files.deleteIfExists(Path.of("item-photos/" + savedItem.getId()));
+       } else {
+
+           String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+           itemToEdit.setItemImage(fileName);
+           itemToEdit.setItemName(itemName);
+           itemToEdit.setType(type);
+           itemToEdit.setColor(color);
+           itemToEdit.setSize(size);
+           itemToEdit.setSeason(season);
+           Item savedItem = itemRepository.save(itemToEdit);
+           String uploadDirectory = "item-photos/" + savedItem.getId();
+           //  FileUtils.deleteDirectory(new File("item-photos/" + savedItem.getId()));
+           FileUploadUtil.saveFile(uploadDirectory, fileName, image);
+       }
+     //  Item savedItem = itemRepository.save(itemToEdit);
+
+ /*      Files.delete(Path.of("item-photos/" + fileName));
+       Files.deleteIfExists(Path.of("item-photos/" + savedItem.getId()));
        String uploadDirectory = "item-photos/" + savedItem.getId();
-     //  FileUtils.deleteDirectory(new File("item-photos/" + savedItem.getId()));
-       FileUploadUtil.saveFile(uploadDirectory, fileName, image);
+       FileUtils.deleteDirectory(new File("item-photos/" + savedItem.getId()));
+       FileUploadUtil.saveFile(uploadDirectory, fileName, image);*/
 
 
 
