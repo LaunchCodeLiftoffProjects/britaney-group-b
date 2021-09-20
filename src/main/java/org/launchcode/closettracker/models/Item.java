@@ -26,13 +26,14 @@ public class Item extends AbstractEntity{
 
     private String itemImage;
 
-    public Item(String itemName, String type, Color color, String size, String[] season, String itemImage) {
+    public Item(String itemName, String type, Color color, String size, String[] season, String itemImage, User user) {
         this.itemName = itemName;
         this.type = type;
         this.color = color;
         this.size = size;
         this.season = season;
         this.itemImage = itemImage;
+        this.user = user;
     }
 
     @Transient

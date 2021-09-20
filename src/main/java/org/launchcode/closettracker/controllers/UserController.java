@@ -43,11 +43,13 @@ public class UserController {
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+                errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
+                model.addAttribute("title", "Create User Account");
                 return "create";
             }
 
-            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword());
+            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
             userRepository.save(newUser);
             return "redirect:";
 

@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User{
+public class User extends AbstractEntity{
 
-    @Id
+    /*@Id
     @GeneratedValue
     @Column(name = "user_id", nullable = false)
     private int id;
-
+*/
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
     @Column(name = "username", nullable = false)
@@ -32,24 +32,29 @@ public class User{
     @Column(name = "pw_hash")
     private String pwHash;
 
+    @Column(name = "pw_reset")
+    private boolean passwordReset;
+
+    @Column(name = "new_user")
+    private boolean isNewUser;
+
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private final List<Item> items = new ArrayList<>();
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // CREATE: Capture user data to create a new account
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, boolean pwReset, boolean newUser) {
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);
+        this.passwordReset = pwReset;
+        this.isNewUser = newUser;
     }
 
+    @Override
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUserName() {
