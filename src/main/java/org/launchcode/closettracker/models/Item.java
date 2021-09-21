@@ -20,10 +20,12 @@ public class Item extends AbstractEntity{
 
     private String[] season;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
+    /*@NotNull(message = "Image is required")*/
+    // Item currently saves but sends to error page if no image uploaded
     private String itemImage;
 
     public Item(String itemName, String type, Color color, String size, String[] season, String itemImage, User user) {
@@ -93,4 +95,9 @@ public class Item extends AbstractEntity{
     public void setItemImage(String itemImage) {
         this.itemImage = itemImage;
     }
+
+    public User getUser() { return user; }
+
+    /*public void setUser(User user) { this.user = user; }*/
+
 }

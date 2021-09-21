@@ -52,6 +52,13 @@ public class User extends AbstractEntity{
         this.isNewUser = newUser;
     }
 
+    public User(String password) {
+        this.pwHash = encoder.encode(password);
+        /*this.password = password;*/
+        this.passwordReset = false;
+    }
+
+
     @Override
     public int getId() {
         return id;
@@ -75,6 +82,30 @@ public class User extends AbstractEntity{
 
     public List<Item> getItems() {
         return items;
+    }
+
+    public String getPwHash() {
+        return pwHash;
+    }
+
+    public void setPwHash(String pwHash) {
+        this.pwHash = pwHash;
+    }
+
+    public boolean isPasswordReset() {
+        return passwordReset;
+    }
+
+    public void setPasswordReset(boolean passwordReset) {
+        this.passwordReset = passwordReset;
+    }
+
+    public boolean isNewUser() {
+        return isNewUser;
+    }
+
+    public void setNewUser(boolean newUser) {
+        isNewUser = newUser;
     }
 
     // Compare input password with its encoded password and assign it in pw_hash

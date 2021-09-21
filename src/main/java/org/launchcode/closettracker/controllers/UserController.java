@@ -2,6 +2,8 @@ package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UserDTO;
+import org.launchcode.closettracker.repositories.ItemRepository;
+import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,6 +25,15 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private PasswordTokenRepository passwordTokenRepository;
+
+    /*@Autowired
+    private MailSender mailSender;*/
 
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
