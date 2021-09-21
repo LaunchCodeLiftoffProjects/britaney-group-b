@@ -27,13 +27,6 @@ public class Item extends AbstractEntity{
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-<<<<<<< HEAD
-    /*@NotNull(message = "Image is required")*/
-    // Item currently saves but sends to error page if no image uploaded
-=======
-
-    // @NotNull(message = "Image is required")
->>>>>>> a368d264f95f93e799a56ac9afcd97602798a641
     private String itemImage;
 
     public Item(String itemName, String type, Color color, String size, String[] season, String itemImage, User user) {
