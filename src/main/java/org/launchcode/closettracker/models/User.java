@@ -24,7 +24,7 @@ public class User extends AbstractEntity {
     }*/
 
 //    @Column(name = "user_id", nullable = false)
-    private int id;
+//    private int id;
 
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
@@ -64,13 +64,7 @@ public class User extends AbstractEntity {
         this.isNewUser = newUser;
     }
 
-    public User(String password) {
-        this.pwHash = encoder.encode(password);
-        this.password = password;
-        this.passwordReset = false;
-    }
-
-    @Override
+/*    @Override
     public int getId() {
         return id;
     }
@@ -78,7 +72,7 @@ public class User extends AbstractEntity {
     public void setId(int id) {
         this.id = id;
     }
-
+*/
     public String getUserName() {
         return username;
     }
@@ -87,9 +81,7 @@ public class User extends AbstractEntity {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
 
@@ -105,11 +97,11 @@ public class User extends AbstractEntity {
 
     public boolean isPasswordReset() { return passwordReset; }
 
-    public boolean isNewUser() { return isNewUser; }
-
     public void setPasswordReset(boolean passwordReset) {
         this.passwordReset = passwordReset;
     }
+
+    public boolean isNewUser() { return isNewUser; }
 
     public void setNewUser(boolean newUser) { isNewUser = newUser; }
 

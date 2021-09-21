@@ -150,23 +150,33 @@ public String displayPasswordResetForm(Model model) {
         createPasswordResetTokenForUser(currentUser, token);
 
 // While the User model does not persist the 'password' field, it is still required. So we need to...
-    // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
+    // 1) Use a random string to set the password value so we can update the user object and replace the hash
+    // so the old password no longer works
         currentUser.setPassword(createRandomString(8));
-    // 2) To ensure the user will have to update their password upon next login so set the flag to true
+    // 2) Ensure the user will have to update their password upon next login so set the flag to true
         currentUser.setPasswordReset(true);
     // 3) Persist the finished User object
+        int userId = currentUser.getId();
+        String name = currentUser.getUserName();
+        String emale = currentUser.getEmail();
+        boolean pwr = currentUser.isPasswordReset();
+        boolean newU = currentUser.isNewUser();
+        String pwh = currentUser.getPwHash();
+        String pw = currentUser.getPassword();
         userRepository.save(currentUser);
-
+        String foobar = currentUser.getEmail();
         // Creates and sends an email to the user
     // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
-        // login credentials in the properties file
+        // login credentials in the application.properties file
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+//            intPage.addAttribute("message", "TEST MESSAGE EMAIL SUCCESS");
             return "user/reset-int";
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+//                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+//                intPage.addAttribute("message", "TEST MESSAGE NO EMAIL SERVER SUCCESS");
                 return "user/reset-int";
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
