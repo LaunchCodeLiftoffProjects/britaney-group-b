@@ -1,55 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
-<head th:replace="fragments :: head">
-    <meta charset="UTF-8">
-    <title th:text="${title}"></title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
+<head th:replace="fragments :: head"></head>
 <body class="container">
-<center>
-<h1><header th:text="${title}"></header></h1>
 
+<header th:replace="fragments :: navigation"></header>
+<br>
+<br>
+<br>
 <form method="post">
-    <div class="form-group">
-        <label>Item name
-            <input th:field="${item.itemName}" class="form-control">
-        </label>
-        <p class="error" th:errors="${item.itemName}"></p>
-    </div>
-<!--    <div class="form-group">
-        <label>Storage location
-            <input readonly th:field="${item.location}" class="form-control" value="Closet">
-        </label>
-        <p class="error" th:errors="${item.location}"></p>
-    </div>-->
-    <div class="form-group">
-        <label for="color">Select a color:</label>
-        <select id="color" name="color">
-            <option value="rgb">Primary</option>
-            <option value="cmyk">Secondary</option>
-            <option value="multi">Multi</option>
-        </select>
-        <p class="error" th:errors="${item.color}"></p>
-    </div>
-    <div class="form-group">
-        <label>Item size
-            <input th:field="${item.size}" class="form-control">
-        </label>
-        <p class="error" th:errors="${item.size}"></p>
-    </div>
-    <div class="form-group">
-        <label for="seasons">Choose a season:</label>
-        <select id="seasons" name="seasons">
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="fall">Fall</option>
-            <option value="winter">Winter</option>
-        </select>
-        <p class="error" th:errors="${item.season}"></p>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Save changes" class="btn btn-success">
-    </div>
+
+    <table class="table table-borderless table-hover">
+        <thead>
+        <tr>
+            <th>Delete?</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tr th:each="item : ${items}">
+            <td><input type="checkbox" id="check" name="itemIds" th:value="${item.id}" class="form-check-input"/></td>
+            <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
+            <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:150px"></td>
+    </table>
+            <input type="submit" value="Delete" class="btn btn-danger">
 </form>
-</center>
+
 </body>
 </html>
