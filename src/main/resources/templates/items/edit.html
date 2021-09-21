@@ -40,7 +40,18 @@
             </tr>
             <tr>
                 <th>Season</th>
-                <td><li th:each= "season : ${item.season}" th:text="${season}"></li></td>
+                <td>
+                    <div class="custom-control custom-checkbox" id="checkBoxSeason">
+                        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Spring" id="customCheck1"/></label>
+                        <label class="custom-control-label" for="customCheck1">Spring</label>
+                        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Summer" id="customCheck2"/></label>
+                        <label class="custom-control-label" for="customCheck2">Summer</label>
+                        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Fall" id="customCheck3"/></label>
+                        <label class="custom-control-label" for="customCheck3">Fall</label>
+                        <input type = "checkbox" class="custom-control-input" th:field="${item.season}" th:value="Winter" id="customCheck4"/></label>
+                        <label class="custom-control-label" for="customCheck4">Winter</label>
+                        <p class="error" th:errors="${item.season}"></p>
+                    </div></td>
             </tr>
         </table>
     </div>
@@ -49,12 +60,22 @@
             <tr>
                 <td class="zoom"><img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
             </tr>
+            <tr>
+                <td>
+            <div class="mb-3 w-50">
+                <label for="formFile" class="form-label">Update Image</label>
+                <input class="form-control" type="file" name="image" accept="image/png, image/jpeg" id="formFile"/>
+            </div>
+                </td>
+            </tr>
         </table>
     </div>
 </div>
 <div class="form-group">
-<button type="submit" class="btn btn-primary">Save Changes</button>
+<button type="submit" class="btn btn-primary" id="edit.submit">Save Changes</button>
+    <a th:href="'details?itemId=' + ${item.id}"><button type="button" class="btn btn-success" id="edit.cancel">Cancel</button></a>
 </div>
 </form>
+
 </body>
 </html>
