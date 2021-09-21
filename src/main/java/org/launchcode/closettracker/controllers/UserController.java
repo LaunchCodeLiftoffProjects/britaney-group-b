@@ -33,8 +33,8 @@ public class UserController {
     @Autowired
     private PasswordTokenRepository passwordTokenRepository;
 
-    /*@Autowired
-    private MailSender mailSender;*/
+    @Autowired
+    private MailSender mailSender;
 
     // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {

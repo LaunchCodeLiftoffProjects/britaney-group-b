@@ -29,6 +29,12 @@ public class User extends AbstractEntity{
     @Column(name = "email", unique = true)
     private String email;
 
+    @NotNull(message = "Password is required")
+    @NotBlank(message = "Password is required")
+    @Size(min=6, max = 24,  message = "Password must be between 6 and 24 characters long")
+    @Transient
+    private String password;
+
     @Column(name = "pw_hash")
     private String pwHash;
 
@@ -48,6 +54,7 @@ public class User extends AbstractEntity{
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);
+        this.password = password;
         this.passwordReset = pwReset;
         this.isNewUser = newUser;
     }
@@ -90,6 +97,10 @@ public class User extends AbstractEntity{
 
     public void setPwHash(String pwHash) {
         this.pwHash = pwHash;
+    }
+
+    public void setPassword(String password) {
+        this.password = password; this.pwHash = encoder.encode(password);
     }
 
     public boolean isPasswordReset() {
