@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
 <header th:replace="fragments :: navigation"></header>
-
+<form class="form-inline my-2 my-lg-0 w-25"
+      th:action="@{/items/search}" method="get">
+    <input type="search" name="keyword" size="50"
+           class="form-control mr-sm-2" placeholder="Search by name or item type" required />
+    <input type="submit" value="Search" class="btn btn-outline-success my-2 my-sm-0" />
+</form>
 <table class="table table-borderless table-hover">
     <thead>
         <tr>

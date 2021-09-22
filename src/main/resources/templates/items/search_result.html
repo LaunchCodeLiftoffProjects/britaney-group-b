@@ -1,27 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
 <header th:replace="fragments :: navigation"></header>
-<form class="form-inline my-2 my-lg-0 w-25"
-      th:action="@{/items/search}" method="get">
+<form class="form-inline my-2 my-lg-0 w-50" th:action="@{/items/search}" method="get">
     <input type="search" name="keyword" size="50"
            class="form-control mr-sm-2" placeholder="Search by name or item type" required />
-    <input type="submit" value="Search" style="float: left" class="btn btn-outline-success my-2 my-sm-0" />
+    <input type="submit" value="Search" class="btn btn-outline-success my-2 my-sm-0" />
 </form>
 <table class="table table-borderless table-hover">
     <thead>
-        <tr>
-            <th>Name</th>
-            <th>Clothing type</th>
-            <th>Color</th>
-            <th>Size</th>
-            <th>Season</th>
-            <th>Item Image</th>
-        </tr>
+    <tr>
+        <th>Name</th>
+        <th>Clothing type</th>
+        <th>Color</th>
+        <th>Size</th>
+        <th>Season</th>
+        <th>Item Image</th>
+    </tr>
     </thead>
-    <tr th:each="item : ${items}">
+    <tr th:each="item : ${searchResult}">
         <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
         <td th:text="${item.type}"></td>
         <td th:text="${item.color.displayName}"></td>

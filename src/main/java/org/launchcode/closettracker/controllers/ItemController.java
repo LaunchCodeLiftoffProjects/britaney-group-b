@@ -1,16 +1,12 @@
 package org.launchcode.closettracker.controllers;
 
-import org.apache.tomcat.util.http.fileupload.FileUpload;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.launchcode.closettracker.models.Color;
 import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
-import org.launchcode.closettracker.models.User;
-import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
@@ -18,16 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -39,6 +29,10 @@ public class ItemController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SearchService searchService;
+
 
     // CREATE ITEM: Show form
     @GetMapping("create-item")
@@ -172,6 +166,17 @@ public class ItemController {
 
 
        return "redirect:details?itemId=" + itemId;
+   }
+
+   // SEARCH ITEMS    items/search
+
+   @GetMapping("/search")
+   public String search(@Param("keyword") String keyword, Model model){
+       List<Item> searchResult = searchService.search(keyword);
+       model.addAttribute("keyword", keyword);
+       model.addAttribute("title", "Search results for " + keyword + "");
+       model.addAttribute("searchResult", searchResult);
+       return "/items/search_result";
    }
 
     // DELETE ITEM(s): Show form
