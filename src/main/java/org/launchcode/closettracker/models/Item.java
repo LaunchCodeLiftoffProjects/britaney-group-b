@@ -24,7 +24,7 @@ public class Item extends AbstractEntity{
     private String[] season;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     private String itemImage;
