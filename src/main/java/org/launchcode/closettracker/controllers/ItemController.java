@@ -18,6 +18,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -97,6 +99,12 @@ public class ItemController {
     @ResponseBody
     public String currentUserName(Principal principal) {
         return principal.getName();
+    }
+
+    @RequestMapping
+    public String currentUser(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return "redirect:";
     }
 
     // Displays all items in closet

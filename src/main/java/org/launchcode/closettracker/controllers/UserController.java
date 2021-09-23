@@ -14,10 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+/*import org.springframework.security.core.context.SecurityContextHolder;*/
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -51,6 +53,7 @@ public class UserController {
 
         return generatedString;
     }
+
 // CREATE START
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})

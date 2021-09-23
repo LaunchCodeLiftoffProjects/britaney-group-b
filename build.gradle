@@ -21,7 +21,8 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto'
 	implementation 'org.springframework.security:spring-security-crypto:5.5.1'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE'
+	implementation 'org.springframework.security:spring-security-core'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
