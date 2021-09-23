@@ -173,6 +173,11 @@ public class ItemController {
    @GetMapping("/search")
    public String search(@Param("keyword") String keyword, Model model){
        List<Item> searchResult = searchService.search(keyword);
+
+       if (searchResult.isEmpty()) {
+           model.addAttribute("message","No matching items for '" + keyword + "' found");
+           return "/items/search_result";
+       } else
        model.addAttribute("keyword", keyword);
        model.addAttribute("title", "Search results for " + keyword + "");
        model.addAttribute("searchResult", searchResult);

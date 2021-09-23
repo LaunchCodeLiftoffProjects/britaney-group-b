@@ -27,12 +27,16 @@
         <li class="nav-item"><a class="nav-link" href="/items/delete">Delete Items</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
     </ul>
-
 </nav>
 
 <h3 th:fragment="title">
     <h5 class="m-1 float-center" th:text="${title}"></h5>
 </h3>
+
+<div th:fragment="message">
+    <h2 class="searchMessage" th:text="${message}"></h2>
+    <br>
+</div>
 
 </body>
 </html>
