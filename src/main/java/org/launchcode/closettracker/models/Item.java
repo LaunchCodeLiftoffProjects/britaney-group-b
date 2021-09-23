@@ -49,53 +49,29 @@ public class Item extends AbstractEntity{
     public Item() {
     }
 
-    public String getItemName() {
-        return itemName;
-    }
+    public String getItemName() { return itemName; }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
+    public void setItemName(String itemName) { this.itemName = itemName; }
 
-    public String getType() {
-        return type;
-    }
+    public String getType() { return type; }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setType(String type) { this.type = type; }
 
-    public Color getColor() {
-        return color;
-    }
+    public Color getColor() { return color; }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    public void setColor(Color color) { this.color = color; }
 
-    public String getSize() {
-        return size;
-    }
+    public String getSize() { return size; }
 
-    public void setSize(String size) {
-        this.size = size;
-    }
+    public void setSize(String size) { this.size = size; }
 
-    public String[] getSeason() {
-        return season;
-    }
+    public String[] getSeason() { return season; }
 
-    public void setSeason(String[] season) {
-        this.season = season;
-    }
+    public void setSeason(String[] season) { this.season = season; }
 
-    public String getItemImage() {
-        return itemImage;
-    }
+    public String getItemImage() { return itemImage; }
 
-    public void setItemImage(String itemImage) {
-        this.itemImage = itemImage;
-    }
+    public void setItemImage(String itemImage) { this.itemImage = itemImage; }
 
     public User getUser() { return user; }
 
