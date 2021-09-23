@@ -20,14 +20,7 @@
         <p class="error" th:errors="${editInfoDTO.email}"></p>
     </div>
     <div class="form-floating w-25">
-            <input th:field="${editInfoDTO.password}" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label>
-        <p class="error" th:errors="${editInfoDTO.password}" type="password"></p>
-    </div>
-    <div class="form-floating w-25">
-            <input th:field="${editInfoDTO.confirmPassword}" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password">
-            <label for="floatingConfirmPassword">Confirm Password</label>
-        <p class="error" th:errors="${editInfoDTO.confirmPassword}" type="password"></p>
+        <p>Password: <a href="./edit-password">Change password</a></p>
     </div>
     <br>
     <div class="form-group">
