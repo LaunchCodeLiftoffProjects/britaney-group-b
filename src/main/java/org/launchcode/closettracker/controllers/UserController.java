@@ -273,12 +273,12 @@ public class UserController {
             user.setPasswordReset(false);
         // Persists modified User object to db
             userRepository.save(user);
-        // Once modified user object is saved, deletes the token from the db
+        // Once modified user object is saved, deletes the token from the tokeb db
             passwordTokenRepository.deleteById(userByToken.getId());
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
-            return "index";
+            return "redirect:index";
         } else {
         // If user is not found, displays error message
             model.addAttribute("title", "Update Account Password");
@@ -294,34 +294,44 @@ public class UserController {
 // User --> Show edit account info
     @GetMapping("user/edit-info")
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
-                                          Errors errors, Model model, HttpSession session) {
-    // Get current user object
+                                          Errors errors, Model model, Model loginModel, HttpSession session) {
+    // Get current user
         User currentUser = getUserFromSession(session);
-    // Create new DTO object
-        model.addAttribute(new EditInfoDTO());
+
+    // If user object is null, redirect to login page
+        if (currentUser == null) {
+            loginModel.addAttribute("title", "Login");
+            return "redirect:index";
+        }
+
+    // Set DTO fields with values from User db
         editInfoDTO.setUsername(currentUser.getUserName());
         editInfoDTO.setEmail(currentUser.getEmail());
-    // Pull user values and prefill fields then display form
-        model.addAttribute("floatingName", currentUser.getUserName());
-        model.addAttribute("email", currentUser.getEmail());
+        model.addAttribute(editInfoDTO);
         return "user/edit-info";
     }
 
 // User --> Process edit account info
     @PostMapping("user/edit-info")
-    public String processEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO, Errors errors,
-                                             HttpServletRequest request, Model model) {
+    public String processEditAccountInfoForm(@ModelAttribute @Valid EditInfoDTO editInfoDTO, Errors errors,
+                                             HttpServletRequest request, HttpSession session, Model model) {
+/* Some cases to plan for:
+    1) Since fields are prefilled with persisted info, when user hits Update compare the field values to the stored values, do nothing if same
+    2) Since fields can be changed together or separately, check each as individual fields
+    3) Username is not used for login so it can be whatever the user wants
+    4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
+ */
     // Get current user
-        User currentUser = userRepository.findByEmail(editInfoDTO.getEmail());
+        User currentUser = getUserFromSession(session);
 
-// If the user account does not exist, show error
+    // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
             errors.rejectValue("email", "email.DoesNotExist", "An account with this email address does not exist");
             model.addAttribute("title", "Reset Account Password");
-            return "user/reset";
+            return "user/edit-info";
         }
 
-// Creates and sends an email to the user
+    // Creates and sends an email to the user
         // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
         // login credentials in the properties file
         try {
@@ -333,7 +343,7 @@ public class UserController {
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
             }
-            return "user/reset";
+            return "user/edit-info";
         }
 
 // While the User model does not persist the 'password' field, it is still a required field for the user object. So...
