@@ -77,6 +77,7 @@ public class ItemController {
 
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
         item.setItemImage(fileName);
+    // Gets user id from current session to find the User object
         User currentUser = getUserFromSession(session);
     // If user null, it should redirect user to login page to log in before allowing item creation
     // This is to catch the call to itemRepository before it throws the 500 error
