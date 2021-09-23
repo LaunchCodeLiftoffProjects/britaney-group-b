@@ -23,15 +23,11 @@ public class SessionController {
         if (userId == null) {
             return null;
         }
-
         Optional<User> user = userRepository.findById(userId);
-
         if (user.isEmpty()) {
             return null;
         }
-
         return user.get();
-
     }
 
     private static void setUserInSession(HttpSession session, User user) {

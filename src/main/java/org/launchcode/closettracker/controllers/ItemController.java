@@ -32,6 +32,8 @@ import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Optional;
 
+import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+
 @Controller
 @RequestMapping("items")
 public class ItemController {
@@ -43,7 +45,7 @@ public class ItemController {
     private UserRepository userRepository;
 
     public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(HomeController.userSessionKey);
+        Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
             return null;
         }

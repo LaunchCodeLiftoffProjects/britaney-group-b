@@ -1,6 +1,5 @@
 package org.launchcode.closettracker.controllers;
 
-
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UpdatePasswordDTO;
 import org.launchcode.closettracker.models.dto.UserDTO;
@@ -22,6 +21,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+
 @Controller
 public class HomeController {
 
@@ -30,8 +31,6 @@ public class HomeController {
 
     @Autowired
     private ItemRepository itemRepository;
-
-    public static final String userSessionKey = "user";
 
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);

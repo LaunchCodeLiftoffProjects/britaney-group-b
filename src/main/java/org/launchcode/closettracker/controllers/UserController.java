@@ -16,10 +16,13 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+
+import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
 
 @Controller
 public class UserController {
@@ -51,7 +54,20 @@ public class UserController {
 
         return generatedString;
     }
-// CREATE START
+
+    public User getUserFromSession(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute(userSessionKey);
+        if (userId == null) {
+            return null;
+        }
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return null;
+        }
+        return user.get();
+    }
+
+    // CREATE START
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -98,7 +114,7 @@ public class UserController {
 
 // User --> Show email to reset form
     @GetMapping("user/reset")
-    public String displayPasswordResetForm(Model model) {
+    public String displayStartResetForm(Model model) {
         model.addAttribute(new ResetEmailDTO());
         model.addAttribute("title", "Reset Account Password");
         return "user/reset";
@@ -106,7 +122,7 @@ public class UserController {
 
 // User --> Process email to reset form
     @PostMapping("user/reset")
-    public String processPasswordResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
+    public String processStartResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
     // If the user account does not exist, show error
@@ -186,7 +202,7 @@ public class UserController {
 
 // User --> Show update password form
     @GetMapping("user/update")
-    public String showChangePasswordForm(Model model, @RequestParam("token") String token) {
+    public String showChooseNewPasswordForm(Model model, @RequestParam("token") String token) {
         boolean result = validatePasswordResetToken(token);
         if(result) {
             model.addAttribute("token", token);
@@ -212,7 +228,7 @@ public class UserController {
 
 // User --> Process update password form
     @PostMapping("user/update")
-    public String processChangePasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
+    public String processChooseNewPasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
                                             HttpServletRequest request, Model model) {
 
     // If the 1st password field is empty, display error message
@@ -277,14 +293,25 @@ public class UserController {
 
 // User --> Show edit account info
     @GetMapping("user/edit-info")
-    public String showEditAccountInfoForm(Model model) {
+    public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
+                                          Errors errors, Model model, HttpSession session) {
+    // Get current user object
+        User currentUser = getUserFromSession(session);
+    // Create new DTO object
         model.addAttribute(new EditInfoDTO());
-        return "user/edit";
+        editInfoDTO.setUsername(currentUser.getUserName());
+        editInfoDTO.setEmail(currentUser.getEmail());
+    // Pull user values and prefill fields then display form
+        model.addAttribute("floatingName", currentUser.getUserName());
+        model.addAttribute("email", currentUser.getEmail());
+        return "user/edit-info";
     }
 
 // User --> Process edit account info
     @PostMapping("user/edit-info")
-    public String processEditAccountInfoForm(@ModelAttribute @Valid EditInfoDTO editInfoDTO, Errors errors, HttpServletRequest request, Model model) {
+    public String processEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO, Errors errors,
+                                             HttpServletRequest request, Model model) {
+    // Get current user
         User currentUser = userRepository.findByEmail(editInfoDTO.getEmail());
 
 // If the user account does not exist, show error
@@ -329,5 +356,5 @@ public class UserController {
     }
 
 // EDIT ACCOUNT END
-}
+
 }
