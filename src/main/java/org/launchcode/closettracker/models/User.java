@@ -61,63 +61,33 @@ public class User extends AbstractEntity{
 
     public User(String password) {
         this.pwHash = encoder.encode(password);
-        /*this.password = password;*/
         this.passwordReset = false;
     }
 
+    public String getUserName() { return username; }
 
-    @Override
-    public int getId() {
-        return id;
-    }
+    public void setUserName(String userName) { this.username = username; }
 
-    public String getUserName() {
-        return username;
-    }
+    public String getEmail() { return email; }
 
-    public void setUserName(String userName) {
-        this.username = username;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public List<Item> getItems() { return items; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public String getPwHash() {
-        return pwHash;
-    }
-
-    public void setPwHash(String pwHash) {
-        this.pwHash = pwHash;
-    }
+    public String getPwHash() { return pwHash; }
 
     public void setPassword(String password) {
-        this.password = password; this.pwHash = encoder.encode(password);
+        this.password = password;
+        this.pwHash = encoder.encode(password);
     }
 
-    public boolean isPasswordReset() {
-        return passwordReset;
-    }
+    public boolean isPasswordReset() { return passwordReset; }
 
-    public void setPasswordReset(boolean passwordReset) {
-        this.passwordReset = passwordReset;
-    }
+    public void setPasswordReset(boolean passwordReset) { this.passwordReset = passwordReset; }
 
-    public boolean isNewUser() {
-        return isNewUser;
-    }
+    public boolean isNewUser() { return isNewUser; }
 
-    public void setNewUser(boolean newUser) {
-        isNewUser = newUser;
-    }
+    public void setNewUser(boolean newUser) { isNewUser = newUser; }
 
     // Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {
