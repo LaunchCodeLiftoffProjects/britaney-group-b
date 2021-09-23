@@ -284,8 +284,8 @@ public class UserController {
 
 // User --> Process edit account info
     @PostMapping("user/edit-info")
-    public String processEditAccountInfoForm(@ModelAttribute @Valid EditUserDTO editUserDTO, Errors errors, HttpServletRequest request, Model model) {
-        User currentUser = userRepository.findByEmail(editUserDTO.getEmail());
+    public String processEditAccountInfoForm(@ModelAttribute @Valid EditInfoDTO editInfoDTO, Errors errors, HttpServletRequest request, Model model) {
+        User currentUser = userRepository.findByEmail(editInfoDTO.getEmail());
 
 // If the user account does not exist, show error
         if (currentUser == null) {
