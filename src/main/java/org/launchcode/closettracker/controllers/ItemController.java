@@ -10,6 +10,7 @@ import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
+import org.launchcode.closettracker.controllers.HomeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
@@ -40,6 +42,21 @@ public class ItemController {
     @Autowired
     private UserRepository userRepository;
 
+    public User getUserFromSession(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute(HomeController.userSessionKey);
+        if (userId == null) {
+            return null;
+        }
+
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return null;
+        }
+
+        return user.get();
+
+    }
+
     // CREATE ITEM: Show form
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
@@ -51,7 +68,8 @@ public class ItemController {
     // CREATE ITEM: Process form
     @PostMapping("create-item")
     public String processCreateItemForm(@ModelAttribute @Valid Item item, Errors errors,
-                                        Model model, @RequestParam("image") MultipartFile image) throws IOException {
+                                        HttpSession session, Model model,
+                                        @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Add Item");
             return "items/create-item";
@@ -59,14 +77,21 @@ public class ItemController {
 
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
         item.setItemImage(fileName);
-
+        User currentUser = getUserFromSession(session);
+    // If user null, it should redirect user to login page to log in before allowing item creation
+    // This is to catch the call to itemRepository before it throws the 500 error
+        if(currentUser == null) {
+            //
+        }
+    // As user id is required to create items, sets the user object for the item so it can be created
+        item.setUser(currentUser);
         itemRepository.save(item);
         String uploadDirectory = "item-photos/" + item.getId();
         FileUploadUtil.saveFile(uploadDirectory, fileName, image);
         return "redirect:";
     }
 
-    //get current users username - in progress
+    // get current users username - in progress
 
     @RequestMapping(value = "/username", method = RequestMethod.GET)
     @ResponseBody
@@ -74,7 +99,7 @@ public class ItemController {
         return principal.getName();
     }
 
-    //Displays all items in closet
+    // Displays all items in closet
 
     @GetMapping
     public String displayAllItems(Model objModel, Model model, Principal principal)
@@ -103,7 +128,7 @@ public class ItemController {
         return "items/details";
     }
 
-    //Edit Item Details
+    // Edit Item Details
 
     @GetMapping("edit")
     public String displayEditItemDetailsForm(@RequestParam Integer itemId, Model model) {

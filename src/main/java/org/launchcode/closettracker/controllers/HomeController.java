@@ -31,7 +31,7 @@ public class HomeController {
     @Autowired
     private ItemRepository itemRepository;
 
-    private static final String userSessionKey = "user";
+    public static final String userSessionKey = "user";
 
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
