@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User extends AbstractEntity{
-
-    /*@Id
+public class User extends AbstractEntity {
+/*
+    @Id
     @GeneratedValue
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "id", nullable = false)
     private int id;
 */
     @NotNull(message = "Username is required")
@@ -31,7 +31,7 @@ public class User extends AbstractEntity{
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
-    @Size(min=6, max = 24,  message = "Password must be between 6 and 24 characters long")
+    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     @Transient
     private String password;
 
@@ -44,8 +44,8 @@ public class User extends AbstractEntity{
     @Column(name = "new_user")
     private boolean isNewUser;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    private final List<Item> items = new ArrayList<>();
+//    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+//    private final List<Item> items = new ArrayList<>();
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -64,6 +64,10 @@ public class User extends AbstractEntity{
         this.passwordReset = false;
     }
 
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
+
     public String getUserName() { return username; }
 
     public void setUserName(String userName) { this.username = username; }
@@ -72,7 +76,7 @@ public class User extends AbstractEntity{
 
     public void setEmail(String email) { this.email = email; }
 
-    public List<Item> getItems() { return items; }
+//    public List<Item> getItems() { return items; }
 
     public String getPwHash() { return pwHash; }
 

@@ -96,8 +96,10 @@ public class UserController {
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
+        // This line for debugging
+            User activeUser = newUser;
             userRepository.save(newUser);
-            return "redirect:";
+            return "redirect:index";
 
         } catch (Exception ex) {
             if (ex.toString().contains("constraint")) {
