@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+import static org.launchcode.closettracker.controllers.SessionController.getUserFromSession;
 
 @Controller
 public class UserController {
@@ -54,7 +56,7 @@ public class UserController {
 
         return generatedString;
     }
-
+/*
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
@@ -66,7 +68,7 @@ public class UserController {
         }
         return user.get();
     }
-
+*/
     // CREATE START
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})

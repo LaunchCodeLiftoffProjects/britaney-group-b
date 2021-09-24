@@ -1,7 +1,6 @@
 package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.User;
-import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,23 +10,18 @@ import java.util.Optional;
 public class SessionController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
+    private static UserRepository userRepository;
 
     public static final String userSessionKey = "user";
 
-    public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
+    public static User getUserFromSession(HttpSession session) {
+        Optional<User> user = userRepository.findById((Integer) session.getAttribute(userSessionKey));
+        if (user.isPresent()) {
+            return user.get();
+        }
+        else {
             return null;
         }
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            return null;
-        }
-        return user.get();
     }
 
     private static void setUserInSession(HttpSession session, User user) {

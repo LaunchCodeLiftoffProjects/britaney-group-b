@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-
 public class Item extends AbstractEntity{
 
     @NotNull(message = "Name is required")

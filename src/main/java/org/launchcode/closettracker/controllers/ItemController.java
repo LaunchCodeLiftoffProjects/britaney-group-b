@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +29,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Optional;
-
+import java.util.List;
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
 
 @Controller
@@ -102,13 +102,13 @@ public class ItemController {
         return principal.getName();
     }
 
-    // Displays all items in closet
+    // Displays all items for logged in user in My Closet
 
     @GetMapping
-    public String displayAllItems(Model objModel, Model model, Principal principal)
-    {
+    public String displayAllItems(Model objModel, Model model, Principal principal, HttpSession session) {
+        User currentUser = getUserFromSession(session);
         model.addAttribute("title", "My Closet");
-        objModel.addAttribute("items", itemRepository.findAll());
+        objModel.addAttribute("items", itemRepository.findByUser(currentUser));
         return "items/closet";
     }
 
@@ -132,7 +132,16 @@ public class ItemController {
     }
 
     // Edit Item Details
+/*
+    @PostMapping("view-by-user")
+    public String recallItemsByUser(Model model, HttpSession session) {
+        int userId = 1;
+        User currentUser = getUserFromSession(session);
+        User item = itemRepository.findByUserid(userId);
 
+        return "item";
+    }
+*/
     @GetMapping("edit")
     public String displayEditItemDetailsForm(@RequestParam Integer itemId, Model model) {
 
