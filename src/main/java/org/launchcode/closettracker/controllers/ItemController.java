@@ -12,6 +12,7 @@ import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.launchcode.closettracker.controllers.HomeController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
@@ -25,11 +26,9 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.List;
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
@@ -43,6 +42,10 @@ public class ItemController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SearchService searchService;
+
 
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
@@ -209,6 +212,22 @@ public class ItemController {
 
 
        return "redirect:details?itemId=" + itemId;
+   }
+
+   // SEARCH ITEMS    items/search
+
+   @GetMapping("/search")
+   public String search(@Param("keyword") String keyword, Model model){
+       List<Item> searchResult = searchService.search(keyword);
+
+       if (searchResult.isEmpty()) {
+           model.addAttribute("message","No matching items for '" + keyword + "' found");
+           return "/items/search_result";
+       } else
+       model.addAttribute("keyword", keyword);
+       model.addAttribute("title", "Search results for " + keyword + "");
+       model.addAttribute("searchResult", searchResult);
+       return "/items/search_result";
    }
 
     // DELETE ITEM(s): Show form

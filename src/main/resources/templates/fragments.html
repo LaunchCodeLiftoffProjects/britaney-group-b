@@ -10,15 +10,33 @@
 </head>
 <body>
 
-<nav th:fragment="navigation">
-    <center><h1 th:text="${title}">Closet Tracker</h1></center>
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;" th:fragment="navigation">
+         <a class="navbar-brand m-2">Closet Tracker</a>
+    <form id="searchForm"
+          th:action="@{/items/search}" method="get">
+        <div class="d-flex p-2">
+    <span class="my-2 my-lg-0" style="position: relative; display: inline-block; direction: ltr;">
+            <input type="search" name="keyword" class="form-control" placeholder="Search item name or type" required /> </span>
+            <button type="submit" value="Search" class="btn btn-outline-success my-2 my-sm-0 m-1">Search</button>
+        </div>
+    </form>
+    <h5><span class="navbar-text" style="color:black" th:text="${title}"></span></h5>
     <ul class="nav" style="float:right;">
-        <li class="nav item"><a class="nav-link" href="/items">My Closet</a></li>
-        <li class="nav item"><a class="nav-link" href="/items/create-item">Add Item</a></li>
-        <li class="nav item"><a class="nav-link" href="/items/delete">Delete Items</a></li>
+        <li class="nav-item"><a class="nav-link" href="/items">My Closet</a></li>
+        <li class="nav-item"><a class="nav-link" href="/items/create-item">Add Item</a></li>
+        <li class="nav-item"><a class="nav-link" href="/items/delete">Delete Items</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
     </ul>
 </nav>
+
+<h3 th:fragment="title">
+    <h5 class="m-1 float-center" th:text="${title}"></h5>
+</h3>
+
+<div th:fragment="message">
+    <h2 class="searchMessage" th:text="${message}"></h2>
+    <br>
+</div>
 
 </body>
 </html>
