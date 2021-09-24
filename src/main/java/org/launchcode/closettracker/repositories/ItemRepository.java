@@ -9,13 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ItemRepository extends CrudRepository<Item, Integer>  {
+public interface ItemRepository extends CrudRepository<Item, Integer> {
 
     @Query(value = "SELECT * FROM item WHERE "
-    + "MATCH (item_name, type) "
-    + "AGAINST (?1)",
-    nativeQuery = true)
+            + "MATCH (item_name, type) "
+            + "AGAINST (?1)",
+            nativeQuery = true)
     public List<Item> search(String keyword);
 
     List<Item> findByUser(User user);
+
 }
