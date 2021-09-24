@@ -18,8 +18,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -101,19 +99,14 @@ public class ItemController {
         return principal.getName();
     }
 
-    @RequestMapping
-    public String currentUser(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return "redirect:";
-    }
-
     // Displays all items in closet
 
     @GetMapping
-    public String displayAllItems(Model objModel, Model model, Principal principal)
+    public String displayAllItems(Model objModel, Model model, HttpSession session)
     {
+        User currentUser = getUserFromSession(session);
         model.addAttribute("title", "My Closet");
-        objModel.addAttribute("items", itemRepository.findAll());
+        objModel.addAttribute("items", currentUser.getItems());
         return "items/closet";
     }
 
@@ -209,9 +202,10 @@ public class ItemController {
 
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
-    public String displayDeleteItemForm(Model model) {
+    public String displayDeleteItemForm(Model model, HttpSession session) {
+        User currentUser = getUserFromSession(session);
         model.addAttribute("title", "Delete Items");
-        model.addAttribute("items", itemRepository.findAll());
+        model.addAttribute("items", currentUser.getItems());
         return "items/delete";
     }
 
