@@ -2,6 +2,7 @@ package org.launchcode.closettracker.controllers;
 
 
 import org.launchcode.closettracker.models.Item;
+import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -22,7 +23,7 @@ public class SearchService {
     @Autowired
     private ItemRepository itemRepository;
 
-    public List<Item> search(String keyword){
+    public List<Item> search(String keyword, User user){
         return itemRepository.search(keyword);
     }
 

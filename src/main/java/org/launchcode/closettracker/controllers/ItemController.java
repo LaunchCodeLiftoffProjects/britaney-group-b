@@ -66,7 +66,6 @@ public class ItemController {
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
         model.addAttribute(new Item());
-        model.addAttribute("title", "Add Item");
         return "items/create-item";
     }
 
@@ -76,7 +75,6 @@ public class ItemController {
                                         HttpSession session, Model model,
                                         @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
-            model.addAttribute("title", "Add Item");
             return "items/create-item";
         }
 
@@ -217,8 +215,12 @@ public class ItemController {
    // SEARCH ITEMS    items/search
 
    @GetMapping("/search")
-   public String search(@Param("keyword") String keyword, Model model){
-       List<Item> searchResult = searchService.search(keyword);
+   public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session){
+
+       User currentUser = getUserFromSession(session);
+
+       List<Item> searchResult = searchService.search(keyword, currentUser);
+       objModel.addAttribute("items", itemRepository.findByUser(currentUser));
 
        if (searchResult.isEmpty()) {
            model.addAttribute("message","No matching items for '" + keyword + "' found");
@@ -230,11 +232,12 @@ public class ItemController {
        return "/items/search_result";
    }
 
+
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
-    public String displayDeleteItemForm(Model model) {
-        model.addAttribute("title", "Delete Items");
-        model.addAttribute("items", itemRepository.findAll());
+    public String displayDeleteItemForm(Model objModel, Model model, HttpSession session) {
+        User currentUser = getUserFromSession(session);
+        objModel.addAttribute("items", itemRepository.findByUser(currentUser));
         return "items/delete";
     }
 
