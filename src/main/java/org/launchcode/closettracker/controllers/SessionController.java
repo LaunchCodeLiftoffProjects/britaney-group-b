@@ -12,11 +12,11 @@ import java.util.Optional;
 public class SessionController {
 
     @Autowired
-    private static UserRepository userRepository;
+    private UserRepository userRepository;
 
     public static final String userSessionKey = "user";
 
-    public static User getUserFromSession(HttpSession session) {
+    public User getUserFromSession(HttpSession session) {
         Optional<User> user = userRepository.findById((Integer) session.getAttribute(userSessionKey));
         if (user.isPresent()) {
             return user.get();
@@ -24,10 +24,6 @@ public class SessionController {
         else {
             return null;
         }
-    }
-
-    private static void setUserInSession(HttpSession session, User user) {
-        session.setAttribute(userSessionKey, user.getId());
     }
 
 }

@@ -34,28 +34,14 @@ public class LoginController {
     @Autowired
     private ItemRepository itemRepository;
 
-// Thymeleaf template page strings
+    private SessionController sessionController;
+
+    // Thymeleaf template page strings
     private static final String goIndex = "index";
 
     private static final String redirectUserUpdate = "redirect:user/update";
 
     private static final String redirectItemCloset = "redirect:items/";
-// Gets user browser session
-    public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
-            return null;
-        }
-
-        Optional<User> user = userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            return null;
-        }
-
-        return user.get();
-
-    }
 
     public String home(HttpServletResponse response) {
         //create a cookie with name 'website' and value 'javapointers'
@@ -96,7 +82,7 @@ public class LoginController {
     // If true, the user is redirected to the update page to choose a new password
         if (theUser.isPasswordReset()) {
     // May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
-            errors.rejectValue("username", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
+            errors.rejectValue("email", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
             model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
             return redirectUserUpdate;

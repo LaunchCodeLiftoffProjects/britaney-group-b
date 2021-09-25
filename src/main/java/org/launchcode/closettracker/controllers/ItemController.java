@@ -48,7 +48,9 @@ public class ItemController {
     @Autowired
     private SearchService searchService;
 
-// Thymeleaf template page strings
+    private SessionController sessionController;
+
+    // Thymeleaf template page strings
     private static final String goItemCreate = "items/create-item";
 
     private static final String goItemCloset = "items/closet";
@@ -62,21 +64,6 @@ public class ItemController {
     private static final String goSearchResult = "/items/search_result";
 
     private static final String goRedirectItemDetails = "redirect:details?itemId=";
-
-    public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
-            return null;
-        }
-
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            return null;
-        }
-
-        return user.get();
-
-    }
 
     // CREATE ITEM: Show form
     @GetMapping("create-item")
@@ -98,7 +85,7 @@ public class ItemController {
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
         item.setItemImage(fileName);
     // Gets user id from current session to find the User object
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
     // If user null, it should redirect user to login page to log in before allowing item creation
     // This is to catch the call to itemRepository before it throws the 500 error
         if(currentUser == null) {
@@ -125,7 +112,7 @@ public class ItemController {
 
     @GetMapping
     public String displayAllItems(Model objModel, Model model, Principal principal, HttpSession session) {
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
         model.addAttribute("title", "My Closet");
         objModel.addAttribute("items", itemRepository.findByUser(currentUser));
         return goItemCloset;
@@ -234,7 +221,7 @@ public class ItemController {
    @GetMapping("/search")
    public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session){
 
-       User currentUser = getUserFromSession(session);
+       User currentUser = sessionController.getUserFromSession(session);
 
        List<Item> searchResult = searchService.search(keyword, currentUser);
        objModel.addAttribute("items", itemRepository.findByUser(currentUser));
@@ -253,7 +240,7 @@ public class ItemController {
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
     public String displayDeleteItemForm(Model objModel, Model model, HttpSession session) {
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
         objModel.addAttribute("items", itemRepository.findByUser(currentUser));
         return goItemDelete;
     }
