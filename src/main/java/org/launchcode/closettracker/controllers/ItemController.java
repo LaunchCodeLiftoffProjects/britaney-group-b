@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.List;
+
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
 import static org.launchcode.closettracker.controllers.UserController.redirect;
 
@@ -61,7 +62,6 @@ public class ItemController {
 
     private static final String goRedirectItemDetails = "redirect:details?itemId=";
 
-    private static final String goRedirectItemDetail = "";
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
