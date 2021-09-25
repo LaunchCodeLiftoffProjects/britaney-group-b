@@ -7,6 +7,7 @@ import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -188,6 +189,7 @@ public class UserController {
     // For 'no outgoing email server error', add the Gmail SMTP outgoing email server credentials in the properties file
     // But don't forget to remove them before commit/push
     // The program will still run if no server is configured
+        Model intModell;
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
             intModel.addAttribute("message", "PASSWORD RESET AND EMAIL SENT");
@@ -195,11 +197,9 @@ public class UserController {
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-                model.addAttribute("title", "Reset Account Password");
                 intModel.addAttribute("token", token);
                 intModel.addAttribute("message", "PASSWORD RESET NO EMAIL");
-                return goUserReset2nd;
+                return "redirect:/user/reset/reset-int";
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
                 model.addAttribute("title", "Reset Account Password");

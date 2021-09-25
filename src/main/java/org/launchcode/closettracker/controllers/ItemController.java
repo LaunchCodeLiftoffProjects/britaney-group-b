@@ -91,7 +91,7 @@ public class ItemController {
                                         HttpSession session, Model model,
                                         @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
-            // No error handling here?
+    // No error handling here?
             return goItemCreate;
         }
 
@@ -130,7 +130,6 @@ public class ItemController {
         objModel.addAttribute("items", itemRepository.findByUser(currentUser));
         return goItemCloset;
     }
-
 
     // View Item Details
 
