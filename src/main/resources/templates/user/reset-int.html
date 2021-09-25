@@ -12,6 +12,14 @@
          <li>The next time you log into your account, you will be required to change your password.</li>
       </ul>
    </div>
+   <th:block th:if="${token} ?">
+      <br>
+      <div style="border: thick dotted purple; padding: 20px; spacing: 20px; width: 50%">
+         <ul style="text-align: left;">
+            <li th:text="Since the email server is down, use this token to complete the reset password process: ${token}"></li>
+         </ul>
+      </div>
+      </th:block>
    <br>
    <div style="border: thick dotted red; padding: 20px; spacing: 20px; width: 50%">
       <ul style="text-align: left;">

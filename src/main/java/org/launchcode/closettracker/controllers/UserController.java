@@ -41,7 +41,7 @@ public class UserController {
     @Autowired
     private MailSender mailSender;
 
-    // A function to generate a random string of letters and numbers
+// A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -56,7 +56,7 @@ public class UserController {
 
         return generatedString;
     }
-/*
+
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
@@ -68,7 +68,7 @@ public class UserController {
         }
         return user.get();
     }
-*/
+
     // CREATE START
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
@@ -118,7 +118,7 @@ public class UserController {
 
 // User --> Show email to reset form
     @GetMapping("user/reset")
-    public String displayStartResetForm(Model model) {
+    public String displayStartResetForm(Model model, ResetEmailDTO resetEmailDTO) {
         model.addAttribute(new ResetEmailDTO());
         model.addAttribute("title", "Reset Account Password");
         return "user/reset";
@@ -126,7 +126,9 @@ public class UserController {
 
 // User --> Process email to reset form
     @PostMapping("user/reset")
-    public String processStartResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
+    public String processStartResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors,
+                                        HttpServletRequest request, Model model, Model intModel) {
+
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
     // If the user account does not exist, show error
@@ -149,12 +151,16 @@ public class UserController {
         createPasswordResetTokenForUser(currentUser, token);
 
     // While the User model does not persist the 'password' field, it is still required. So we need to...
-        // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
+        // 1) Reset the password hash by using a random password
+            // Since 'password' is still a required object field, it needs a value so the user object will save
+            // And the user shouldn't be able to use it to log in once the password reset process is started
+            // So we use a random string to set the password value and replace the hash
         currentUser.setPassword(createRandomString(8));
-        // 2) To ensure the user will have to update their password upon next login attempt, set the flag to true
+        // 2) Ensure the user will have to update their password upon next login attempt, set the flag to true
         currentUser.setPasswordReset(true);
         // 3) Persist the finished User object
         userRepository.save(currentUser);
+        User modifiedUser = currentUser;
 
     // Creates and sends an email to the user
     // For 'no outgoing email server error', add the Gmail SMTP outgoing email server credentials in the properties file
@@ -162,14 +168,19 @@ public class UserController {
     // The program will still run if no server is configured
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+            intModel.addAttribute("message", "PASSWORD RESET AND EMAIL SENT");
             return "user/reset-int";
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
                 errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+                model.addAttribute("title", "Reset Account Password");
+                intModel.addAttribute("token", token);
+                intModel.addAttribute("message", "PASSWORD RESET NO EMAIL");
                 return "user/reset-int";
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
+                model.addAttribute("title", "Reset Account Password");
                 return "user/reset";
             }
         }
@@ -271,13 +282,13 @@ public class UserController {
 
         if(user != null) {
         // Updates the user object password with the entered one
-        // This process creates a new has but does not persist the plain text password
+        // This process creates a new password hash but does not persist the plain text password
             user.setPassword(updatePasswordDTO.getPasswordEntered());
         // Once password is successfully changed, set the reset flag to false to allow for normal login
             user.setPasswordReset(false);
         // Persists modified User object to db
             userRepository.save(user);
-        // Once modified user object is saved, deletes the token from the tokeb db
+        // Once modified user object is saved, deletes the token from the token db
             passwordTokenRepository.deleteById(userByToken.getId());
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
@@ -315,6 +326,16 @@ public class UserController {
         return "user/edit-info";
     }
 
+    public boolean checkIfUserEmailIsUnique(User currentUser, String changedEmail) {
+        User editingUser = userRepository.findByEmail(changedEmail);
+        if (editingUser == null || editingUser.getId() == currentUser.getId()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
 // User --> Process edit account info
     @PostMapping("user/edit-info")
     public String processEditAccountInfoForm(@ModelAttribute @Valid EditInfoDTO editInfoDTO, Errors errors,
@@ -323,43 +344,53 @@ public class UserController {
     1) Since fields are prefilled with persisted info, when user hits Update compare the field values to the stored values, do nothing if same
     2) Since fields can be changed together or separately, check each as individual fields
     3) Username is not used for login so it can be whatever the user wants
-    4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
- */
+    4) Email *IS* used for login, so it must be unique - check email against db, then check userid vs currentUser. show error if not match
+*/
     // Get current user
         User currentUser = getUserFromSession(session);
-
+        boolean isUsernameChanged = false;
+        boolean isEmailChanged = false;
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
-            errors.rejectValue("email", "email.DoesNotExist", "An account with this email address does not exist");
-            model.addAttribute("title", "Reset Account Password");
-            return "user/edit-info";
+            errors.rejectValue("email", "user.DoesNotExist", "User is not logged in or user does not exist.");
+            return "redirect:index";
+        }
+    // If username equals the stored username, display a message saying
+        if (editInfoDTO.getUsername().equals(currentUser.getUserName())) {
+            model.addAttribute("message", "Username did not change so you're all good!");
+        }
+    // If names are different, change that field and set changed flag to true
+        else {
+            currentUser.setUserName(editInfoDTO.getUsername());
+            isUsernameChanged = true;
+        }
+    // If email equals the stored username, display a message saying
+        if (editInfoDTO.getEmail().equals(currentUser.getEmail())) {
+            model.addAttribute("message", "Email did not change so you're all good!");
+        }
+    // Call function to check email from edit form
+        else if(checkIfUserEmailIsUnique(currentUser, editInfoDTO.getEmail())) {
+            currentUser.setEmail(editInfoDTO.getEmail());
+            isEmailChanged = true;
+        }
+        else {
+            errors.rejectValue("email", "email.NotUnique", "The email entered cannot be used. Please try again.");
         }
 
-    // Creates and sends an email to the user
-        // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
-        // login credentials in the properties file
-        try {
-            mailSender.send(constructResetTokenEmail(request.getLocale(), null, currentUser));
-        }
-        catch (Exception exception) {
-            if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-            } else {
-                errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
+        if (isUsernameChanged || isEmailChanged) {
+            userRepository.save(currentUser);
+            if (isUsernameChanged && isEmailChanged) {
+                model.addAttribute("message", "Username and Email have been updated");
+            } else if (isUsernameChanged) {
+                model.addAttribute("message", "Username has been updated");
+            } else if (isEmailChanged) {
+                model.addAttribute("message", "Email has been updated");
             }
-            return "user/edit-info";
         }
-
-// While the User model does not persist the 'password' field, it is still a required field for the user object. So...
-        // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
-        currentUser.setPassword(createRandomString(8));
-        // 2) To ensure the user will have to update their password upon next login, set the flag to true
-        currentUser.setPasswordReset(true);
-        // 3) Persist the finished User object
-        userRepository.save(currentUser);
-
-// Load the intermediate reset page
-        return "user/edit";
+        model.addAttribute("username", editInfoDTO.getUsername());
+        model.addAttribute("email", editInfoDTO.getEmail());
+        model.addAttribute("title", "Edit Account Information");
+        return "user/edit-info";
     }
 
     // User --> Show edit password
