@@ -42,8 +42,20 @@ public class UserController {
     @Autowired
     private MailSender mailSender;
 
-// Thymeleaf display page global strings
-    private static final String redirectIndex = "redirect:/index";
+// Thymeleaf page template strings
+    public static final String redirect = "redirect:";
+    public static final String redirectIndex = "redirect:/index";
+
+    private static final String goUserCreate = "user/create";
+
+    private static final String goUserReset1st = "user/reset/reset";
+    private static final String goUserReset2nd = "user/reset/reset-int";
+
+    private static final String goUserUpdatePw = "user/reset/update";
+
+    private static final String goEditInfo = "user/edit/info";
+    private static final String goEditPassword = "user/edit/password";
+
 
     // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
@@ -73,7 +85,8 @@ public class UserController {
         return user.get();
     }
 
-    // CREATE START
+// CREATE START
+
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -81,7 +94,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 /*model.addAttribute("errorMsg", "Bad data!");*/
-                return "user/create";
+                return goUserCreate;
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -89,19 +102,19 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "user/create";
+                return goUserCreate;
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
-                return "user/create";
+                return goUserCreate;
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
             userRepository.save(newUser);
-            return "redirect:/index";
+            return redirectIndex;
 
         } catch (Exception ex) {
             if (ex.toString().contains("constraint")) {
@@ -109,16 +122,12 @@ public class UserController {
             } else {
                 model.addAttribute("dbError", "Db Error");
             }
-            return "user/create";
+            return goUserCreate;
         }
     }
 // CREATE END
 
 // RESET START
-
-// Thymeleaf strings
-    private static final String goUserReset1st = "user/reset/reset";
-    private static final String goUserReset2nd = "user/reset/reset-int";
 
 // RECOVERY PART 1 - Reset password - enter email to generate token needed for step 2
 
@@ -221,9 +230,6 @@ public class UserController {
 
 // RECOVERY PART 2 - Update password - use token to choose a new password
 
-// Thymeleaf strings
-    private static final String goUserUpdatePw = "user/reset/update";
-
     // User --> Show update password form
     @GetMapping("reset/update")
     public String showChooseNewPasswordForm(Model model, @RequestParam("token") String token) {
@@ -314,10 +320,6 @@ public class UserController {
 // RESET END
 
 // EDIT ACCOUNT START
-
-// Thymeleaf strings
-    private static final String goEditInfo = "user/edit/info";
-    private static final String goEditPassword = "user/edit/password";
 
 // User --> Show edit account info
     @GetMapping("edit/info")

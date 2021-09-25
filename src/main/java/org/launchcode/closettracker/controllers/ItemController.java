@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.List;
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+import static org.launchcode.closettracker.controllers.UserController.redirect;
 
 @Controller
 @RequestMapping("items")
@@ -45,7 +46,22 @@ public class ItemController {
     @Autowired
     private SearchService searchService;
 
+// Thymeleaf template page strings
+    private static final String goItemCreate = "items/create-item";
 
+    private static final String goItemCloset = "items/closet";
+
+    private static final String goItemDetails = "items/details";
+
+    private static final String goItemEdit = "items/edit";
+
+    private static final String goItemDelete = "items/delete";
+
+    private static final String goSearchResult = "/items/search_result";
+
+    private static final String goRedirectItemDetails = "redirect:details?itemId=";
+
+    private static final String goRedirectItemDetail = "";
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
@@ -65,7 +81,7 @@ public class ItemController {
     @GetMapping("create-item")
     public String displayCreateItemForm(Model model) {
         model.addAttribute(new Item());
-        return "items/create-item";
+        return goItemCreate;
     }
 
     // CREATE ITEM: Process form
@@ -74,7 +90,7 @@ public class ItemController {
                                         HttpSession session, Model model,
                                         @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
-            return "items/create-item";
+            return goItemCreate;
         }
 
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
@@ -91,7 +107,7 @@ public class ItemController {
         itemRepository.save(item);
         String uploadDirectory = "item-photos/" + item.getId();
         FileUploadUtil.saveFile(uploadDirectory, fileName, image);
-        return "redirect:";
+        return redirect;
     }
 
     // get current users username - in progress
@@ -109,7 +125,7 @@ public class ItemController {
         User currentUser = getUserFromSession(session);
         model.addAttribute("title", "My Closet");
         objModel.addAttribute("items", itemRepository.findByUser(currentUser));
-        return "items/closet";
+        return goItemCloset;
     }
 
 
@@ -128,7 +144,7 @@ public class ItemController {
             model.addAttribute("item", item);
         }
 
-        return "items/details";
+        return goItemDetails;
     }
 
     // Edit Item Details
@@ -153,7 +169,7 @@ public class ItemController {
             model.addAttribute("title", "Edit " + item.getItemName() + " Details");
             model.addAttribute("item", item);
 
-        return "items/edit";
+        return goItemEdit;
     }
 
    @PostMapping("edit")
@@ -163,7 +179,7 @@ public class ItemController {
 
        if (errors.hasErrors()) {
            model.addAttribute("title", "Edit " + item.getItemName() + "Details");
-           return "items/edit";
+           return goItemEdit;
        }
 
 
@@ -182,7 +198,7 @@ public class ItemController {
            itemToEdit.setSeason(season);
            Item savedItem = itemRepository.save(itemToEdit);
 
-           return "redirect:details?itemId=" + itemId;
+           return goRedirectItemDetails + itemId;
 
        } else {
 
@@ -208,7 +224,7 @@ public class ItemController {
 
 
 
-       return "redirect:details?itemId=" + itemId;
+       return goRedirectItemDetails + itemId;
    }
 
    // SEARCH ITEMS    items/search
@@ -223,12 +239,12 @@ public class ItemController {
 
        if (searchResult.isEmpty()) {
            model.addAttribute("message","No matching items for '" + keyword + "' found");
-           return "/items/search_result";
+           return goSearchResult;
        } else
        model.addAttribute("keyword", keyword);
        model.addAttribute("title", "Search results for " + keyword + "");
        model.addAttribute("searchResult", searchResult);
-       return "/items/search_result";
+       return goSearchResult;
    }
 
 
@@ -237,7 +253,7 @@ public class ItemController {
     public String displayDeleteItemForm(Model objModel, Model model, HttpSession session) {
         User currentUser = getUserFromSession(session);
         objModel.addAttribute("items", itemRepository.findByUser(currentUser));
-        return "items/delete";
+        return goItemDelete;
     }
 
     // DELETE ITEM(s): Process form
@@ -250,7 +266,7 @@ public class ItemController {
             }
         }
 
-        return "redirect:";
+        return redirect;
     }
 
 
@@ -265,7 +281,7 @@ public class ItemController {
             }
         }
 
-        return "redirect:";
+        return redirect;
     }
 
   /*  @GetMapping("/display/image/{id}")
