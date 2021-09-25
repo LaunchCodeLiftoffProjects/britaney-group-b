@@ -8,13 +8,16 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
-//@Component
 public class SessionController {
+
+// Thymeleaf global page template strings
+    public static final String goRedirect = "redirect:";
+    public static final String goRedirectIndex = "redirect:/index";
 
     @Autowired
     private UserRepository userRepository;
 
-    public static final String userSessionKey = "user";
+    private static final String userSessionKey = "user";
 
     public User getUserFromSession(HttpSession session) {
         Optional<User> user = userRepository.findById((Integer) session.getAttribute(userSessionKey));
@@ -24,6 +27,10 @@ public class SessionController {
         else {
             return null;
         }
+    }
+
+    protected void setUserInSession(HttpSession session, User user) {
+        session.setAttribute(userSessionKey, user.getId());
     }
 
 }

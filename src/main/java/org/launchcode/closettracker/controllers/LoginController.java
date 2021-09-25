@@ -13,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,22 +22,18 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
 
-import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
-import static org.launchcode.closettracker.controllers.UserController.goUserCreate;
-import static org.launchcode.closettracker.controllers.UserController.redirect;
+import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
 
 @Controller
+@RequestMapping("user")
 public class LoginController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
-
     private SessionController sessionController;
 
-    // Thymeleaf template page strings
+// Thymeleaf template page strings
     private static final String goIndex = "index";
 
     private static final String redirectUserUpdate = "redirect:user/update";
@@ -53,10 +50,6 @@ public class LoginController {
         response.addCookie(cookie);
         //return the jsp with the response
         return "home";
-    }
-// Sets user browser session
-    private static void setUserInSession(HttpSession session, User user) {
-        session.setAttribute(userSessionKey, user.getId());
     }
 
 // User --> Show login form
@@ -101,7 +94,7 @@ public class LoginController {
             model.addAttribute("title", "Welcome to Closet Tracker");
             return goIndex;
         }
-        setUserInSession(request.getSession(), theUser);
+        sessionController.setUserInSession(request.getSession(), theUser);
 
         return redirectItemCloset;
     }
@@ -109,7 +102,7 @@ public class LoginController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
         request.getSession().invalidate();
-        return redirect;
+        return goRedirect;
     }
 
 

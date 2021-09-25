@@ -31,9 +31,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.List;
 
-import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
-import static org.launchcode.closettracker.controllers.UserController.redirect;
-import static org.launchcode.closettracker.controllers.UserController.redirectIndex;
+import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
+import static org.launchcode.closettracker.controllers.SessionController.goRedirectIndex;
 
 @Controller
 @RequestMapping("items")
@@ -90,14 +89,14 @@ public class ItemController {
     // This is to catch the call to itemRepository before it throws the 500 error
         if(currentUser == null) {
             model.addAttribute("message", "Browser session has expired or is no longer valid. You must log in to create an item.");
-            return redirectIndex;
+            return goRedirectIndex;
         }
     // As user id is required to create items, sets the user object for the item so it can be created
         item.setUser(currentUser);
         itemRepository.save(item);
         String uploadDirectory = "item-photos/" + item.getId();
         FileUploadUtil.saveFile(uploadDirectory, fileName, image);
-        return redirect;
+        return goRedirect;
     }
 
     // get current users username - in progress
@@ -255,7 +254,7 @@ public class ItemController {
             }
         }
 
-        return redirect;
+        return goRedirect;
     }
 
 
@@ -270,7 +269,7 @@ public class ItemController {
             }
         }
 
-        return redirect;
+        return goRedirect;
     }
 
   /*  @GetMapping("/display/image/{id}")
