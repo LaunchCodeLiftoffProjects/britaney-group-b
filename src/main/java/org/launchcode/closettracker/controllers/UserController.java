@@ -223,7 +223,6 @@ public class UserController {
 
 // Thymeleaf strings
     private static final String goUserUpdatePw = "user/reset/update";
-    private static final String goUserReset2nd = "user/reset/reset-int";
 
     // User --> Show update password form
     @GetMapping("reset/update")
