@@ -327,11 +327,17 @@ public class UserController {
     }
 
     public boolean checkIfUserEmailIsUnique(User currentUser, String changedEmail) {
-        User editingUser = userRepository.findByEmail(changedEmail);
-        if (editingUser == null || editingUser.getId() == currentUser.getId()) {
-            return true;
-        }
-        else {
+        try {
+            User editingUser = userRepository.findByEmail(changedEmail);
+            int editingUserId = editingUser.id;
+            int currentUserId = currentUser.id;
+            if (editingUser == null || editingUserId == currentUserId) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch(Exception exception) {
             return false;
         }
     }
@@ -357,7 +363,7 @@ public class UserController {
         }
     // If username equals the stored username, display a message saying
         if (editInfoDTO.getUsername().equals(currentUser.getUserName())) {
-            model.addAttribute("message", "Username did not change so you're all good!");
+            model.addAttribute("message", "Info did not change so you're all good!");
         }
     // If names are different, change that field and set changed flag to true
         else {
@@ -366,7 +372,7 @@ public class UserController {
         }
     // If email equals the stored username, display a message saying
         if (editInfoDTO.getEmail().equals(currentUser.getEmail())) {
-            model.addAttribute("message", "Email did not change so you're all good!");
+            model.addAttribute("message", "Info did not change so you're all good!");
         }
     // Call function to check email from edit form
         else if(checkIfUserEmailIsUnique(currentUser, editInfoDTO.getEmail())) {
@@ -378,6 +384,7 @@ public class UserController {
         }
 
         if (isUsernameChanged || isEmailChanged) {
+
             userRepository.save(currentUser);
             if (isUsernameChanged && isEmailChanged) {
                 model.addAttribute("message", "Username and Email have been updated");

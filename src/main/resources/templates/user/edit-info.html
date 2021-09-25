@@ -20,7 +20,7 @@
         <p class="error" th:errors="${editInfoDTO.email}"></p>
     </div>
 <br>
-    <p class="message" th:text="${message}"></p>
+    <p class="message" th:if="${message}" th:text="${message}"></p>
     <br>
     <div class="form-group">
         <input type="submit" value="Update account" class="btn btn-success">
