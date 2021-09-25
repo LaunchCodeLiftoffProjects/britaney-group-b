@@ -46,7 +46,7 @@ public class UserController {
     public static final String redirect = "redirect:";
     public static final String redirectIndex = "redirect:/index";
 
-    private static final String goUserCreate = "user/create";
+    public static final String goUserCreate = "user/create";
 
     private static final String goUserReset1st = "user/reset/reset";
     private static final String goUserReset2nd = "user/reset/reset-int";
@@ -86,6 +86,13 @@ public class UserController {
     }
 
 // CREATE START
+    //localhost:8080/create
+    @GetMapping("create")
+    public String displayCreateAccountForm(Model model) {
+        model.addAttribute(new UserDTO());
+        model.addAttribute("title", "Create User Account");
+        return goUserCreate;
+    }
 
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
