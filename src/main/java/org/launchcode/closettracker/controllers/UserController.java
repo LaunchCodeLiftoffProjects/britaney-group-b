@@ -27,6 +27,7 @@ import static org.launchcode.closettracker.controllers.SessionController.userSes
 import static org.launchcode.closettracker.controllers.SessionController.getUserFromSession;
 
 @Controller
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
@@ -41,7 +42,10 @@ public class UserController {
     @Autowired
     private MailSender mailSender;
 
-// A function to generate a random string of letters and numbers
+// Thymeleaf display page global strings
+    private static final String redirectIndex = "redirect:/index";
+
+    // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -77,7 +81,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 /*model.addAttribute("errorMsg", "Bad data!");*/
-                return "create";
+                return "user/create";
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -85,21 +89,19 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return "user/create";
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return "user/create";
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
-        // This line for debugging
-            User activeUser = newUser;
             userRepository.save(newUser);
-            return "redirect:index";
+            return "redirect:/index";
 
         } catch (Exception ex) {
             if (ex.toString().contains("constraint")) {
@@ -107,25 +109,29 @@ public class UserController {
             } else {
                 model.addAttribute("dbError", "Db Error");
             }
-            return "create";
+            return "user/create";
         }
     }
 // CREATE END
 
 // RESET START
 
+// Thymeleaf strings
+    private static final String goUserReset1st = "user/reset/reset";
+    private static final String goUserReset2nd = "user/reset/reset-int";
+
 // RECOVERY PART 1 - Reset password - enter email to generate token needed for step 2
 
 // User --> Show email to reset form
-    @GetMapping("user/reset")
+    @GetMapping("reset/reset")
     public String displayStartResetForm(Model model, ResetEmailDTO resetEmailDTO) {
         model.addAttribute(new ResetEmailDTO());
         model.addAttribute("title", "Reset Account Password");
-        return "user/reset";
+        return goUserReset1st;
     }
 
 // User --> Process email to reset form
-    @PostMapping("user/reset")
+    @PostMapping("reset/reset")
     public String processStartResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors,
                                         HttpServletRequest request, Model model, Model intModel) {
 
@@ -135,7 +141,7 @@ public class UserController {
         if (currentUser == null) {
             errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
             model.addAttribute("title", "Reset Account Password");
-            return "user/reset";
+            return goUserReset1st;
         }
 
     // Creates a unique token string
@@ -169,7 +175,7 @@ public class UserController {
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
             intModel.addAttribute("message", "PASSWORD RESET AND EMAIL SENT");
-            return "user/reset-int";
+            return goUserReset2nd;
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
@@ -177,11 +183,11 @@ public class UserController {
                 model.addAttribute("title", "Reset Account Password");
                 intModel.addAttribute("token", token);
                 intModel.addAttribute("message", "PASSWORD RESET NO EMAIL");
-                return "user/reset-int";
+                return goUserReset2nd;
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
                 model.addAttribute("title", "Reset Account Password");
-                return "user/reset";
+                return goUserReset1st;
             }
         }
     }
@@ -215,15 +221,19 @@ public class UserController {
 
 // RECOVERY PART 2 - Update password - use token to choose a new password
 
-// User --> Show update password form
-    @GetMapping("user/update")
+// Thymeleaf strings
+    private static final String goUserUpdatePw = "user/reset/update";
+    private static final String goUserReset2nd = "user/reset/reset-int";
+
+    // User --> Show update password form
+    @GetMapping("reset/update")
     public String showChooseNewPasswordForm(Model model, @RequestParam("token") String token) {
         boolean result = validatePasswordResetToken(token);
         if(result) {
             model.addAttribute("token", token);
         }
         model.addAttribute(new UpdatePasswordDTO());
-        return "user/update";
+        return goUserUpdatePw;
     }
 
     public boolean validatePasswordResetToken(String token) {
@@ -242,7 +252,7 @@ public class UserController {
     }
 
 // User --> Process update password form
-    @PostMapping("user/update")
+    @PostMapping("reset/update")
     public String processChooseNewPasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
                                             HttpServletRequest request, Model model) {
 
@@ -250,14 +260,14 @@ public class UserController {
         if (updatePasswordDTO.getPasswordEntered().isEmpty()) {
             model.addAttribute("title", "Update Account Password");
             errors.rejectValue("passwordEntered", "passwordEntered.notMatch", "Passwords is required. Please try again.");
-            return "user/update";
+            return goUserUpdatePw;
         }
 
     // If the 2nd password field is empty, display error message
         if (updatePasswordDTO.getPasswordConfirm().isEmpty()) {
             model.addAttribute("title", "Update Account Password");
             errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Password is required. Please try again.");
-            return "user/update";
+            return goUserUpdatePw;
         }
 
     // If both passwords do not match, display error message
@@ -266,14 +276,14 @@ public class UserController {
             model.addAttribute("passwordConfirm", updatePasswordDTO.getPasswordConfirm());
             model.addAttribute("title", "Update Account Password");
             errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Passwords do not match. Please try again.");
-            return "user/update";
+            return goUserUpdatePw;
         }
 
     // If reset token not found in db, display error message
         if(!validatePasswordResetToken(updatePasswordDTO.getToken())) {
             model.addAttribute("title", "Update Account Password");
             errors.rejectValue("token", "token.equals", "Token is not valid. Please try again.");
-            return "user/update";
+            return goUserUpdatePw;
         }
         int checkTokenSize = updatePasswordDTO.getToken().length();
 
@@ -293,12 +303,12 @@ public class UserController {
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
-            return "redirect:index";
+            return redirectIndex;
         } else {
         // If user is not found, displays error message
             model.addAttribute("title", "Update Account Password");
             model.addAttribute("pwdError", "User not found. Please try again.");
-            return "user/update";
+            return goUserUpdatePw;
         }
     }
 
@@ -306,8 +316,12 @@ public class UserController {
 
 // EDIT ACCOUNT START
 
+// Thymeleaf strings
+    private static final String goEditInfo = "user/edit/info";
+    private static final String goEditPassword = "user/edit/password";
+
 // User --> Show edit account info
-    @GetMapping("user/edit-info")
+    @GetMapping("edit/info")
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
                                           Errors errors, Model model, Model loginModel, HttpSession session) {
     // Get current user
@@ -316,14 +330,14 @@ public class UserController {
     // If user object is null, redirect to login page
         if (currentUser == null) {
             loginModel.addAttribute("title", "Login");
-            return "redirect:index";
+            return redirectIndex;
         }
 
     // Set DTO fields with values from User db
         editInfoDTO.setUsername(currentUser.getUserName());
         editInfoDTO.setEmail(currentUser.getEmail());
         model.addAttribute(editInfoDTO);
-        return "user/edit-info";
+        return goEditInfo;
     }
 
     public boolean checkIfUserEmailIsUnique(User currentUser, String changedEmail) {
@@ -343,7 +357,7 @@ public class UserController {
     }
 
 // User --> Process edit account info
-    @PostMapping("user/edit-info")
+    @PostMapping("edit/info")
     public String processEditAccountInfoForm(@ModelAttribute @Valid EditInfoDTO editInfoDTO, Errors errors,
                                              HttpServletRequest request, HttpSession session, Model model) {
 /* Some cases to plan for:
@@ -359,7 +373,7 @@ public class UserController {
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
             errors.rejectValue("email", "user.DoesNotExist", "User is not logged in or user does not exist.");
-            return "redirect:index";
+            return redirectIndex;
         }
     // If username equals the stored username, display a message saying
         if (editInfoDTO.getUsername().equals(currentUser.getUserName())) {
@@ -397,14 +411,14 @@ public class UserController {
         model.addAttribute("username", editInfoDTO.getUsername());
         model.addAttribute("email", editInfoDTO.getEmail());
         model.addAttribute("title", "Edit Account Information");
-        return "user/edit-info";
+        return goEditInfo;
     }
 
     // User --> Show edit password
-    @GetMapping("user/edit-password")
+    @GetMapping("edit/password")
     public String showEditPasswordForm(Model model) {
         model.addAttribute(new EditPasswordDTO());
-        return "user/edit-password";
+        return goEditPassword;
     }
 
 // EDIT ACCOUNT END
