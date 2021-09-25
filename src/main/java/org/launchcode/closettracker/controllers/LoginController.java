@@ -78,6 +78,7 @@ public class LoginController {
                                    HttpServletRequest request, Model model){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Welcome to Closet Tracker");
+            errors.rejectValue("email", "email.reset", "The password for this account was reset so you must create a new password before logging in.");
             model.addAttribute("errorMsg", "Entry not valid!");
             return "index";
         }

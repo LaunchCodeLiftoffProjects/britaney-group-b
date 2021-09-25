@@ -33,6 +33,7 @@ import java.util.List;
 
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
 import static org.launchcode.closettracker.controllers.UserController.redirect;
+import static org.launchcode.closettracker.controllers.UserController.redirectIndex;
 
 @Controller
 @RequestMapping("items")
@@ -90,6 +91,7 @@ public class ItemController {
                                         HttpSession session, Model model,
                                         @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
+            // No error handling here?
             return goItemCreate;
         }
 
@@ -100,7 +102,8 @@ public class ItemController {
     // If user null, it should redirect user to login page to log in before allowing item creation
     // This is to catch the call to itemRepository before it throws the 500 error
         if(currentUser == null) {
-            //
+            model.addAttribute("message", "Browser session has expired or is no longer valid. You must log in to create an item.");
+            return redirectIndex;
         }
     // As user id is required to create items, sets the user object for the item so it can be created
         item.setUser(currentUser);

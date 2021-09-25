@@ -13,20 +13,20 @@ import java.util.List;
 @Entity
 public class User extends AbstractEntity {
 
-//    @NotNull(message = "Username is required")
-//    @NotBlank(message = "Username is required")
+    @NotNull(message = "Username is required")
+    @NotBlank(message = "Username is required")
     @Column(name = "username", nullable = false)
     private String username;
 
-//    @Email(message = "Invalid email. Try again")
-//    @NotNull(message = "Email is required")
-//    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email. Try again")
+    @NotNull(message = "Email is required")
+    @NotBlank(message = "Email is required")
     @Column(name = "email", unique = true)
     private String email;
 
 //    @NotNull(message = "Password is required")
 //    @NotBlank(message = "Password is required")
-//    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     @Transient
     private String password;
 
