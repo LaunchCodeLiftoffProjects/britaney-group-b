@@ -208,7 +208,7 @@ public class ItemController {
         String password = "closet_tracker";
        Connection con = DriverManager.getConnection(dbURL, username, password);
 
-       User currentUser = getUserFromSession(session);
+       User currentUser = homeController.getUserFromSession(session);
 
        List<Item> thisUser = itemRepository.findByUser(currentUser);
 
