@@ -24,7 +24,7 @@ import java.util.Optional;
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
 
 @Controller
-public class LoginController {
+public class HomeController {
 
     @Autowired
     private UserRepository userRepository;
@@ -32,7 +32,6 @@ public class LoginController {
     @Autowired
     private ItemRepository itemRepository;
 
-// Gets user browser session
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
@@ -60,7 +59,7 @@ public class LoginController {
         //return the jsp with the response
         return "home";
     }
-// Sets user browser session
+
     private static void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
     }
@@ -84,14 +83,18 @@ public class LoginController {
         }
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
-    // Is the user has reset their password, this checks to see if the flag is true.
-    // If true, the user is redirected to the update page to choose a new password
+        // Is the user has reset their password, this checks to see if the flag is true.
+        // If true, the user is redirected to the update page to choose a new password
+
         if (theUser.isPasswordReset()) {
-    // May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
-            errors.rejectValue("username", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
+            model.addAttribute(new UpdatePasswordDTO());
+
+// May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
+//            errors.rejectValue("title", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
+
             model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
-            return "redirect:user/update";
+            return "user/update";
         }
 
         if (theUser == null) {

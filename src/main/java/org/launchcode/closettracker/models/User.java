@@ -12,7 +12,12 @@ import java.util.List;
 
 @Entity
 public class User extends AbstractEntity {
-
+/*
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    private int id;
+*/
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
     @Column(name = "username", nullable = false)
@@ -60,6 +65,8 @@ public class User extends AbstractEntity {
     }
 
     public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getUserName() { return username; }
 
