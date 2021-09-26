@@ -24,7 +24,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
 
     SessionController sessionController;
 
-    private static final List<String> whitelist = Arrays.asList("/index", "/create", "/user/reset/reset", "/user/reset-int", "/css");
+    private static final List<String> whitelist = Arrays.asList("/index", "/create", "/user/reset/reset", "/user/reset/reset-int", "/user/reset/update", "/css");
 
     private static boolean isWhitelisted(String path) {
         for (String pathRoot : whitelist) {
