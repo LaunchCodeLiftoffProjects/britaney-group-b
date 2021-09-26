@@ -30,7 +30,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -38,24 +38,23 @@ public class AuthenticationFilter implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws IOException {
 
-    // Don't require sign-in for whitelisted pages
+        // Don't require sign-in for whitelisted pages
         if (isWhitelisted(request.getRequestURI())) {
-    // returning true indicates that the request may proceed
+            // returning true indicates that the request may proceed
             return true;
         }
-        else {
-            HttpSession session = request.getSession();
-            User user = homeController.getUserFromSession(session);
+
+        HttpSession session = request.getSession();
+        User user = homeController.getUserFromSession(session);
+
         // The user is logged in
-            if (user != null) {
-                return true;
-            }
-            else {
-        // The user is NOT logged in
-                response.sendRedirect("/index");
-                return false;
-            }
+        if (user != null) {
+            return true;
         }
+
+        // The user is NOT logged in
+        response.sendRedirect("/index");
+        return false;
     }
 
 }
