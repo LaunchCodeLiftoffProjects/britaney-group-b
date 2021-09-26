@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
-import static org.launchcode.closettracker.controllers.SessionController.getUserFromSession;
+import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
+import static org.launchcode.closettracker.controllers.SessionController.goRedirectIndex;
 
 @Controller
 public class UserController {
@@ -41,6 +41,8 @@ public class UserController {
     @Autowired
     private MailSender mailSender;
 
+    private SessionController sessionController;
+
     // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
@@ -56,20 +58,10 @@ public class UserController {
 
         return generatedString;
     }
-/*
-    public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
-            return null;
-        }
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            return null;
-        }
-        return user.get();
-    }
-*/
+
     // CREATE START
+
+// User --> Show create user form
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -129,22 +121,29 @@ public class UserController {
     public String processStartResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
-    // If the user account does not exist, show error
-        if (currentUser == null) {
-            errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
-            model.addAttribute("title", "Reset Account Password");
+    // Show any DTO validation errors
+        if (errors.hasErrors()) {
             return "user/reset";
         }
 
-    // Creates a unique token string
+    // If the user account does not exist, show error
+        if (currentUser == null) {
+            errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
+            return "user/reset";
+        }
+
+    // Delete any previous tokens for the current user
+        PasswordResetToken[] tokens = passwordTokenRepository.findAllByUser(currentUser);
+
+        if (tokens != null) {
+            for (int i = 0; i < tokens.length; i++) {
+                PasswordResetToken actveToken = tokens[i];
+                passwordTokenRepository.deleteById(tokens[i].getId());
+            }
+        }
+
+    // Creates a (new) unique token string
         String token = UUID.randomUUID().toString();
-    // Delete any previous tokens for the user
-        try {
-            passwordTokenRepository.deleteById(currentUser.getId());
-        }
-        catch (Exception exception) {
-            //
-        }
     // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
 
@@ -162,11 +161,13 @@ public class UserController {
     // The program will still run if no server is configured
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
+            model.addAttribute("message", "The password has been reset but no email was sent as there is no outgoing email server configured.");
             return "user/reset-int";
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+                model.addAttribute("message", "The password has been reset but no email was sent as there is no outgoing email server configured.");
+                model.addAttribute("token", token);
                 return "user/reset-int";
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
@@ -300,12 +301,12 @@ public class UserController {
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
                                           Errors errors, Model model, Model loginModel, HttpSession session) {
     // Get current user
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
 
     // If user object is null, redirect to login page
         if (currentUser == null) {
             loginModel.addAttribute("title", "Login");
-            return "redirect:index";
+            return goRedirectIndex;
         }
 
     // Set DTO fields with values from User db
@@ -326,7 +327,7 @@ public class UserController {
     4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
  */
     // Get current user
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
 
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {

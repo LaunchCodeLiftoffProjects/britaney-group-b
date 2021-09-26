@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.List;
+
+import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
 
 @Controller
@@ -255,7 +257,7 @@ public class ItemController {
             }
         }
 
-        return "redirect:";
+        return goRedirect;
     }
 
 
@@ -270,7 +272,7 @@ public class ItemController {
             }
         }
 
-        return "redirect:";
+        return goRedirect;
     }
 
   /*  @GetMapping("/display/image/{id}")
