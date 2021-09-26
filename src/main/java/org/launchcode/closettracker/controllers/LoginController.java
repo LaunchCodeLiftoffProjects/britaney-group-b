@@ -22,8 +22,6 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
-import static org.launchcode.closettracker.controllers.UserController.goUserCreate;
-import static org.launchcode.closettracker.controllers.UserController.redirect;
 
 @Controller
 public class LoginController {
@@ -34,12 +32,6 @@ public class LoginController {
     @Autowired
     private ItemRepository itemRepository;
 
-// Thymeleaf template page strings
-    private static final String goIndex = "index";
-
-    private static final String redirectUserUpdate = "redirect:user/update";
-
-    private static final String redirectItemCloset = "redirect:items/";
 // Gets user browser session
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
@@ -73,22 +65,22 @@ public class LoginController {
         session.setAttribute(userSessionKey, user.getId());
     }
 
-// User --> Show login form
+    //localhost:8080  Shows login form
     @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
         model.addAttribute(new LoginFormDTO());
-        return goIndex;
+        return "index";
     }
 
-// User --> Process login form
     @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Welcome to Closet Tracker");
+            errors.rejectValue("email", "email.reset", "The password for this account was reset so you must create a new password before logging in.");
             model.addAttribute("errorMsg", "Entry not valid!");
-            return goIndex;
+            return "index";
         }
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
@@ -99,31 +91,38 @@ public class LoginController {
             errors.rejectValue("username", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
             model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
-            return redirectUserUpdate;
+            return "redirect:user/update";
         }
 
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return goIndex;
+            return "index";
         }
-
         String password = loginFormDTO.getPassword();
 
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return goIndex;
+            return "index";
         }
         setUserInSession(request.getSession(), theUser);
 
-        return redirectItemCloset;
+        return "redirect:items/";
+    }
+
+    //localhost:8080/create
+    @GetMapping("create")
+    public String displayCreateAccountForm(Model model) {
+        model.addAttribute(new UserDTO());
+        model.addAttribute("title", "Create User Account");
+        return "create";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
         request.getSession().invalidate();
-        return redirect;
+        return "redirect:";
     }
 
 
