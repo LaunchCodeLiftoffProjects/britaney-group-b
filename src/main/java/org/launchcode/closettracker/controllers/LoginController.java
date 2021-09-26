@@ -13,7 +13,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,16 +21,18 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
 
-import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
+import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+import static org.launchcode.closettracker.controllers.UserController.goUserCreate;
+import static org.launchcode.closettracker.controllers.UserController.redirect;
 
 @Controller
-@RequestMapping("user")
 public class LoginController {
 
     @Autowired
     private UserRepository userRepository;
 
-    private SessionController sessionController;
+    @Autowired
+    private ItemRepository itemRepository;
 
 // Thymeleaf template page strings
     private static final String goIndex = "index";
@@ -39,6 +40,22 @@ public class LoginController {
     private static final String redirectUserUpdate = "redirect:user/update";
 
     private static final String redirectItemCloset = "redirect:items/";
+// Gets user browser session
+    public User getUserFromSession(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute(userSessionKey);
+        if (userId == null) {
+            return null;
+        }
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            return null;
+        }
+
+        return user.get();
+
+    }
 
     public String home(HttpServletResponse response) {
         //create a cookie with name 'website' and value 'javapointers'
@@ -50,6 +67,10 @@ public class LoginController {
         response.addCookie(cookie);
         //return the jsp with the response
         return "home";
+    }
+// Sets user browser session
+    private static void setUserInSession(HttpSession session, User user) {
+        session.setAttribute(userSessionKey, user.getId());
     }
 
 // User --> Show login form
@@ -75,7 +96,7 @@ public class LoginController {
     // If true, the user is redirected to the update page to choose a new password
         if (theUser.isPasswordReset()) {
     // May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
-            errors.rejectValue("email", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
+            errors.rejectValue("username", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
             model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
             return redirectUserUpdate;
@@ -94,7 +115,7 @@ public class LoginController {
             model.addAttribute("title", "Welcome to Closet Tracker");
             return goIndex;
         }
-        sessionController.setUserInSession(request.getSession(), theUser);
+        setUserInSession(request.getSession(), theUser);
 
         return redirectItemCloset;
     }
@@ -102,7 +123,7 @@ public class LoginController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
         request.getSession().invalidate();
-        return goRedirect;
+        return redirect;
     }
 
 
