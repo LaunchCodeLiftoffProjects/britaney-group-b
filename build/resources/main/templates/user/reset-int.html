@@ -6,7 +6,7 @@
 <body class="container">
 <h1>Password reset: Step 1 (complete) of 2</h1>
 <center>
-   <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
+   <div style="padding: 10px; spacing: 10px; width: 50%">
       <ul style="text-align: left;">
          <li>The next time you log into your account, you will be required to change your password.</li>
       </ul>
@@ -14,15 +14,17 @@
    <br>
    <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
       <ul style="text-align: left;">
-         <li th:text="${message}">If your email address was found, you have been set a recovery email with further instructions.</li>
+         <li th:text="${message}">STATUS MESSAGE HERE</li>
       </ul>
    </div>
-   <br>
-   <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
-      <ul style="text-align: left;">
-         <li th:text="${token}">If your email address was found, you have been set a recovery email with further instructions.</li>
-      </ul>
-   </div>
+   <th:block th:if="${token}">
+      <br>
+      <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
+         <ul style="text-align: left;">
+            <li th:text="${token}">STATUS MESSAGE HERE</li>
+         </ul>
+      </div>
+   </th:block>
    <br>
    <div style="border: thick dotted red; padding: 20px; spacing: 20px; width: 50%">
       <ul style="text-align: left;">

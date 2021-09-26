@@ -106,6 +106,10 @@ public class UserController {
 
 // RESET START
 
+// Thymeleaf template page strings
+    private static final String goUserReset1st = "user/reset";
+    private static final String goUserReset2nd = "user/reset-int";
+
 // RECOVERY PART 1 - Reset password - enter email to generate token needed for step 2
 
 // User --> Show email to reset form
@@ -113,7 +117,7 @@ public class UserController {
     public String displayStartResetForm(Model model) {
         model.addAttribute(new ResetEmailDTO());
         model.addAttribute("title", "Reset Account Password");
-        return "user/reset";
+        return goUserReset1st;
     }
 
 // User --> Process email to reset form
@@ -123,13 +127,13 @@ public class UserController {
 
     // Show any DTO validation errors
         if (errors.hasErrors()) {
-            return "user/reset";
+            return goUserReset1st;
         }
 
     // If the user account does not exist, show error
         if (currentUser == null) {
             errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
-            return "user/reset";
+            return goUserReset1st;
         }
 
     // Delete any previous tokens for the current user
@@ -161,17 +165,17 @@ public class UserController {
     // The program will still run if no server is configured
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
-            model.addAttribute("message", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-            return "user/reset-int";
+            model.addAttribute("message", "If your email address was found, you will receive a recovery email with further instructions.");
+            return goUserReset2nd;
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
-                model.addAttribute("message", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-                model.addAttribute("token", token);
-                return "user/reset-int";
+                model.addAttribute("message", "Since no outgoing email server is configured, use the token shown below to complete the reset password process.");
+//                model.addAttribute("token", token);
+                return goUserReset2nd;
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
-                return "user/reset";
+                return goUserReset1st;
             }
         }
     }
