@@ -21,14 +21,21 @@
     </div>
     <br>
     <div class="form-group">
-    <input type="submit" class="btn btn-primary" value="Log In" />
+        <input type="submit" class="btn btn-primary" value="Log In" />
     </div>
+    <th:block th:if="${message}">
+        <br>
+        <div style="border: thin black solid; width: 50%; spacing: 10px; padding: 10px;">
+            <p class="message" th:text="${message}"></p>
+        </div>
+    </th:block>
 </form>
 <br>
     <p>Don't have an account? <a href="create">Register for one.</a></p>
     <p>Forgot your password? <a href="/user/reset">Reset it now.</a>
+<!--
     <p>Need to update your password? <a href="/user/update">Update it now.</a>
-
+-->
 </center>
 </body>
 </html>

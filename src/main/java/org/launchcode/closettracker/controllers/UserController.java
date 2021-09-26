@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
-import static org.launchcode.closettracker.controllers.SessionController.goRedirectIndex;
+import static org.launchcode.closettracker.controllers.HomeController.*;
 
 @Controller
 public class UserController {
@@ -36,14 +35,18 @@ public class UserController {
     private ItemRepository itemRepository;
 
     @Autowired
+    private HomeController homeController;
+
+    @Autowired
     private PasswordTokenRepository passwordTokenRepository;
 
     @Autowired
     private MailSender mailSender;
 
-    private SessionController sessionController;
+// Thymeleaf template page strings
+    private static final String goUserCreate = "create";
 
-    // A function to generate a random string of letters and numbers
+// A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -59,9 +62,17 @@ public class UserController {
         return generatedString;
     }
 
-    // CREATE START
+// CREATE START
 
-// User --> Show create user form
+    //localhost:8080/create
+    @GetMapping("create")
+    public String displayCreateAccountForm(Model model) {
+        model.addAttribute(new UserDTO());
+        model.addAttribute("title", "Create User Account");
+        return goUserCreate;
+    }
+
+    // User --> Show create user form
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -69,7 +80,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 /*model.addAttribute("errorMsg", "Bad data!");*/
-                return "create";
+                return goUserCreate;
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -77,21 +88,21 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return goUserCreate;
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return goUserCreate;
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
         // This line for debugging
             User activeUser = newUser;
             userRepository.save(newUser);
-            return "redirect:index";
+            return goRedirectIndex;
 
         } catch (Exception ex) {
             if (ex.toString().contains("constraint")) {
@@ -137,9 +148,10 @@ public class UserController {
             return goUserReset1st;
         }
 
-    // Delete any previous tokens for the current user
+    // Checks to see if current user has any existing reset tokens
         PasswordResetToken[] tokens = passwordTokenRepository.findAllByUser(currentUser);
 
+    // Delete any previous tokens for the current user
         if (tokens != null) {
             for (int i = 0; i < tokens.length; i++) {
                 PasswordResetToken actveToken = tokens[i];
@@ -249,6 +261,7 @@ public class UserController {
         }
     // If DTO validation errors, display error message(s)
         if (errors.hasErrors()) {
+    // Unsure why it always clears the entered and confirm password fields
             model.addAttribute("updatePasswordDTO.passwordEntered", updatePasswordDTO.getPasswordEntered());
             model.addAttribute("updatePasswordDTO.passwordConfirm", updatePasswordDTO.getPasswordConfirm());
             return goUserUpdate;
@@ -269,7 +282,7 @@ public class UserController {
 
         if(user != null) {
         // Updates the user object password with the entered one
-        // This process creates a new has but does not persist the plain text password
+        // This process creates a new hash but does not persist the plain text password
             user.setPassword(updatePasswordDTO.getPasswordEntered());
         // Once password is successfully changed, set the reset flag to false allowing for normal login
             user.setPasswordReset(false);
@@ -280,8 +293,10 @@ public class UserController {
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
-            return goRedirectIndex;
-        } else {
+            model.addAttribute("message", "Your password has successfully been reset. Login using your new password to access your account.");
+            return goIndex;
+        }
+        else {
         // If user is not found, displays error message
             errors.rejectValue("passwordEntered", "user.notFound", "No valid user found. Please try again.");
             return goUserUpdate;
@@ -297,7 +312,7 @@ public class UserController {
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
                                           Errors errors, Model model, Model loginModel, HttpSession session) {
     // Get current user
-        User currentUser = sessionController.getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
 
     // If user object is null, redirect to login page
         if (currentUser == null) {
@@ -323,7 +338,7 @@ public class UserController {
     4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
  */
     // Get current user
-        User currentUser = sessionController.getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
 
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
