@@ -10,7 +10,7 @@ import java.util.Optional;
 public class SessionController {
 
     @Autowired
-    private static UserRepository userRepository;
+    private UserRepository userRepository;
 
     public static final String userSessionKey = "user";
 

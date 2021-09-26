@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Optional;
 
-import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+import static org.launchcode.closettracker.controllers.UserController.goUserUpdate;
 
 @Controller
 public class HomeController {
@@ -32,21 +30,11 @@ public class HomeController {
     @Autowired
     private ItemRepository itemRepository;
 
-    public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
-            return null;
-        }
+    SessionController sessionController;
 
-        Optional<User> user = userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            return null;
-        }
-
-        return user.get();
-
-    }
+// Thymeleaf template page strings
+    public static final String goIndex = "index";
+    private static final String goRedirectUserUpdate = "redirect:user/update";
 
     public String home(HttpServletResponse response) {
         //create a cookie with name 'website' and value 'javapointers'
@@ -60,16 +48,12 @@ public class HomeController {
         return "home";
     }
 
-    private static void setUserInSession(HttpSession session, User user) {
-        session.setAttribute(userSessionKey, user.getId());
-    }
-
     //localhost:8080  Shows login form
     @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
         model.addAttribute(new LoginFormDTO());
-        return "index";
+        return goIndex;
     }
 
     @PostMapping("/index")
@@ -78,7 +62,7 @@ public class HomeController {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Welcome to Closet Tracker");
             model.addAttribute("errorMsg", "Entry not valid!");
-            return "index";
+            return goIndex;
         }
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
@@ -87,28 +71,26 @@ public class HomeController {
 
         if (theUser.isPasswordReset()) {
             model.addAttribute(new UpdatePasswordDTO());
-
 // May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
 //            errors.rejectValue("title", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
 
-            model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
-            return "user/update";
+            return goRedirectUserUpdate;
         }
 
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return "index";
+            return goIndex;
         }
         String password = loginFormDTO.getPassword();
 
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return "index";
+            return goIndex;
         }
-        setUserInSession(request.getSession(), theUser);
+        sessionController.setUserInSession(request.getSession(), theUser);
 
         return "redirect:items/";
     }

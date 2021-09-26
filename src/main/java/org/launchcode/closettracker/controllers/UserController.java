@@ -109,6 +109,7 @@ public class UserController {
 // Thymeleaf template page strings
     private static final String goUserReset1st = "user/reset";
     private static final String goUserReset2nd = "user/reset-int";
+    public static final String goUserUpdate = "user/update";
 
 // RECOVERY PART 1 - Reset password - enter email to generate token needed for step 2
 
@@ -171,7 +172,7 @@ public class UserController {
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
                 model.addAttribute("message", "Since no outgoing email server is configured, use the token shown below to complete the reset password process.");
-//                model.addAttribute("token", token);
+                model.addAttribute("token", token);
                 return goUserReset2nd;
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
@@ -211,13 +212,13 @@ public class UserController {
 
 // User --> Show update password form
     @GetMapping("user/update")
-    public String showChooseNewPasswordForm(Model model, @RequestParam("token") String token) {
+    public String showChooseNewPasswordForm(Model model, @RequestParam(value = "token", required = false) String token) {
         boolean result = validatePasswordResetToken(token);
         if(result) {
             model.addAttribute("token", token);
         }
         model.addAttribute(new UpdatePasswordDTO());
-        return "user/update";
+        return goUserUpdate;
     }
 
     public boolean validatePasswordResetToken(String token) {
@@ -240,59 +241,50 @@ public class UserController {
     public String processChooseNewPasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
                                             HttpServletRequest request, Model model) {
 
-    // If the 1st password field is empty, display error message
-        if (updatePasswordDTO.getPasswordEntered().isEmpty()) {
+    // If reset token not found in db, display error message
+        if(!validatePasswordResetToken(updatePasswordDTO.getToken())) {
             model.addAttribute("title", "Update Account Password");
-            errors.rejectValue("passwordEntered", "passwordEntered.notMatch", "Passwords is required. Please try again.");
-            return "user/update";
+            errors.rejectValue("token", "token.notValid", "Token is not valid. Please try again.");
+            return goUserUpdate;
         }
-
-    // If the 2nd password field is empty, display error message
-        if (updatePasswordDTO.getPasswordConfirm().isEmpty()) {
-            model.addAttribute("title", "Update Account Password");
-            errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Password is required. Please try again.");
-            return "user/update";
+    // If DTO validation errors, display error message(s)
+        if (errors.hasErrors()) {
+            model.addAttribute("updatePasswordDTO.passwordEntered", updatePasswordDTO.getPasswordEntered());
+            model.addAttribute("updatePasswordDTO.passwordConfirm", updatePasswordDTO.getPasswordConfirm());
+            return goUserUpdate;
         }
 
     // If both passwords do not match, display error message
         if (!updatePasswordDTO.getPasswordEntered().equals(updatePasswordDTO.getPasswordConfirm())) {
             model.addAttribute("passwordEntered", updatePasswordDTO.getPasswordEntered());
             model.addAttribute("passwordConfirm", updatePasswordDTO.getPasswordConfirm());
-            model.addAttribute("title", "Update Account Password");
             errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Passwords do not match. Please try again.");
-            return "user/update";
+            return goUserUpdate;
         }
 
-    // If reset token not found in db, display error message
-        if(!validatePasswordResetToken(updatePasswordDTO.getToken())) {
-            model.addAttribute("title", "Update Account Password");
-            errors.rejectValue("token", "token.equals", "Token is not valid. Please try again.");
-            return "user/update";
-        }
-        int checkTokenSize = updatePasswordDTO.getToken().length();
-
+    // Retrieve users token object via the valid token string
         PasswordResetToken userByToken = passwordTokenRepository.findByToken(updatePasswordDTO.getToken());
+    // Retrieve the user from the token
         User user = userRepository.findByEmail(userByToken.getUser().getEmail());
 
         if(user != null) {
         // Updates the user object password with the entered one
         // This process creates a new has but does not persist the plain text password
             user.setPassword(updatePasswordDTO.getPasswordEntered());
-        // Once password is successfully changed, set the reset flag to false to allow for normal login
+        // Once password is successfully changed, set the reset flag to false allowing for normal login
             user.setPasswordReset(false);
         // Persists modified User object to db
             userRepository.save(user);
-        // Once modified user object is saved, deletes the token from the tokeb db
+        // Once modified user object is saved, deletes the token from the token db
             passwordTokenRepository.deleteById(userByToken.getId());
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
-            return "redirect:index";
+            return goRedirectIndex;
         } else {
         // If user is not found, displays error message
-            model.addAttribute("title", "Update Account Password");
-            model.addAttribute("pwdError", "User not found. Please try again.");
-            return "user/update";
+            errors.rejectValue("passwordEntered", "user.notFound", "No valid user found. Please try again.");
+            return goUserUpdate;
         }
     }
 
