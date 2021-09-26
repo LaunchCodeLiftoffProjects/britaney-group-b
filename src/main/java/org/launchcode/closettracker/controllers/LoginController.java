@@ -31,7 +31,7 @@ public class LoginController {
 // Thymeleaf page template strings
     private static final String goIndex = "index";
     private static final String goUserUpdate = "user/reset/update";
-    private static final String goItemsCloset = "redirect:items/";
+    private static final String goItemsCloset = "redirect:items/closet";
 
 // Cookie maker ??
     public String home(HttpServletResponse response) {

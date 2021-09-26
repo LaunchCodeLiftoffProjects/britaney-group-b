@@ -15,18 +15,18 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
-
-import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Random;
+import java.util.UUID;
 
 @Controller
-public class UserController {
+public class EditUserController {
 
     @Autowired
     private UserRepository userRepository;

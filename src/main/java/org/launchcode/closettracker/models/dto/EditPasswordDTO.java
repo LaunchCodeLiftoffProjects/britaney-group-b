@@ -3,16 +3,24 @@ package org.launchcode.closettracker.models.dto;
 import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class EditPasswordDTO {
 
+    @NotNull
+    @NotBlank
     @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     private String currentPassword;
 
+    @NotNull
+    @NotBlank
     @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     private String newPassword;
 
+    @NotNull
+    @NotBlank
     @Size(min=3, max = 15,  message = "Confirm Password must be between 3 and 15 characters long")
     private String confirmPassword;
 
