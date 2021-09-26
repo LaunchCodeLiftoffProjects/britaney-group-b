@@ -307,6 +307,10 @@ public class UserController {
 
 // EDIT ACCOUNT START
 
+// Thymeleaf template page strings
+    private static final String goUserEditInfo = "user/edit-info";
+    private static final String goUserEditPassword = "user/edit-password";
+
 // User --> Show edit account info
     @GetMapping("user/edit-info")
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
@@ -319,12 +323,16 @@ public class UserController {
             loginModel.addAttribute("title", "Login");
             return goRedirectIndex;
         }
+    // If DTO validation errors, display error message(s)
+        if (errors.hasErrors()) {
+            return goUserEditInfo;
+        }
 
     // Set DTO fields with values from User db
         editInfoDTO.setUsername(currentUser.getUserName());
         editInfoDTO.setEmail(currentUser.getEmail());
         model.addAttribute(editInfoDTO);
-        return "user/edit-info";
+        return goUserEditInfo;
     }
 
 // User --> Process edit account info
@@ -344,10 +352,30 @@ public class UserController {
         if (currentUser == null) {
             errors.rejectValue("email", "email.DoesNotExist", "An account with this email address does not exist");
             model.addAttribute("title", "Reset Account Password");
-            return "user/edit-info";
+            return goUserEditInfo;
         }
 
-    // Creates and sends an email to the user
+    // If DTO validation errors, display error message(s)
+        if (errors.hasErrors()) {
+            // Unsure why it always clears the entered and confirm password fields
+            return goUserEditInfo;
+        }
+
+    // Check if username has changed
+        String activeUserName = editInfoDTO.getUsername();
+        String currentUserName = currentUser.getUserName();
+        boolean doUserNamesMatch = currentUserName.equals(activeUserName);
+        boolean isUserNameChanged = false;
+        boolean isEmailChanged = false;
+        if (!currentUser.getUserName().equals(editInfoDTO.getUsername())) {
+            model.addAttribute("message","No info has changed so you're all good!");
+            isUserNameChanged = true;
+            return goUserEditInfo;
+        }
+        currentUser.setUserName(editInfoDTO.getUsername());
+        User activeUser = currentUser;
+/*
+        // Creates and sends an email to the user
         // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
         // login credentials in the properties file
         try {
@@ -359,9 +387,9 @@ public class UserController {
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
             }
-            return "user/edit-info";
+            return goUserEditInfo;
         }
-
+*/
 // While the User model does not persist the 'password' field, it is still a required field for the user object. So...
         // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
         currentUser.setPassword(createRandomString(8));
@@ -370,15 +398,15 @@ public class UserController {
         // 3) Persist the finished User object
         userRepository.save(currentUser);
 
-// Load the intermediate reset page
-        return "user/edit";
+        model.addAttribute("message", "");
+        return goUserEditInfo;
     }
 
-    // User --> Show edit password
+// User --> Show edit password
     @GetMapping("user/edit-password")
     public String showEditPasswordForm(Model model) {
         model.addAttribute(new EditPasswordDTO());
-        return "user/edit-password";
+        return goUserEditPassword;
     }
 
 // EDIT ACCOUNT END
