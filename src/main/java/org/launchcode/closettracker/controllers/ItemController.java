@@ -12,6 +12,7 @@ import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.launchcode.closettracker.controllers.HomeController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,16 +135,7 @@ public class ItemController {
     }
 
     // Edit Item Details
-/*
-    @PostMapping("view-by-user")
-    public String recallItemsByUser(Model model, HttpSession session) {
-        int userId = 1;
-        User currentUser = getUserFromSession(session);
-        User item = itemRepository.findByUserid(userId);
 
-        return "item";
-    }
-*/
     @GetMapping("edit")
     public String displayEditItemDetailsForm(@RequestParam Integer itemId, Model model) {
 
@@ -215,23 +208,49 @@ public class ItemController {
    // SEARCH ITEMS    items/search
 
    @GetMapping("/search")
-   public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session){
+   public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session) throws SQLException {
 
-     //  User currentUser = getUserFromSession(session);
+        String dbURL = "jdbc:mysql://localhost:3306/closet_tracker";
+        String username = "closet_tracker";
+        String password = "closet_tracker";
+       Connection con = DriverManager.getConnection(dbURL, username, password);
 
-     //  List<Item> thisUser = itemRepository.findByUser(currentUser);
+       User currentUser = getUserFromSession(session);
 
-       List<Item> searchResult = searchService.search(keyword);
+       List<Item> thisUser = itemRepository.findByUser(currentUser);
+
+       PreparedStatement ps = con.prepareStatement("SELECT * FROM item WHERE user_id= ? "
+               + "AND MATCH (item_name, type) "
+               + "AGAINST (?)");
+       ps.setInt(1, 4);
+       ps.setString(2, keyword);
+
+       ResultSet result = ps.executeQuery();
+
+       while (result.next()) {
+           result.getInt("color");
+           result.getString("item_image");
+           result.getString("item_name");
+           result.getBlob("season");
+           result.getString("size");
+           result.getString("type");
+       }
+
+       /*User currentUser = getUserFromSession(session);
+
+       List<Item> thisUser = itemRepository.findByUser(currentUser);*/
+
+      /* List<Item> searchResult = searchService.search(keyword);*/
 
       // objModel.addAttribute("items", itemRepository.findByUser(currentUser));
 
-       if (searchResult.isEmpty()) {
+      /* if (searchResult.isEmpty()) {
            model.addAttribute("message","No matching items for '" + keyword + "' found");
            return "/items/search_result";
-       } else
+       } else*/
        model.addAttribute("keyword", keyword);
        model.addAttribute("title", "Search results for " + keyword + "");
-       model.addAttribute("searchResult", searchResult);
+       model.addAttribute("searchResult", result);
       // objModel.addAttribute("items", itemRepository.findByUser(currentUser));
        return "/items/search_result";
    }
