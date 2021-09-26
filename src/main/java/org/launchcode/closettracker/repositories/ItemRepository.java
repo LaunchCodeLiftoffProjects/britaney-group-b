@@ -20,3 +20,20 @@ public interface ItemRepository extends CrudRepository<Item, Integer> {
     List<Item> findByUser(User user);
 
 }
+
+// Query will return items for specific user if specific user_id is given. How to get value in currentUser?
+/*
+      @Query(value = "SELECT * FROM item WHERE user_id = $(?currentUser) AND "
+            + "MATCH (item_name, type) "
+            + "AGAINST (?1)",
+            nativeQuery = true)
+    public List<Item> search(String keyword);*/
+
+
+//original query
+
+/*    @Query(value = "SELECT * FROM item WHERE "
+            + "MATCH (item_name, type) "
+            + "AGAINST (?1)",
+            nativeQuery = true)
+    public List<Item> search(String keyword);*/

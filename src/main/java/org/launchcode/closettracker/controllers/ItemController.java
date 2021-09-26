@@ -217,10 +217,13 @@ public class ItemController {
    @GetMapping("/search")
    public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session){
 
-       User currentUser = getUserFromSession(session);
+     //  User currentUser = getUserFromSession(session);
 
-       List<Item> searchResult = searchService.search(keyword, currentUser);
-       objModel.addAttribute("items", itemRepository.findByUser(currentUser));
+     //  List<Item> thisUser = itemRepository.findByUser(currentUser);
+
+       List<Item> searchResult = searchService.search(keyword);
+
+      // objModel.addAttribute("items", itemRepository.findByUser(currentUser));
 
        if (searchResult.isEmpty()) {
            model.addAttribute("message","No matching items for '" + keyword + "' found");
@@ -229,6 +232,7 @@ public class ItemController {
        model.addAttribute("keyword", keyword);
        model.addAttribute("title", "Search results for " + keyword + "");
        model.addAttribute("searchResult", searchResult);
+      // objModel.addAttribute("items", itemRepository.findByUser(currentUser));
        return "/items/search_result";
    }
 
