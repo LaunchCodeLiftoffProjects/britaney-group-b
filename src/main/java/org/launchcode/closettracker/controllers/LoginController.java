@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
-import static org.launchcode.closettracker.controllers.SessionController.goRedirectIndex;
 
 @Controller
 public class LoginController {
@@ -85,6 +84,7 @@ public class LoginController {
             model.addAttribute("title", "Welcome to Closet Tracker");
             return goIndex;
         }
+
         String password = loginFormDTO.getPassword();
 
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {

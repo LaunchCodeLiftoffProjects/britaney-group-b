@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
+import static org.launchcode.closettracker.controllers.SessionController.goRedirectIndex;
+
 @Controller
 @RequestMapping("user")
 public class ResetUserController {
@@ -145,7 +147,7 @@ public class ResetUserController {
 
 // User --> Show update password form
     @GetMapping("reset/update")
-    public String showChooseNewPasswordForm(Model model, @RequestParam("token") String token) {
+    public String showChooseNewPasswordForm(Model model, @RequestParam(value = "token", required = false) String token) {
         boolean result = validatePasswordResetToken(token);
         if(result) {
             model.addAttribute("token", token);
@@ -221,7 +223,7 @@ public class ResetUserController {
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
-            return "redirect:index";
+            return goRedirectIndex;
         } else {
         // If user is not found, displays error message
             model.addAttribute("title", "Update Account Password");
