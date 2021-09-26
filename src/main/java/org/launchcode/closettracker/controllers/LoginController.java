@@ -2,9 +2,7 @@ package org.launchcode.closettracker.controllers;
 
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UpdatePasswordDTO;
-import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.models.dto.LoginFormDTO;
-import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,9 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Optional;
 
 import static org.launchcode.closettracker.controllers.SessionController.goRedirect;
 import static org.launchcode.closettracker.controllers.SessionController.goRedirectIndex;
@@ -35,7 +31,9 @@ public class LoginController {
 // Thymeleaf page template strings
     private static final String goIndex = "index";
     private static final String goUserUpdate = "user/reset/update";
+    private static final String goItemsCloset = "redirect:items/";
 
+// Cookie maker ??
     public String home(HttpServletResponse response) {
         //create a cookie with name 'website' and value 'javapointers'
         Cookie cookie = new Cookie("website", "javapointers");
@@ -48,7 +46,7 @@ public class LoginController {
         return "home";
     }
 
-    //localhost:8080  Shows login form
+// User --> Show login form
     @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
@@ -56,6 +54,7 @@ public class LoginController {
         return goIndex;
     }
 
+// User --> Process login form
     @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
@@ -93,9 +92,10 @@ public class LoginController {
             model.addAttribute("title", "Welcome to Closet Tracker");
             return goIndex;
         }
+
         sessionController.setUserInSession(request.getSession(), theUser);
 
-        return "redirect:items/";
+        return goItemsCloset;
     }
 
     @GetMapping("/logout")
