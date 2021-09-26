@@ -19,6 +19,12 @@
             <label for="floatingInput">Email address</label>
         <p class="error" th:errors="${editInfoDTO.email}"></p>
     </div>
+    <th:block th:if="${message}">
+        <br>
+        <div style="border: thin black solid; width: 50%; spacing: 10px; padding: 10px;">
+            <p class="message" th:text="${message}"></p>
+        </div>
+    </th:block>
     <br>
     <div class="form-group">
         <input type="submit" value="Update account" class="btn btn-success">

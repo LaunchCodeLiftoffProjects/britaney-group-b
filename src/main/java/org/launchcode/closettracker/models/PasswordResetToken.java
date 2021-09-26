@@ -7,10 +7,6 @@ import java.util.Date;
 public class PasswordResetToken extends AbstractEntity{
     private static final int EXPIRATION = 60 * 24;
 
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;*/
-
     private String token;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)

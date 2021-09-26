@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
-import static org.launchcode.closettracker.controllers.SessionController.getUserFromSession;
+import static org.launchcode.closettracker.controllers.HomeController.*;
 
 @Controller
 public class UserController {
@@ -36,12 +35,18 @@ public class UserController {
     private ItemRepository itemRepository;
 
     @Autowired
+    private HomeController homeController;
+
+    @Autowired
     private PasswordTokenRepository passwordTokenRepository;
 
     @Autowired
     private MailSender mailSender;
 
-    // A function to generate a random string of letters and numbers
+// Thymeleaf template page strings
+    private static final String goUserCreate = "create";
+
+// A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -56,20 +61,18 @@ public class UserController {
 
         return generatedString;
     }
-/*
-    public User getUserFromSession(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute(userSessionKey);
-        if (userId == null) {
-            return null;
-        }
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            return null;
-        }
-        return user.get();
+
+// CREATE START
+
+    //localhost:8080/create
+    @GetMapping("create")
+    public String displayCreateAccountForm(Model model) {
+        model.addAttribute(new UserDTO());
+        model.addAttribute("title", "Create User Account");
+        return goUserCreate;
     }
-*/
-    // CREATE START
+
+    // User --> Show create user form
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -77,7 +80,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 /*model.addAttribute("errorMsg", "Bad data!");*/
-                return "create";
+                return goUserCreate;
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -85,21 +88,21 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return goUserCreate;
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return goUserCreate;
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
         // This line for debugging
             User activeUser = newUser;
             userRepository.save(newUser);
-            return "redirect:index";
+            return goRedirectIndex;
 
         } catch (Exception ex) {
             if (ex.toString().contains("constraint")) {
@@ -114,6 +117,11 @@ public class UserController {
 
 // RESET START
 
+// Thymeleaf template page strings
+    private static final String goUserReset1st = "user/reset";
+    private static final String goUserReset2nd = "user/reset-int";
+    public static final String goUserUpdate = "user/update";
+
 // RECOVERY PART 1 - Reset password - enter email to generate token needed for step 2
 
 // User --> Show email to reset form
@@ -121,7 +129,7 @@ public class UserController {
     public String displayStartResetForm(Model model) {
         model.addAttribute(new ResetEmailDTO());
         model.addAttribute("title", "Reset Account Password");
-        return "user/reset";
+        return goUserReset1st;
     }
 
 // User --> Process email to reset form
@@ -129,22 +137,30 @@ public class UserController {
     public String processStartResetForm(@ModelAttribute @Valid ResetEmailDTO resetEmailDTO, Errors errors, HttpServletRequest request, Model model) {
         User currentUser = userRepository.findByEmail(resetEmailDTO.getEmail());
 
+    // Show any DTO validation errors
+        if (errors.hasErrors()) {
+            return goUserReset1st;
+        }
+
     // If the user account does not exist, show error
         if (currentUser == null) {
             errors.rejectValue("email", "email.exists", "An account with this email address does not exist");
-            model.addAttribute("title", "Reset Account Password");
-            return "user/reset";
+            return goUserReset1st;
         }
 
-    // Creates a unique token string
+    // Checks to see if current user has any existing reset tokens
+        PasswordResetToken[] tokens = passwordTokenRepository.findAllByUser(currentUser);
+
+    // Delete any previous tokens for the current user
+        if (tokens != null) {
+            for (int i = 0; i < tokens.length; i++) {
+                PasswordResetToken actveToken = tokens[i];
+                passwordTokenRepository.deleteById(tokens[i].getId());
+            }
+        }
+
+    // Creates a (new) unique token string
         String token = UUID.randomUUID().toString();
-    // Delete any previous tokens for the user
-        try {
-            passwordTokenRepository.deleteById(currentUser.getId());
-        }
-        catch (Exception exception) {
-            //
-        }
     // Connects the above created token to the user and saves it to the token db
         createPasswordResetTokenForUser(currentUser, token);
 
@@ -162,15 +178,17 @@ public class UserController {
     // The program will still run if no server is configured
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), token, currentUser));
-            return "user/reset-int";
+            model.addAttribute("message", "If your email address was found, you will receive a recovery email with further instructions.");
+            return goUserReset2nd;
         }
         catch (Exception exception) {
             if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-                return "user/reset-int";
+                model.addAttribute("message", "Since no outgoing email server is configured, use the token shown below to complete the reset password process.");
+                model.addAttribute("token", token);
+                return goUserReset2nd;
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
-                return "user/reset";
+                return goUserReset1st;
             }
         }
     }
@@ -206,13 +224,13 @@ public class UserController {
 
 // User --> Show update password form
     @GetMapping("user/update")
-    public String showChooseNewPasswordForm(Model model, @RequestParam("token") String token) {
+    public String showChooseNewPasswordForm(Model model, @RequestParam(value = "token", required = false) String token) {
         boolean result = validatePasswordResetToken(token);
         if(result) {
             model.addAttribute("token", token);
         }
         model.addAttribute(new UpdatePasswordDTO());
-        return "user/update";
+        return goUserUpdate;
     }
 
     public boolean validatePasswordResetToken(String token) {
@@ -235,59 +253,53 @@ public class UserController {
     public String processChooseNewPasswordForm(@ModelAttribute @Valid UpdatePasswordDTO updatePasswordDTO, Errors errors,
                                             HttpServletRequest request, Model model) {
 
-    // If the 1st password field is empty, display error message
-        if (updatePasswordDTO.getPasswordEntered().isEmpty()) {
+    // If reset token not found in db, display error message
+        if(!validatePasswordResetToken(updatePasswordDTO.getToken())) {
             model.addAttribute("title", "Update Account Password");
-            errors.rejectValue("passwordEntered", "passwordEntered.notMatch", "Passwords is required. Please try again.");
-            return "user/update";
+            errors.rejectValue("token", "token.notValid", "Token is not valid. Please try again.");
+            return goUserUpdate;
         }
-
-    // If the 2nd password field is empty, display error message
-        if (updatePasswordDTO.getPasswordConfirm().isEmpty()) {
-            model.addAttribute("title", "Update Account Password");
-            errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Password is required. Please try again.");
-            return "user/update";
+    // If DTO validation errors, display error message(s)
+        if (errors.hasErrors()) {
+    // Unsure why it always clears the entered and confirm password fields
+            model.addAttribute("updatePasswordDTO.passwordEntered", updatePasswordDTO.getPasswordEntered());
+            model.addAttribute("updatePasswordDTO.passwordConfirm", updatePasswordDTO.getPasswordConfirm());
+            return goUserUpdate;
         }
 
     // If both passwords do not match, display error message
         if (!updatePasswordDTO.getPasswordEntered().equals(updatePasswordDTO.getPasswordConfirm())) {
             model.addAttribute("passwordEntered", updatePasswordDTO.getPasswordEntered());
             model.addAttribute("passwordConfirm", updatePasswordDTO.getPasswordConfirm());
-            model.addAttribute("title", "Update Account Password");
             errors.rejectValue("passwordConfirm", "passwordConfirm.notMatch", "Passwords do not match. Please try again.");
-            return "user/update";
+            return goUserUpdate;
         }
 
-    // If reset token not found in db, display error message
-        if(!validatePasswordResetToken(updatePasswordDTO.getToken())) {
-            model.addAttribute("title", "Update Account Password");
-            errors.rejectValue("token", "token.equals", "Token is not valid. Please try again.");
-            return "user/update";
-        }
-        int checkTokenSize = updatePasswordDTO.getToken().length();
-
+    // Retrieve users token object via the valid token string
         PasswordResetToken userByToken = passwordTokenRepository.findByToken(updatePasswordDTO.getToken());
+    // Retrieve the user from the token
         User user = userRepository.findByEmail(userByToken.getUser().getEmail());
 
         if(user != null) {
         // Updates the user object password with the entered one
-        // This process creates a new has but does not persist the plain text password
+        // This process creates a new hash but does not persist the plain text password
             user.setPassword(updatePasswordDTO.getPasswordEntered());
-        // Once password is successfully changed, set the reset flag to false to allow for normal login
+        // Once password is successfully changed, set the reset flag to false allowing for normal login
             user.setPasswordReset(false);
         // Persists modified User object to db
             userRepository.save(user);
-        // Once modified user object is saved, deletes the token from the tokeb db
+        // Once modified user object is saved, deletes the token from the token db
             passwordTokenRepository.deleteById(userByToken.getId());
         // Redirects user to login page
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
-            return "redirect:index";
-        } else {
+            model.addAttribute("message", "Your password has successfully been reset. Login using your new password to access your account.");
+            return goIndex;
+        }
+        else {
         // If user is not found, displays error message
-            model.addAttribute("title", "Update Account Password");
-            model.addAttribute("pwdError", "User not found. Please try again.");
-            return "user/update";
+            errors.rejectValue("passwordEntered", "user.notFound", "No valid user found. Please try again.");
+            return goUserUpdate;
         }
     }
 
@@ -295,24 +307,32 @@ public class UserController {
 
 // EDIT ACCOUNT START
 
+// Thymeleaf template page strings
+    private static final String goUserEditInfo = "user/edit-info";
+    private static final String goUserEditPassword = "user/edit-password";
+
 // User --> Show edit account info
     @GetMapping("user/edit-info")
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
                                           Errors errors, Model model, Model loginModel, HttpSession session) {
     // Get current user
-        User currentUser = getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
 
     // If user object is null, redirect to login page
         if (currentUser == null) {
             loginModel.addAttribute("title", "Login");
-            return "redirect:index";
+            return goRedirectIndex;
+        }
+    // If DTO validation errors, display error message(s)
+        if (errors.hasErrors()) {
+            return goUserEditInfo;
         }
 
     // Set DTO fields with values from User db
         editInfoDTO.setUsername(currentUser.getUserName());
         editInfoDTO.setEmail(currentUser.getEmail());
         model.addAttribute(editInfoDTO);
-        return "user/edit-info";
+        return goUserEditInfo;
     }
 
 // User --> Process edit account info
@@ -326,16 +346,36 @@ public class UserController {
     4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
  */
     // Get current user
-        User currentUser = getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
 
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
             errors.rejectValue("email", "email.DoesNotExist", "An account with this email address does not exist");
             model.addAttribute("title", "Reset Account Password");
-            return "user/edit-info";
+            return goUserEditInfo;
         }
 
-    // Creates and sends an email to the user
+    // If DTO validation errors, display error message(s)
+        if (errors.hasErrors()) {
+            // Unsure why it always clears the entered and confirm password fields
+            return goUserEditInfo;
+        }
+
+    // Check if username has changed
+        String activeUserName = editInfoDTO.getUsername();
+        String currentUserName = currentUser.getUserName();
+        boolean doUserNamesMatch = currentUserName.equals(activeUserName);
+        boolean isUserNameChanged = false;
+        boolean isEmailChanged = false;
+        if (!currentUser.getUserName().equals(editInfoDTO.getUsername())) {
+            model.addAttribute("message","No info has changed so you're all good!");
+            isUserNameChanged = true;
+            return goUserEditInfo;
+        }
+        currentUser.setUserName(editInfoDTO.getUsername());
+        User activeUser = currentUser;
+/*
+        // Creates and sends an email to the user
         // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
         // login credentials in the properties file
         try {
@@ -347,9 +387,9 @@ public class UserController {
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
             }
-            return "user/edit-info";
+            return goUserEditInfo;
         }
-
+*/
 // While the User model does not persist the 'password' field, it is still a required field for the user object. So...
         // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
         currentUser.setPassword(createRandomString(8));
@@ -358,15 +398,15 @@ public class UserController {
         // 3) Persist the finished User object
         userRepository.save(currentUser);
 
-// Load the intermediate reset page
-        return "user/edit";
+        model.addAttribute("message", "");
+        return goUserEditInfo;
     }
 
-    // User --> Show edit password
+// User --> Show edit password
     @GetMapping("user/edit-password")
     public String showEditPasswordForm(Model model) {
         model.addAttribute(new EditPasswordDTO());
-        return "user/edit-password";
+        return goUserEditPassword;
     }
 
 // EDIT ACCOUNT END

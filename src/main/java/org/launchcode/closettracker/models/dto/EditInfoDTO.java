@@ -2,12 +2,18 @@ package org.launchcode.closettracker.models.dto;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class EditInfoDTO {
 
+    @NotNull(message = "Username is required")
+    @NotBlank(message = "Username is required")
     private String username;
 
-    @Email(message = "Invalid email. Try again")
+    @NotNull(message = "Email is required")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Valid email address format required")
 //    @Column(name = "email", unique = true)
     private String email;
 
