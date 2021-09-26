@@ -14,7 +14,11 @@ public class SessionController {
 
     public static final String userSessionKey = "user";
 
-    public static User getUserFromSession(HttpSession session) {
+// Thymeleaf page template global strings
+    public static final String goRedirect = "redirect:";
+    public static final String goRedirectIndex = "redirect:/index";
+
+    public User getUserFromSession(HttpSession session) {
         Optional<User> user = userRepository.findById((Integer) session.getAttribute(userSessionKey));
         if (user.isPresent()) {
             return user.get();
@@ -24,7 +28,7 @@ public class SessionController {
         }
     }
 
-    private static void setUserInSession(HttpSession session, User user) {
+    protected void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
     }
 

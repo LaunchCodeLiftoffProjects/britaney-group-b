@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static org.launchcode.closettracker.controllers.SessionController.userSessionKey;
-import static org.launchcode.closettracker.controllers.SessionController.getUserFromSession;
 
 @Controller
 public class UserController {
@@ -40,6 +39,8 @@ public class UserController {
 
     @Autowired
     private MailSender mailSender;
+
+    private SessionController sessionController;
 
     // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
@@ -70,6 +71,15 @@ public class UserController {
     }
 */
     // CREATE START
+
+    //localhost:8080/create
+    @GetMapping("create")
+    public String displayCreateAccountForm(Model model) {
+        model.addAttribute(new UserDTO());
+        model.addAttribute("title", "Create User Account");
+        return goUserCreate;
+    }
+
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
@@ -300,7 +310,7 @@ public class UserController {
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
                                           Errors errors, Model model, Model loginModel, HttpSession session) {
     // Get current user
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
 
     // If user object is null, redirect to login page
         if (currentUser == null) {
@@ -326,7 +336,7 @@ public class UserController {
     4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
  */
     // Get current user
-        User currentUser = getUserFromSession(session);
+        User currentUser = sessionController.getUserFromSession(session);
 
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
