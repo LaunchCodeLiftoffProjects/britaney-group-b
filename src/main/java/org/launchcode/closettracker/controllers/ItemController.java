@@ -82,13 +82,6 @@ public class ItemController {
         return "redirect:";
     }
 
-    // get current users username - in progress
-
-    @RequestMapping(value = "/username", method = RequestMethod.GET)
-    @ResponseBody
-    public String currentUserName(Principal principal) {
-        return principal.getName();
-    }
 
     // Displays all items for logged in user in My Closet
 

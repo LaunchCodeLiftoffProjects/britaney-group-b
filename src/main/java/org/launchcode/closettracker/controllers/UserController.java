@@ -64,6 +64,13 @@ public class UserController {
         return generatedString;
     }
 
+ /*   // get current users username - in progress
+
+    public String currentUserName(HttpSession session) {
+    User currentUser = homeController.getUserFromSession(session);
+    currentUser.getUserName();
+    }
+*/
 // CREATE START
 
     //localhost:8080/create
