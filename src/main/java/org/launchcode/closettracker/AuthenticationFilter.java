@@ -21,8 +21,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
     @Autowired
     HomeController homeController;
 
-    private static final List<String> whitelist = Arrays.asList("/index", "/create", "/user/reset", "/styles.css",
-            "/user/reset-int", "/user/update", "/css");
+    private static final List<String> whitelist = Arrays.asList("/index", "/create", "/css");
 
     private static boolean isWhitelisted(String path) {
         for (String pathRoot : whitelist) {
@@ -41,26 +40,20 @@ public class AuthenticationFilter implements HandlerInterceptor {
         // Don't require sign-in for whitelisted pages
         if (isWhitelisted(request.getRequestURI())) {
             // returning true indicates that the request may proceed
-            String requestStuff = request.getRequestURI();
-            boolean checkIndexPath = requestStuff.equals("/index");
             return true;
         }
-        else {
-            HttpSession session = request.getSession();
-            try {
-                User user = homeController.getUserFromSession(session);
 
-                // The user is logged in
-                if (user != null) {
-                    return true;
-                }
+        HttpSession session = request.getSession();
+        User user = homeController.getUserFromSession(session);
 
-                // The user is NOT logged in
-                response.sendRedirect("/index");
-                return false;
-            } catch (Exception exception) {
-                return false;
-            }
+        // The user is logged in
+        if (user != null) {
+            return true;
         }
+
+        // The user is NOT logged in
+        response.sendRedirect("/index");
+        return false;
     }
+
 }

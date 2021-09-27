@@ -41,13 +41,19 @@ public class HomeController {
 
 // Function to retrieve userid from browser session
     public User getUserFromSession(HttpSession session) {
-        Optional<User> user = userRepository.findById((Integer) session.getAttribute(userSessionKey));
-        if (user.isPresent()) {
-            return user.get();
-        }
-        else {
+        Integer userId = (Integer) session.getAttribute(userSessionKey);
+        if (userId == null) {
             return null;
         }
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            return null;
+        }
+
+        return user.get();
+
     }
 
     private void setUserInSession(HttpSession session, User user) {
