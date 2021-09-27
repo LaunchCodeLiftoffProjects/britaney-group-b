@@ -361,19 +361,49 @@ public class UserController {
             return goUserEditInfo;
         }
 
-    // Check if username has changed
+    // Debug code
         String activeUserName = editInfoDTO.getUsername();
         String currentUserName = currentUser.getUserName();
         boolean doUserNamesMatch = currentUserName.equals(activeUserName);
         boolean isUserNameChanged = false;
-        boolean isEmailChanged = false;
+
+    // If username has changed, add change to User object, set flag to true
         if (!currentUser.getUserName().equals(editInfoDTO.getUsername())) {
-            model.addAttribute("message","No info has changed so you're all good!");
+            currentUser.setUserName(editInfoDTO.getUsername());
             isUserNameChanged = true;
-            return goUserEditInfo;
         }
-        currentUser.setUserName(editInfoDTO.getUsername());
-        User activeUser = currentUser;
+    // Debug code
+        String activeEmail = editInfoDTO.getEmail();
+        String currentEmail = currentUser.getEmail();
+        boolean doesEmailMatch = currentEmail.equals(activeEmail);
+        boolean isEmailChanged = false;
+    // Check if email has changed
+        if (!currentUser.getEmail().equals(editInfoDTO.getEmail())) {
+            int currentUserId = currentUser.getId();
+        // To see if the email that was changed is unique and not already used by another user
+            // I need to query the user db by email then get the userid of that user
+            // Compare that id to the id of the logged in user
+            // If they are the same, the email change can happen
+            // If not, display an error message
+            int activeUserId = userRepository.findByEmail(editInfoDTO.getEmail()).getId();
+            if (currentUserId == activeUserId) {
+                currentUser.setEmail(editInfoDTO.getUsername());
+                isEmailChanged = true;
+            }
+        }
+    // Now check to see what was changed and pass back the appropriate status messages for the user
+        if (isUserNameChanged && isEmailChanged) {
+            model.addAttribute("message","Username & email have been updated");
+        }
+        else if (isUserNameChanged) {
+            model.addAttribute("message","Username has been updated");
+        }
+        else if (isEmailChanged) {
+            model.addAttribute("message","Email has been updated");
+        }
+        else {
+            model.addAttribute("message","No info has changed so you're all good!");
+        }
 /*
         // Creates and sends an email to the user
         // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
@@ -397,9 +427,8 @@ public class UserController {
         currentUser.setPasswordReset(true);
         // 3) Persist the finished User object
         userRepository.save(currentUser);
-
-        model.addAttribute("message", "");
         return goUserEditInfo;
+
     }
 
 // User --> Show edit password
