@@ -20,7 +20,7 @@
             <th>Item Image</th>
         </tr>
     </thead>
-    <tr th:each="item : ${result}">
+    <tr th:each="item : ${searchResult}">
         <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
         <td th:text="${item.type}"></td>
         <td th:text="${item.color.displayName}"></td>

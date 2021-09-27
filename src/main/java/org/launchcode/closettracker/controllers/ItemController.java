@@ -200,53 +200,64 @@ public class ItemController {
 
    // SEARCH ITEMS    items/search
 
-   @GetMapping("/search")
-   public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session) throws SQLException {
+    @GetMapping("/search")
+    public String search(@Param("keyword") String keyword, Model model, Model objModel, HttpSession session) throws SQLException {
 
-        String dbURL = "jdbc:mysql://localhost:3306/closet_tracker";
+        /*String dbURL = "jdbc:mysql://localhost:3306/closet_tracker";
         String username = "closet_tracker";
         String password = "closet_tracker";
-       Connection con = DriverManager.getConnection(dbURL, username, password);
 
-       User currentUser = homeController.getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
 
-       List<Item> thisUser = itemRepository.findByUser(currentUser);
+        List<Item> thisUser = itemRepository.findByUser(currentUser);
 
-       PreparedStatement ps = con.prepareStatement("SELECT * FROM item WHERE user_id= ? "
-               + "AND MATCH (item_name, type) "
-               + "AGAINST (?)");
-       ps.setInt(1, 4);
-       ps.setString(2, keyword);
+        try {
+            Connection connection = DriverManager.getConnection(dbURL, username, password);
+            if (connection !=null) {
+                System.out.println("Connected to the database");
 
-       ResultSet result = ps.executeQuery();
+                String sql = "SELECT * FROM item WHERE user_id= ? "
+                        + "AND MATCH (item_name, type) "
+                        + "AGAINST (?)";
 
-       while (result.next()) {
-           result.getInt("color");
-           result.getString("item_image");
-           result.getString("item_name");
-           result.getBlob("season");
-           result.getString("size");
-           result.getString("type");
-       }
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, Integer.parseInt(String.valueOf(thisUser)));
+                ps.setString(2, keyword);
 
-       /*User currentUser = getUserFromSession(session);
+                ResultSet result = ps.executeQuery();
 
-       List<Item> thisUser = itemRepository.findByUser(currentUser);*/
+                while (result.next()) {
+                    result.getInt("color");
+                    result.getString("item_image");
+                    result.getString("item_name");
+                    result.getBlob("season");
+                    result.getString("size");
+                    result.getString("type");
+                }
 
-      /* List<Item> searchResult = searchService.search(keyword);*/
+                connection.close();
 
-      // objModel.addAttribute("items", itemRepository.findByUser(currentUser));
+                model.addAttribute("keyword", keyword);
+                model.addAttribute("title", "Search results for " + keyword + "");
+                model.addAttribute("searchResult", result);
 
-      /* if (searchResult.isEmpty()) {
-           model.addAttribute("message","No matching items for '" + keyword + "' found");
-           return "/items/search_result";
-       } else*/
-       model.addAttribute("keyword", keyword);
-       model.addAttribute("title", "Search results for " + keyword + "");
-       model.addAttribute("searchResult", result);
-      // objModel.addAttribute("items", itemRepository.findByUser(currentUser));
-       return "/items/search_result";
-   }
+            }
+        } catch(SQLException exception) {
+            exception.printStackTrace();
+
+        }*/
+
+        List<Item> searchResult = searchService.search(keyword);
+
+        if (searchResult.isEmpty()) {
+            model.addAttribute("message","No matching items for '" + keyword + "' found");
+            return "/items/search_result";
+        } else
+            model.addAttribute("keyword", keyword);
+        model.addAttribute("title", "Search results for " + keyword + "");
+        model.addAttribute("searchResult", searchResult);
+        return "/items/search_result";
+    }
 
 
     // DELETE ITEM(s): Show form

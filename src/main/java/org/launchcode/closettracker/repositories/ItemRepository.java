@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends CrudRepository<Item, Integer> {
 
-   /* @Query(value = "SELECT * FROM item WHERE user_id = $(?currentUser) "
-            + "AND MATCH (item_name, type) "
+    @Query(value = "SELECT * FROM item WHERE "
+            + "MATCH (item_name, type) "
             + "AGAINST (?1)",
             nativeQuery = true)
-    public List<Item> search(String keyword);*/
+    public List<Item> search(String keyword);
 
     List<Item> findByUser(User user);
 
@@ -23,14 +23,14 @@ public interface ItemRepository extends CrudRepository<Item, Integer> {
 
 // Query will return items for specific user if specific user_id is given. How to get value in currentUser?
 /*
-      @Query(value = "SELECT * FROM item WHERE user_id = $(?currentUser) AND "
+      @Query(value = "SELECT * FROM item WHERE user_id = ? AND "
             + "MATCH (item_name, type) "
             + "AGAINST (?1)",
             nativeQuery = true)
     public List<Item> search(String keyword);*/
 
 
-//original query
+//original query returns items from all users
 
 /*    @Query(value = "SELECT * FROM item WHERE "
             + "MATCH (item_name, type) "
