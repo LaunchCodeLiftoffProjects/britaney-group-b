@@ -104,7 +104,7 @@ public class UserController {
         // This line for debugging
             User activeUser = newUser;
             userRepository.save(newUser);
-            return goRedirectIndex;
+            return "redirect:";
 
         } catch (Exception ex) {
             if (ex.toString().contains("constraint")) {
@@ -296,7 +296,7 @@ public class UserController {
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
             model.addAttribute("message", "Your password has successfully been reset. Login using your new password to access your account.");
-            return goIndex;
+            return "index";
         }
         else {
         // If user is not found, displays error message
@@ -323,7 +323,7 @@ public class UserController {
     // If user object is null, redirect to login page
         if (currentUser == null) {
             loginModel.addAttribute("title", "Login");
-            return goRedirectIndex;
+            return "index";
         }
     // If DTO validation errors, display error message(s)
         if (errors.hasErrors()) {

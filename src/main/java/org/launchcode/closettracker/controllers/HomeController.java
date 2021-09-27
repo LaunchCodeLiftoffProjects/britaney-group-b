@@ -33,11 +33,11 @@ public class HomeController {
     public static final String userSessionKey = "user";
 
 // Thymeleaf global page template strings
-    public static final String goIndex = "index";
+   /* public static final String goIndex = "index";
     public static final String goRedirect = "redirect:";
     public static final String goRedirectIndex = "redirect:/index";
     private static final String goRedirectUserUpdate = "redirect:user/update";
-    private static final String goRedirectUserCloset = "redirect:items/closet";
+    private static final String goRedirectUserCloset = "redirect:items/closet";*/
 
 // Function to retrieve userid from browser session
     public User getUserFromSession(HttpSession session) {
@@ -71,7 +71,7 @@ public class HomeController {
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
         model.addAttribute(new LoginFormDTO());
-        return goIndex;
+        return "index";
     }
 
     // User --> Process login form
@@ -80,7 +80,7 @@ public class HomeController {
                                    HttpServletRequest request, Model model){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return goIndex;
+            return "index";
         }
 
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
@@ -89,14 +89,14 @@ public class HomeController {
     // If true, the user is redirected to the update page to choose a new password
         if (theUser.isPasswordReset()) {
             model.addAttribute(new UpdatePasswordDTO());
-            return goRedirectUserUpdate;
+            return "user/update";
         }
 
     // A final check to ensure there is
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return goIndex;
+            return "index";
         }
 
         String password = loginFormDTO.getPassword();
@@ -105,17 +105,17 @@ public class HomeController {
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
             model.addAttribute("title", "Welcome to Closet Tracker");
-            return goIndex;
+            return "index";
         }
         setUserInSession(request.getSession(), theUser);
 
-        return goRedirectUserCloset;
+        return "redirect:items/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
         request.getSession().invalidate();
-        return goRedirectIndex;
+        return "redirect:";
     }
 
 

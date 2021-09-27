@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.launchcode.closettracker.controllers.HomeController.goRedirect;
+/*import static org.launchcode.closettracker.controllers.HomeController.goRedirect;*/
 
 @Controller
 @RequestMapping("items")
