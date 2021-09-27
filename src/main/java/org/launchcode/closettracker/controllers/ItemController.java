@@ -95,7 +95,7 @@ public class ItemController {
     @GetMapping
     public String displayAllItems(Model objModel, Model model, HttpSession session)
     {
-        User currentUser = getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
         model.addAttribute("title", "My Closet");
         objModel.addAttribute("items", currentUser.getItems());
         return "items/closet";
@@ -120,17 +120,7 @@ public class ItemController {
         return "items/details";
     }
 
-    // Edit Item Details
-/*
-    @PostMapping("view-by-user")
-    public String recallItemsByUser(Model model, HttpSession session) {
-        int userId = 1;
-        User currentUser = getUserFromSession(session);
-        User item = itemRepository.findByUserid(userId);
 
-        return "item";
-    }
-*/
     @GetMapping("edit")
     public String displayEditItemDetailsForm(@RequestParam Integer itemId, Model model) {
 
@@ -265,7 +255,7 @@ public class ItemController {
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
     public String displayDeleteItemForm(Model model, HttpSession session) {
-        User currentUser = getUserFromSession(session);
+        User currentUser = homeController.getUserFromSession(session);
         model.addAttribute("title", "Delete Items");
         model.addAttribute("items", currentUser.getItems());
         return "items/delete";

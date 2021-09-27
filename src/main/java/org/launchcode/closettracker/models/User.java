@@ -39,8 +39,8 @@ public class User extends AbstractEntity {
     @Column(name = "new_user")
     private boolean isNewUser;
 
-//    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-//    private final List<Item> items = new ArrayList<>();
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private final List<Item> items = new ArrayList<>();
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -67,7 +67,7 @@ public class User extends AbstractEntity {
 
     public void setEmail(String email) { this.email = email; }
 
-//    public List<Item> getItems() { return items; }
+    public List<Item> getItems() { return items; }
 
     public String getPwHash() { return pwHash; }
 
