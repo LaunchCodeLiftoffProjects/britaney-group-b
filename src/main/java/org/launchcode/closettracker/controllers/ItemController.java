@@ -79,7 +79,7 @@ public class ItemController {
         itemRepository.save(item);
         String uploadDirectory = "item-photos/" + item.getId();
         FileUploadUtil.saveFile(uploadDirectory, fileName, image);
-        return "redirect:items/closet";
+        return "redirect:";
     }
 
     // get current users username - in progress

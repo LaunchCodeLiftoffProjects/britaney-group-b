@@ -296,7 +296,7 @@ public class UserController {
             model.addAttribute(new LoginFormDTO());
             model.addAttribute("title", "Welcome to Closet Tracker!");
             model.addAttribute("message", "Your password has successfully been reset. Login using your new password to access your account.");
-            return "index";
+            return "redirect:";
         }
         else {
         // If user is not found, displays error message
