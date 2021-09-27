@@ -61,6 +61,7 @@ public class ItemController {
                                         HttpSession session, Model model,
                                         @RequestParam("image") MultipartFile image) throws IOException {
         if(errors.hasErrors()) {
+            model.addAttribute("title", "Add Item");
             return "items/create-item";
         }
 
@@ -91,11 +92,12 @@ public class ItemController {
 
     // Displays all items for logged in user in My Closet
 
-    @GetMapping("closet")
-    public String displayAllItems(Model objModel, Model model, Principal principal, HttpSession session) {
-        User currentUser = homeController.getUserFromSession(session);
+    @GetMapping
+    public String displayAllItems(Model objModel, Model model, HttpSession session)
+    {
+        User currentUser = getUserFromSession(session);
         model.addAttribute("title", "My Closet");
-        objModel.addAttribute("items", itemRepository.findByUser(currentUser));
+        objModel.addAttribute("items", currentUser.getItems());
         return "items/closet";
     }
 
@@ -262,9 +264,10 @@ public class ItemController {
 
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
-    public String displayDeleteItemForm(Model objModel, Model model, HttpSession session) {
-        User currentUser = homeController.getUserFromSession(session);
-        objModel.addAttribute("items", itemRepository.findByUser(currentUser));
+    public String displayDeleteItemForm(Model model, HttpSession session) {
+        User currentUser = getUserFromSession(session);
+        model.addAttribute("title", "Delete Items");
+        model.addAttribute("items", currentUser.getItems());
         return "items/delete";
     }
 
@@ -278,7 +281,7 @@ public class ItemController {
             }
         }
 
-        return goRedirect;
+        return "redirect:";
     }
 
 
@@ -293,7 +296,7 @@ public class ItemController {
             }
         }
 
-        return goRedirect;
+        return "redirect:";
     }
 
   /*  @GetMapping("/display/image/{id}")
