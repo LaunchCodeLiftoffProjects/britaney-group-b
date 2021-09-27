@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
-<header th:replace="fragments :: navigation"></header>
+<nav>
+    <header th:replace="fragments :: navigation"></header>
+</nav>
+<br>
 
-<table class="table table-borderless table-hover">
+<table class="table table-borderless table-hover " style="hover-color: #e3f2fd;">
     <thead>
         <tr>
             <th>Name</th>

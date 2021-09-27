@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
@@ -8,8 +8,9 @@
 </nav>
 <br>
 
-<table class="table table-borderless table-hover " style="hover-color: #e3f2fd;">
+<table class="table table-borderless table-hover">
     <thead>
+    <center><h2 class="searchMessage" th:replace="fragments :: message"></h2></center>
         <tr>
             <th>Name</th>
             <th>Clothing type</th>
@@ -19,7 +20,7 @@
             <th>Item Image</th>
         </tr>
     </thead>
-    <tr th:each="item : ${items}">
+    <tr th:each="item : ${searchResult}">
         <td><a th:href="'/items/details?itemId=' + ${item.id}" th:text="${item.itemName}"></a></td>
         <td th:text="${item.type}"></td>
         <td th:text="${item.color.displayName}"></td>

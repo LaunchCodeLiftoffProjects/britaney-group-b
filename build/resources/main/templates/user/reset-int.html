@@ -6,15 +6,13 @@
 <body class="container">
 <h1>Password reset: Step 1 (complete) of 2</h1>
 <center>
-   <div style="border: thick dashed orange; padding: 20px; spacing: 20px; width: 50%">
-      <ul style="text-align: left;">
-         <li th:text="${message}">If your email address was found, you have been set a recovery email with further instructions.</li>
-         <li>The next time you log into your account, you will be required to change your password.</li>
-      </ul>
-   </div>
-   <br>
-   <div style="border: thick dotted red; padding: 20px; spacing: 20px; width: 50%">
-      <ul style="text-align: left;">
+   <div style="width: 60%">
+      <ul style="padding: 10px; spacing: 10px; text-align: left;">
+         <p><li>The next time you log into your account, you will be required to change your password.</li></p>
+         <p><li th:text="${message}">STATUS MESSAGE HERE</li></p>
+         <th:block th:if="${token}">
+            <p>Your unique reset token: <li th:text="${token}">STATUS MESSAGE HERE</li></p>
+         </th:block>
          <li>When you are ready, <a href="/user/update">update your password</a> to complete the recovery process.</li>
       </ul>
    </div>

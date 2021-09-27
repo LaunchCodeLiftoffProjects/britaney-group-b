@@ -1,9 +1,7 @@
 package org.launchcode.closettracker.controllers;
 
-
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.UpdatePasswordDTO;
-import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.models.dto.LoginFormDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
@@ -20,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import java.util.Optional;
 
 @Controller
@@ -31,8 +30,16 @@ public class HomeController {
     @Autowired
     private ItemRepository itemRepository;
 
-    private static final String userSessionKey = "user";
+    public static final String userSessionKey = "user";
 
+// Thymeleaf global page template strings
+   /* public static final String goIndex = "index";
+    public static final String goRedirect = "redirect:";
+    public static final String goRedirectIndex = "redirect:/index";
+    private static final String goRedirectUserUpdate = "redirect:user/update";
+    private static final String goRedirectUserCloset = "redirect:items/closet";*/
+
+// Function to retrieve userid from browser session
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
         if (userId == null) {
@@ -49,6 +56,10 @@ public class HomeController {
 
     }
 
+    private void setUserInSession(HttpSession session, User user) {
+        session.setAttribute(userSessionKey, user.getId());
+    }
+
     public String home(HttpServletResponse response) {
         //create a cookie with name 'website' and value 'javapointers'
         Cookie cookie = new Cookie("website", "javapointers");
@@ -61,11 +72,7 @@ public class HomeController {
         return "home";
     }
 
-    private static void setUserInSession(HttpSession session, User user) {
-        session.setAttribute(userSessionKey, user.getId());
-    }
-
-    //localhost:8080  Shows login form
+// User --> Show login form
     @GetMapping("/index")
     public String index (Model model){
         model.addAttribute("title", "Welcome to Closet Tracker");
@@ -73,37 +80,34 @@ public class HomeController {
         return "index";
     }
 
+    // User --> Process login form
     @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Welcome to Closet Tracker");
-            model.addAttribute("errorMsg", "Entry not valid!");
             return "index";
         }
+
         User theUser = userRepository.findByEmail(loginFormDTO.getEmail());
 
-        // Is the user has reset their password, this checks to see if the flag is true.
-        // If true, the user is redirected to the update page to choose a new password
-
+    // Is the user has reset their password, this checks to see if the flag is true.
+    // If true, the user is redirected to the update page to choose a new password
         if (theUser.isPasswordReset()) {
-            model.addAttribute(new UpdatePasswordDTO());
-
-// May need to use this line instead of showing the update page as there is some issue with it showing but not working upon submit
-//            errors.rejectValue("title", "password.reset", "The password for this account was reset so you must create a new password before logging in.");
-
-            model.addAttribute("title", "Update User Password");
             model.addAttribute(new UpdatePasswordDTO());
             return "user/update";
         }
 
+    // A final check to ensure there is
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
             return "index";
         }
+
         String password = loginFormDTO.getPassword();
 
+    // I don't believe this works correctly; still allows log in with an incorrect password
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
             model.addAttribute("title", "Welcome to Closet Tracker");
@@ -112,14 +116,6 @@ public class HomeController {
         setUserInSession(request.getSession(), theUser);
 
         return "redirect:items/";
-    }
-
-    //localhost:8080/create
-    @GetMapping("create")
-    public String displayCreateAccountForm(Model model) {
-        model.addAttribute(new UserDTO());
-        model.addAttribute("title", "Create User Account");
-        return "create";
     }
 
     @GetMapping("/logout")

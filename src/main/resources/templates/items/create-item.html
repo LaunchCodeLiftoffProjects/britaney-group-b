@@ -5,10 +5,13 @@
     <title th:text="${title}"></title>
 </head>
 <body class="container">
-<header th:replace="fragments :: navigation"></header>
-<br>
+<nav>
+    <header th:replace="fragments :: navigation"></header>
+</nav>
 <br>
 <center>
+    <h2>Add an Item to your closet</h2>
+    <br>
 <form method="post" th:object="${item}" enctype="multipart/form-data">
     <div class="form-floating w-25">
             <input th:field="${item.itemName}" class="form-control" id="floatingItemName" placeholder="Item Name"/>

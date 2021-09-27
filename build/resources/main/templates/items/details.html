@@ -3,12 +3,10 @@
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
-<header th:replace="fragments :: navigation"></header>
-<br>
-    <br>
-        <br>
-            <br>
-                <br>
+<nav>
+    <header th:replace="fragments :: navigation"></header>
+</nav>
+
 <div class="row">
     <div class="column">
 <table class="table table-borderless table-hover">
@@ -39,7 +37,7 @@
     <div class="column">
         <table class="table table-borderless table-hover">
     <tr>
-        <td class="zoom"> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
+        <td> <img class="card-img-top" th:src="@{${item.imagePath}}" style="width:300px"></td>
     </tr>
         </table>
     </div>

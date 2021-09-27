@@ -22,7 +22,6 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto:5.5.1'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	runtimeOnly 'mysql:mysql-connector-java'

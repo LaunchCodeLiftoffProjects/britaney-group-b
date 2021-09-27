@@ -11,13 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User extends AbstractEntity{
+public class User extends AbstractEntity {
 
-    /*@Id
-    @GeneratedValue
-    @Column(name = "user_id", nullable = false)
-    private int id;
-*/
     @NotNull(message = "Username is required")
     @NotBlank(message = "Username is required")
     @Column(name = "username", nullable = false)
@@ -31,7 +26,7 @@ public class User extends AbstractEntity{
 
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password is required")
-    @Size(min=6, max = 24,  message = "Password must be between 6 and 24 characters long")
+    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     @Transient
     private String password;
 
@@ -61,63 +56,33 @@ public class User extends AbstractEntity{
 
     public User(String password) {
         this.pwHash = encoder.encode(password);
-        /*this.password = password;*/
         this.passwordReset = false;
     }
 
+    public String getUserName() { return username; }
 
-    @Override
-    public int getId() {
-        return id;
-    }
+    public void setUserName(String userName) { this.username = username; }
 
-    public String getUserName() {
-        return username;
-    }
+    public String getEmail() { return email; }
 
-    public void setUserName(String userName) {
-        this.username = username;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public List<Item> getItems() { return items; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public String getPwHash() {
-        return pwHash;
-    }
-
-    public void setPwHash(String pwHash) {
-        this.pwHash = pwHash;
-    }
+    public String getPwHash() { return pwHash; }
 
     public void setPassword(String password) {
-        this.password = password; this.pwHash = encoder.encode(password);
+        this.password = password;
+        this.pwHash = encoder.encode(password);
     }
 
-    public boolean isPasswordReset() {
-        return passwordReset;
-    }
+    public boolean isPasswordReset() { return passwordReset; }
 
-    public void setPasswordReset(boolean passwordReset) {
-        this.passwordReset = passwordReset;
-    }
+    public void setPasswordReset(boolean passwordReset) { this.passwordReset = passwordReset; }
 
-    public boolean isNewUser() {
-        return isNewUser;
-    }
+    public boolean isNewUser() { return isNewUser; }
 
-    public void setNewUser(boolean newUser) {
-        isNewUser = newUser;
-    }
+    public void setNewUser(boolean newUser) { isNewUser = newUser; }
 
     // Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {
