@@ -1,5 +1,6 @@
 package org.launchcode.closettracker.models.dto;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ public class LoginFormDTO {
     @NotNull(message = "Password is required")
     @NotBlank(message = "Password must not be blank")
     @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+    @Transient
     private String password;
 
     public String getEmail() {

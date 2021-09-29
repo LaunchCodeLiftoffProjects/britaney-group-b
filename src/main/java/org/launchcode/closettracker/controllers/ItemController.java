@@ -90,6 +90,7 @@ public class ItemController {
     {
         User currentUser = homeController.getUserFromSession(session);
         model.addAttribute("title", "My Closet");
+        model.addAttribute("userGreeting", homeController.getUserDisplayName(session));
         objModel.addAttribute("items", currentUser.getItems());
         return "items/closet";
     }

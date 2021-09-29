@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
@@ -58,6 +59,17 @@ public class HomeController {
 
     private void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
+    }
+
+    protected String getUserDisplayName(HttpSession session) {
+        User currentUser = getUserFromSession(session);
+        if (currentUser != null) {
+            String[] userDisplayName = currentUser.getUserName().split(" ");
+            return userDisplayName[0] + "'s Closet";
+        }
+        else {
+            return "My Closet";
+        }
     }
 
     public String home(HttpServletResponse response) {
