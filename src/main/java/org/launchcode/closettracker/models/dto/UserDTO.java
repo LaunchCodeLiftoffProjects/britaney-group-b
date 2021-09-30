@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class UserDTO extends LoginFormDTO{
+public class UserDTO extends LoginFormDTO {
 
     @NotNull(message = "User Name is required")
     @NotBlank(message = "User Name is required")
