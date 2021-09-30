@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 public class User extends AbstractEntity {
@@ -30,6 +31,12 @@ public class User extends AbstractEntity {
     @Transient
     private String password;
 
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Column(name = "display_phrase")
+    private String displayPhrase;
+
     @Column(name = "pw_hash")
     private String pwHash;
 
@@ -44,12 +51,14 @@ public class User extends AbstractEntity {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    // CREATE: Capture user data to create a new account
+// CREATE: Capture user data to create a new account
     public User(String username, String email, String password, boolean pwReset, boolean newUser) {
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);
         this.password = password;
+        this.displayName = makeDisplayName(username);
+        this.displayPhrase = makeDisplayPhrase(displayName);
         this.passwordReset = pwReset;
         this.isNewUser = newUser;
     }
@@ -62,6 +71,14 @@ public class User extends AbstractEntity {
     public String getUserName() { return username; }
 
     public void setUserName(String userName) { this.username = username; }
+
+    public String getDisplayName() { return displayName; }
+
+    public void setDisplayName(String username) { this.displayName = makeDisplayName(username); }
+
+    public String getDisplayPhrase() { return displayPhrase; }
+
+    public void setDisplayPhrase(String username) { this.displayPhrase = makeDisplayPhrase(username); }
 
     public String getEmail() { return email; }
 
@@ -84,11 +101,28 @@ public class User extends AbstractEntity {
 
     public void setNewUser(boolean newUser) { isNewUser = newUser; }
 
-    // Compare input password with its encoded password and assign it in pw_hash
+// Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {
         return encoder.matches(password, pwHash);
     }
 
     public User() {
+    }
+
+    public String makeDisplayName(String name) {
+        String[] firstName = name.split(" ");
+        return firstName[0];
+    }
+
+    public String makeDisplayPhrase(String name) {
+        String[] lastLetter = name.split("");
+        int ind = lastLetter.length - 1;
+        String lastChar = lastLetter[ind].toLowerCase();
+        if (lastChar.equals("s")) {
+            return name + "'" + " Closet";
+        }
+        else {
+            return name + "'s" + " Closet";
+        }
     }
 }
