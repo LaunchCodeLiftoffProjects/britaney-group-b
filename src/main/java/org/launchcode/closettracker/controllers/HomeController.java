@@ -57,7 +57,7 @@ public class HomeController {
 
     }
 
-    private void setUserInSession(HttpSession session, User user) {
+    public void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
     }
 
@@ -135,6 +135,5 @@ public class HomeController {
         request.getSession().invalidate();
         return "redirect:";
     }
-
 
 }

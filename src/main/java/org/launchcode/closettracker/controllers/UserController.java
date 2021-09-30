@@ -75,7 +75,7 @@ public class UserController {
 
     //localhost:8080/create
     @GetMapping("create")
-    public String displayCreateAccountForm(Model model) {
+    public String showCreateAccountForm(Model model) {
         model.addAttribute(new UserDTO());
         model.addAttribute("title", "Create User Account");
         return goUserCreate;
@@ -84,12 +84,13 @@ public class UserController {
     // User --> Show create user form
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
+    public String processCreateAccountForm(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request,
+                                           Model model) throws IOException {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 /*model.addAttribute("errorMsg", "Bad data!");*/
-                return goUserCreate;
+                return "create";
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -97,14 +98,14 @@ public class UserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return goUserCreate;
+                return "create";
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
-                return goUserCreate;
+                return "create";
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);

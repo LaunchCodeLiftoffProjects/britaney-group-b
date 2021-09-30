@@ -78,7 +78,7 @@ public class User extends AbstractEntity {
 
     public String getDisplayPhrase() { return displayPhrase; }
 
-    public void setDisplayPhrase(String username) { this.displayPhrase = makeDisplayPhrase(username); }
+    public void setDisplayPhrase(String username) { this.displayPhrase = makeDisplayPhrase(displayName); }
 
     public String getEmail() { return email; }
 
