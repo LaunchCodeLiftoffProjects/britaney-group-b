@@ -46,7 +46,7 @@ public class UserController {
     private MailSender mailSender;
 
 // Thymeleaf template page strings
-    private static final String goUserCreate = "create";
+    private static final String goUserCreate = "/create";
 
 // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
@@ -73,7 +73,7 @@ public class UserController {
 */
 // CREATE START
 
-    //localhost:8080/create
+// User --> Show create user form
     @GetMapping("create")
     public String showCreateAccountForm(Model model) {
         model.addAttribute(new UserDTO());
@@ -81,7 +81,7 @@ public class UserController {
         return goUserCreate;
     }
 
-    // User --> Show create user form
+// User --> process create user form
     @PostMapping("create")
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public String processCreateAccountForm(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request,

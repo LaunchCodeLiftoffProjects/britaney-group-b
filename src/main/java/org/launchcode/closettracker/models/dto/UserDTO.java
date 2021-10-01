@@ -3,7 +3,6 @@ package org.launchcode.closettracker.models.dto;
 import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserDTO extends LoginFormDTO {
@@ -17,10 +16,11 @@ public class UserDTO extends LoginFormDTO {
     @Transient
     private String confirmPassword;
 
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
     public String getConfirmPassword() {
         return confirmPassword;
     }
-
 }
