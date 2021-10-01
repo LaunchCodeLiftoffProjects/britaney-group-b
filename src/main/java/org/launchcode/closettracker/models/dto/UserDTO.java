@@ -8,12 +8,10 @@ import javax.validation.constraints.Size;
 
 public class UserDTO extends LoginFormDTO {
 
-    @NotNull(message = "User Name is required")
     @NotBlank(message = "User Name is required")
     @Column(name = "user_name", nullable = false)
     private String username;
 
-    @NotNull(message = "Confirm Password is required")
     @NotBlank(message = "Confirm Password is required")
     @Size(min=3, max = 15,  message = "Confirm Password must be between 3 and 15 characters long")
     @Transient

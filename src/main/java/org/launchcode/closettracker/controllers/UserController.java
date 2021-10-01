@@ -89,7 +89,7 @@ public class UserController {
         try {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
-                return "create";
+                return goUserCreate;
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
