@@ -70,7 +70,7 @@ public class User extends AbstractEntity {
 
     public String getUserName() { return username; }
 
-    public void setUserName(String userName) { this.username = username; }
+    public void setUserName(String username) { this.username = username; }
 
     public String getDisplayName() { return displayName; }
 
@@ -78,7 +78,7 @@ public class User extends AbstractEntity {
 
     public String getDisplayPhrase() { return displayPhrase; }
 
-    public void setDisplayPhrase(String username) { this.displayPhrase = makeDisplayPhrase(displayName); }
+    public void setDisplayPhrase(String displayName) { this.displayPhrase = makeDisplayPhrase(displayName); }
 
     public String getEmail() { return email; }
 

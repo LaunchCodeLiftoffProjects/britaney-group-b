@@ -14,6 +14,8 @@ public class UserModelTests {
     public void checkDisplayNameIsCreatedCorrectly() {
         User testUser = new User();
         assertEquals("Stevie", testUser.makeDisplayName("Stevie Nicks"));
+        assertEquals("Luke", testUser.makeDisplayName("Luke Cakewalker"));
+        assertEquals("GeorgeBarthowmewl", testUser.makeDisplayName("GeorgeBarthowmewl"));
     }
 
     @Test

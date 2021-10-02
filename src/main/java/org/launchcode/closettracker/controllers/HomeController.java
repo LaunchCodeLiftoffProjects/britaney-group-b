@@ -32,6 +32,7 @@ public class HomeController {
     private ItemRepository itemRepository;
 
     public static final String userSessionKey = "user";
+    public static final String userDisplayPhrase = "displayPhrase";
 
 // Thymeleaf global page template strings
    /* public static final String goIndex = "index";
@@ -54,11 +55,30 @@ public class HomeController {
         }
 
         return user.get();
-
     }
 
+// Function to retrieve user's display name from browser session
+    public String getPhraseFromSession(HttpSession session) {
+        String phrase = (String) session.getAttribute(userDisplayPhrase);
+        if (phrase.isEmpty()) {
+            return "My Closet";
+        }
+        else {
+            return phrase;
+        }
+    }
+
+    // setUserInSession now adds the logged in users' id to an attribute and also their display phrase (i.e. Bob's Closet, etc)
     public void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
+        String phrase;
+        if (user.getDisplayPhrase().isEmpty()) {
+            phrase = "My Closet";
+        }
+        else {
+            phrase = user.getDisplayPhrase();
+        }
+        session.setAttribute(userDisplayPhrase, phrase);
     }
 
     protected String getUserDisplayName(HttpSession session) {

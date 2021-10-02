@@ -6,14 +6,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class ResetEmailDTO {
-    // Fields with annotations
-    @NotNull(message = "Email is required")
+// Fields with annotations
     @NotBlank(message = "Email is required")
     @Email
     @Transient
     private String email;
 
-    // Getters & Setters
+// Getters & Setters
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
