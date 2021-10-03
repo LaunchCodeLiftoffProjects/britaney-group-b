@@ -14,21 +14,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-/*import org.springframework.security.core.context.SecurityContextHolder;*/
 
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.security.Principal;
 import java.sql.SQLException;
-import java.util.*;
-
-import static org.launchcode.closettracker.controllers.HomeController.*;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Random;
+import java.util.UUID;
 
 @Controller
-public class UserController {
+public class ResetUserController {
 
     @Autowired
     private UserRepository userRepository;
@@ -71,60 +69,6 @@ public class UserController {
     currentUser.getUserName();
     }
 */
-// CREATE START
-
-    //localhost:8080/create
-    @GetMapping("create")
-    public String displayCreateAccountForm(Model model) {
-        model.addAttribute(new UserDTO());
-        model.addAttribute("title", "Create User Account");
-        return goUserCreate;
-    }
-
-    // User --> Show create user form
-    @PostMapping("create")
-    @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public String createUser(@ModelAttribute @Valid UserDTO userDTO, Errors errors, HttpServletRequest request, Model model) throws IOException {
-        try {
-            if (errors.hasErrors()) {
-                model.addAttribute("title", "Create User Account");
-                /*model.addAttribute("errorMsg", "Bad data!");*/
-                return goUserCreate;
-            }
-
-            User currentUser = userRepository.findByEmail(userDTO.getEmail());
-
-            if (currentUser != null) {
-                errors.rejectValue("email", "email.exists", "An account with this email address already exists");
-                model.addAttribute("title", "Create User Account");
-                return goUserCreate;
-            }
-
-            if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-                errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
-                model.addAttribute("pwdError", "Passwords do not match");
-                model.addAttribute("title", "Create User Account");
-                return goUserCreate;
-            }
-
-            User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
-        // This line for debugging
-            User activeUser = newUser;
-            userRepository.save(newUser);
-            return "redirect:";
-
-        } catch (Exception ex) {
-            if (ex.toString().contains("constraint")) {
-                model.addAttribute("dbError", "Email exists. Try with new one!");
-            } else {
-                model.addAttribute("dbError", "Db Error");
-            }
-            return "create";
-        }
-    }
-// CREATE END
-
-// RESET START
 
 // Thymeleaf template page strings
     private static final String goUserReset1st = "user/reset";
@@ -311,113 +255,4 @@ public class UserController {
             return goUserUpdate;
         }
     }
-
-// RESET END
-
-// EDIT ACCOUNT START
-
-// Thymeleaf template page strings
-    private static final String goUserEditInfo = "user/edit-info";
-    private static final String goUserEditPassword = "user/edit-password";
-
-// User --> Show edit account info
-    @GetMapping("user/edit-info")
-    public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
-                                          Errors errors, Model model, Model loginModel, HttpSession session) {
-    // Get current user
-        User currentUser = homeController.getUserFromSession(session);
-
-    // If user object is null, redirect to login page
-        if (currentUser == null) {
-            loginModel.addAttribute("title", "Login");
-            return "index";
-        }
-    // If DTO validation errors, display error message(s)
-        if (errors.hasErrors()) {
-            return goUserEditInfo;
-        }
-
-    // Set DTO fields with values from User db
-        editInfoDTO.setUsername(currentUser.getUserName());
-        editInfoDTO.setEmail(currentUser.getEmail());
-        model.addAttribute(editInfoDTO);
-        return goUserEditInfo;
-    }
-
-// User --> Process edit account info
-    @PostMapping("user/edit-info")
-    public String processEditAccountInfoForm(@ModelAttribute @Valid EditInfoDTO editInfoDTO, Errors errors,
-                                             HttpServletRequest request, HttpSession session, Model model) {
-/* Some cases to plan for:
-    1) Since fields are prefilled with persisted info, when user hits Update compare the field values to the stored values, do nothing if same
-    2) Since fields can be changed together or separately, check each as individual fields
-    3) Username is not used for login so it can be whatever the user wants
-    4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
- */
-    // Get current user
-        User currentUser = homeController.getUserFromSession(session);
-
-    // If the user account does not exist, redirect to login page as browser session has expired
-        if (currentUser == null) {
-            errors.rejectValue("email", "email.DoesNotExist", "An account with this email address does not exist");
-            model.addAttribute("title", "Reset Account Password");
-            return goUserEditInfo;
-        }
-
-    // If DTO validation errors, display error message(s)
-        if (errors.hasErrors()) {
-            // Unsure why it always clears the entered and confirm password fields
-            return goUserEditInfo;
-        }
-
-    // Check if username has changed
-        String activeUserName = editInfoDTO.getUsername();
-        String currentUserName = currentUser.getUserName();
-        boolean doUserNamesMatch = currentUserName.equals(activeUserName);
-        boolean isUserNameChanged = false;
-        boolean isEmailChanged = false;
-        if (!currentUser.getUserName().equals(editInfoDTO.getUsername())) {
-            model.addAttribute("message","No info has changed so you're all good!");
-            isUserNameChanged = true;
-            return goUserEditInfo;
-        }
-        currentUser.setUserName(editInfoDTO.getUsername());
-        User activeUser = currentUser;
-/*
-        // Creates and sends an email to the user
-        // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
-        // login credentials in the properties file
-        try {
-            mailSender.send(constructResetTokenEmail(request.getLocale(), null, currentUser));
-        }
-        catch (Exception exception) {
-            if (exception.toString().contains("not accepted")) {
-                errors.rejectValue("email", "server.notConfigured", "The password has been reset but no email was sent as there is no outgoing email server configured.");
-            } else {
-                errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
-            }
-            return goUserEditInfo;
-        }
-*/
-// While the User model does not persist the 'password' field, it is still a required field for the user object. So...
-        // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
-        currentUser.setPassword(createRandomString(8));
-        // 2) To ensure the user will have to update their password upon next login, set the flag to true
-        currentUser.setPasswordReset(true);
-        // 3) Persist the finished User object
-        userRepository.save(currentUser);
-
-        model.addAttribute("message", "");
-        return goUserEditInfo;
-    }
-
-// User --> Show edit password
-    @GetMapping("user/edit-password")
-    public String showEditPasswordForm(Model model) {
-        model.addAttribute(new EditPasswordDTO());
-        return goUserEditPassword;
-    }
-
-// EDIT ACCOUNT END
-
 }
