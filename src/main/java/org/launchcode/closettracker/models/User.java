@@ -60,7 +60,7 @@ public class User extends AbstractEntity {
         this.displayName = makeDisplayName(username);
         this.displayPhrase = makeDisplayPhrase(displayName);
         this.passwordReset = pwReset;
-        this.isNewUser = newUser;
+        this.isNewUser = isUserNew(this.items);
     }
 
     public User(String password) {
@@ -107,6 +107,15 @@ public class User extends AbstractEntity {
     }
 
     public User() {
+    }
+
+    public boolean isUserNew(List items) {
+        if (items.size() > 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     public String makeDisplayName(String name) {

@@ -68,11 +68,11 @@ public class HomeController {
         }
     }
 
-    // setUserInSession now adds the logged in users' id to an attribute and also their display phrase (i.e. Bob's Closet, etc)
+// setUserInSession now includes the users' phrase name along with user id
     public void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
         String phrase;
-        if (user.getDisplayPhrase().isEmpty()) {
+        if (user.getDisplayPhrase() == null) {
             phrase = "My Closet";
         }
         else {
@@ -147,7 +147,12 @@ public class HomeController {
         }
         setUserInSession(request.getSession(), theUser);
 
-        return "redirect:items/";
+        if (theUser.isPasswordReset()) {
+            model.addAttribute(new UpdatePasswordDTO());
+            return "user/update";
+        }
+
+        return "redirect:/items";
     }
 
     @GetMapping("/logout")

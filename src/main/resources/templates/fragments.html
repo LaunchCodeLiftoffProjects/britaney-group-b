@@ -22,7 +22,7 @@
     </form>
     <h5><span class="navbar-text" style="color:black" th:text="${title}"></span></h5>
     <ul class="nav" style="float:right;">
-        <li class="nav-item"><a class="nav-link" href="/items">My Closet</a></li>
+        <li th:text="${phrase}" class="nav-item"><a class="nav-link" href="/items">My Closet</a></li>
         <li class="nav-item"><a class="nav-link" href="/items/create-item">Add Item</a></li>
         <li class="nav-item"><a class="nav-link" href="/items/delete">Delete Items</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
