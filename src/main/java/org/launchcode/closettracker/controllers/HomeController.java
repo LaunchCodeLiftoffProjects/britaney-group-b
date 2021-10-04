@@ -60,7 +60,7 @@ public class HomeController {
 // Function to retrieve user's display name from browser session
     public String getPhraseFromSession(HttpSession session) {
         String phrase = (String) session.getAttribute(userDisplayPhrase);
-        if (phrase.isEmpty()) {
+        if (phrase == null || phrase.isEmpty()) {
             return "My Closet";
         }
         else {
@@ -77,6 +77,7 @@ public class HomeController {
             phrase = user.makeDisplayPhrase(user.makeDisplayName(user.getUserName()));
             user.setDisplayName(user.getUserName());
             user.setDisplayPhrase(user.getDisplayName());
+        // Persists the updates to the user db
             userRepository.save(user);
         }
         else {

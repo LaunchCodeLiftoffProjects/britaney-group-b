@@ -20,9 +20,9 @@
             <button type="submit" value="Search" class="btn btn-outline-success my-2 my-sm-0 m-1">Search</button>
         </div>
     </form>
-    <h5><span class="navbar-text" style="color:black" th:text="${title}"></span></h5>
+    <h5><span class="navbar-text" style="color:black" th:text="${phrase}"></span></h5>
     <ul class="nav" style="float:right;">
-        <li class="nav-item"><a class="nav-link" href="/items">My Closet</a></li>
+        <li class="nav-item"><a th:text="${phrase}" class="nav-link" href="/items">My Closet</a></li>
         <li class="nav-item"><a class="nav-link" href="/items/create-item">Add Item</a></li>
         <li class="nav-item"><a class="nav-link" href="/items/delete">Delete Items</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
