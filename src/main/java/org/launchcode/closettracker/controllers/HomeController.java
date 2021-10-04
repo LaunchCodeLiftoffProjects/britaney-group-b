@@ -34,13 +34,13 @@ public class HomeController {
     public static final String userSessionKey = "user";
     public static final String userDisplayPhrase = "displayPhrase";
 
-// Thymeleaf global page template strings
-   /* public static final String goIndex = "index";
+/* Thymeleaf global page template strings
+    public static final String goIndex = "index";
     public static final String goRedirect = "redirect:";
     public static final String goRedirectIndex = "redirect:/index";
     private static final String goRedirectUserUpdate = "redirect:user/update";
-    private static final String goRedirectUserCloset = "redirect:items/closet";*/
-
+    private static final String goRedirectUserCloset = "redirect:items/closet";
+*/
 // Function to retrieve userid from browser session
     public User getUserFromSession(HttpSession session) {
         Integer userId = (Integer) session.getAttribute(userSessionKey);
@@ -72,8 +72,12 @@ public class HomeController {
     public void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
         String phrase;
+    // If displayPhrase is null, creates the displayName and displayPhrase for the user
         if (user.getDisplayPhrase() == null) {
-            phrase = "My Closet";
+            phrase = user.makeDisplayPhrase(user.makeDisplayName(user.getUserName()));
+            user.setDisplayName(user.getUserName());
+            user.setDisplayPhrase(user.getDisplayName());
+            userRepository.save(user);
         }
         else {
             phrase = user.getDisplayPhrase();
@@ -112,7 +116,7 @@ public class HomeController {
         return "index";
     }
 
-    // User --> Process login form
+// User --> Process login form
     @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
@@ -127,10 +131,10 @@ public class HomeController {
     // If true, the user is redirected to the update page to choose a new password
         if (theUser.isPasswordReset()) {
             model.addAttribute(new UpdatePasswordDTO());
-            return "user/update";
+            return "redirect:/user/update";
         }
 
-    // A final check to ensure there is
+    // A final check to ensure the user exists in the db
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
@@ -146,11 +150,6 @@ public class HomeController {
             return "index";
         }
         setUserInSession(request.getSession(), theUser);
-
-        if (theUser.isPasswordReset()) {
-            model.addAttribute(new UpdatePasswordDTO());
-            return "user/update";
-        }
 
         return "redirect:/items";
     }

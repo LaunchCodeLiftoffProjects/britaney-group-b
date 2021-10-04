@@ -25,9 +25,10 @@ public class User extends AbstractEntity {
     @Column(name = "email", unique = true)
     private String email;
 
-    @NotNull(message = "Password is required")
-    @NotBlank(message = "Password is required")
-    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
+// Does removing these annotations bother other parts of the app??
+//    @NotNull(message = "Password is required")
+//    @NotBlank(message = "Password is required")
+//    @Size(min=3, max = 15,  message = "Password must be between 3 and 15 characters long")
     @Transient
     private String password;
 
@@ -51,7 +52,7 @@ public class User extends AbstractEntity {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-// CREATE: Capture user data to create a new account
+// CREATE: Capture user data to create a new user account
     public User(String username, String email, String password, boolean pwReset, boolean newUser) {
         this.username = username;
         this.email = email;
@@ -62,10 +63,15 @@ public class User extends AbstractEntity {
         this.passwordReset = pwReset;
         this.isNewUser = isUserNew(this.items);
     }
-
+// Constructor just to update the password
     public User(String password) {
         this.pwHash = encoder.encode(password);
         this.passwordReset = false;
+    }
+// Constructor just to update the display name and phrase
+    public User(String username, String email) {
+        this.displayName = makeDisplayName(username);
+        this.displayPhrase = makeDisplayPhrase(displayName);
     }
 
     public String getUserName() { return username; }
@@ -94,14 +100,14 @@ public class User extends AbstractEntity {
     }
 
     public boolean isPasswordReset() { return passwordReset; }
-
+// A true value will redirect the user, upon login, to the update password view
     public void setPasswordReset(boolean passwordReset) { this.passwordReset = passwordReset; }
-
+// A true value will redirect the user to create their first new item upon successful login
     public boolean isNewUser() { return isNewUser; }
 
     public void setNewUser(boolean newUser) { isNewUser = newUser; }
 
-// Compare input password with its encoded password and assign it in pw_hash
+// Compare input password with its encoded password
     public boolean isEncodedPasswordEqualsInputPassword(String password) {
         return encoder.matches(password, pwHash);
     }
@@ -110,7 +116,7 @@ public class User extends AbstractEntity {
     }
 
     public boolean isUserNew(List items) {
-        if (items.size() > 0) {
+        if (items != null || items.size() > 0) {
             return false;
         }
         else {

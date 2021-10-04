@@ -89,8 +89,8 @@ public class ItemController {
     public String displayAllItems(Model objModel, Model model, HttpSession session)
     {
         User currentUser = homeController.getUserFromSession(session);
-        model.addAttribute("title", "My Closet");
-        model.addAttribute("userGreeting", homeController.getUserDisplayName(session));
+        model.addAttribute("title", homeController.getPhraseFromSession(session));
+        model.addAttribute("phrase", homeController.getPhraseFromSession(session));
         objModel.addAttribute("items", currentUser.getItems());
         return "items/closet";
     }
