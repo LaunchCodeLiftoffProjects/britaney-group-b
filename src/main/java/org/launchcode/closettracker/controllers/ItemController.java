@@ -1,18 +1,12 @@
 package org.launchcode.closettracker.controllers;
 
-import org.apache.tomcat.util.http.fileupload.FileUpload;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.launchcode.closettracker.models.Color;
 import org.launchcode.closettracker.models.FileUploadUtil;
 import org.launchcode.closettracker.models.Item;
 import org.launchcode.closettracker.models.User;
-import org.launchcode.closettracker.models.dto.UserDTO;
 import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
-import org.launchcode.closettracker.controllers.HomeController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -24,13 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.security.Principal;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-/*import static org.launchcode.closettracker.controllers.HomeController.goRedirect;*/
 
 @Controller
 @RequestMapping("items")
@@ -43,7 +33,7 @@ public class ItemController {
     private UserRepository userRepository;
 
     @Autowired
-    private HomeController homeController;
+    private LoginController loginController;
 
     @Autowired
     private SearchService searchService;
@@ -68,7 +58,7 @@ public class ItemController {
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
         item.setItemImage(fileName);
     // Gets user id from current session to find the User object
-        User currentUser = homeController.getUserFromSession(session);
+        User currentUser = loginController.getUserFromSession(session);
     // If user null, it should redirect user to login page to log in before allowing item creation
     // This is to catch the call to itemRepository before it throws the 500 error
         if(currentUser == null) {
@@ -88,7 +78,7 @@ public class ItemController {
     @GetMapping
     public String displayAllItems(Model objModel, Model model, HttpSession session)
     {
-        User currentUser = homeController.getUserFromSession(session);
+        User currentUser = loginController.getUserFromSession(session);
         model.addAttribute("title", "My Closet");
         objModel.addAttribute("items", currentUser.getItems());
         return "items/closet";
@@ -248,7 +238,7 @@ public class ItemController {
     // DELETE ITEM(s): Show form
     @GetMapping("delete")
     public String displayDeleteItemForm(Model model, HttpSession session) {
-        User currentUser = homeController.getUserFromSession(session);
+        User currentUser = loginController.getUserFromSession(session);
         model.addAttribute("title", "Delete Items");
         model.addAttribute("items", currentUser.getItems());
         return "items/delete";

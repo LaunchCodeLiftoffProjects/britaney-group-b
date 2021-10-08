@@ -1,15 +1,10 @@
 package org.launchcode.closettracker.controllers;
 
-import org.launchcode.closettracker.models.PasswordResetToken;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
-import org.launchcode.closettracker.repositories.ItemRepository;
-import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,12 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Random;
-import java.util.UUID;
 
 @Controller
 public class EditUserController {
@@ -32,21 +22,18 @@ public class EditUserController {
     private UserRepository userRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
-    private HomeController homeController;
-
-    @Autowired
-    private PasswordTokenRepository passwordTokenRepository;
+    private LoginController loginController;
 
     @Autowired
     private MailSender mailSender;
 
 // Thymeleaf template page strings
     private static final String goUserCreate = "create";
+    private static final String goUserEditInfo = "user/edit-info";
+    private static final String goUserEditPassword = "user/edit-password";
 
-// A function to generate a random string of letters and numbers
+
+    // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -62,24 +49,12 @@ public class EditUserController {
         return generatedString;
     }
 
- /*   // get current users username - in progress
-
-    public String currentUserName(HttpSession session) {
-    User currentUser = homeController.getUserFromSession(session);
-    currentUser.getUserName();
-    }
-*/
-
-// Thymeleaf template page strings
-    private static final String goUserEditInfo = "user/edit-info";
-    private static final String goUserEditPassword = "user/edit-password";
-
 // User --> Show edit account info
     @GetMapping("user/edit-info")
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
                                           Errors errors, Model model, Model loginModel, HttpSession session) {
     // Get current user
-        User currentUser = homeController.getUserFromSession(session);
+        User currentUser = loginController.getUserFromSession(session);
 
     // If user object is null, redirect to login page
         if (currentUser == null) {
@@ -88,14 +63,14 @@ public class EditUserController {
         }
     // If DTO validation errors, display error message(s)
         if (errors.hasErrors()) {
-            return goUserEditInfo;
+            return "user/edit-info";
         }
 
     // Set DTO fields with values from User db
         editInfoDTO.setUsername(currentUser.getUserName());
         editInfoDTO.setEmail(currentUser.getEmail());
         model.addAttribute(editInfoDTO);
-        return goUserEditInfo;
+        return "user/edit-info";
     }
 
 // User --> Process edit account info
@@ -109,19 +84,19 @@ public class EditUserController {
     4) Email IS used for login so it must be unique - check email against db, then check userid vs currentUser. show error if not match
  */
     // Get current user
-        User currentUser = homeController.getUserFromSession(session);
+        User currentUser = loginController.getUserFromSession(session);
 
     // If the user account does not exist, redirect to login page as browser session has expired
         if (currentUser == null) {
             errors.rejectValue("email", "email.DoesNotExist", "An account with this email address does not exist");
             model.addAttribute("title", "Reset Account Password");
-            return goUserEditInfo;
+            return "user/edit-info";
         }
 
     // If DTO validation errors, display error message(s)
         if (errors.hasErrors()) {
             // Unsure why it always clears the entered and confirm password fields
-            return goUserEditInfo;
+            return "user/edit-info";
         }
 
     // Check if username has changed
@@ -133,7 +108,7 @@ public class EditUserController {
         if (!currentUser.getUserName().equals(editInfoDTO.getUsername())) {
             model.addAttribute("message","No info has changed so you're all good!");
             isUserNameChanged = true;
-            return goUserEditInfo;
+            return "user/edit-info";
         }
         currentUser.setUserName(editInfoDTO.getUsername());
         User activeUser = currentUser;
@@ -162,14 +137,14 @@ public class EditUserController {
         userRepository.save(currentUser);
 
         model.addAttribute("message", "");
-        return goUserEditInfo;
+        return "user/edit-info";
     }
 
 // User --> Show edit password
     @GetMapping("user/edit-password")
     public String showEditPasswordForm(Model model) {
         model.addAttribute(new EditPasswordDTO());
-        return goUserEditPassword;
+        return "user/edit-password";
     }
 
 }

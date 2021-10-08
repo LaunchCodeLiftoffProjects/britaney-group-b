@@ -1,6 +1,5 @@
 package org.launchcode.closettracker.controllers;
 
-import org.launchcode.closettracker.models.PasswordResetToken;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
 import org.launchcode.closettracker.repositories.ItemRepository;
@@ -9,21 +8,16 @@ import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Random;
-import java.util.UUID;
 
 @Controller
 public class CreateUserController {
@@ -35,13 +29,7 @@ public class CreateUserController {
     private ItemRepository itemRepository;
 
     @Autowired
-    private HomeController homeController;
-
-    @Autowired
-    private PasswordTokenRepository passwordTokenRepository;
-
-    @Autowired
-    private MailSender mailSender;
+    private LoginController loginController;
 
 // Thymeleaf template page strings
     private static final String goUserCreate = "create";
@@ -75,7 +63,7 @@ public class CreateUserController {
     public String displayCreateAccountForm(Model model) {
         model.addAttribute(new UserDTO());
         model.addAttribute("title", "Create User Account");
-        return goUserCreate;
+        return "create";
     }
 
 // User --> Process create user form
@@ -86,7 +74,7 @@ public class CreateUserController {
             if (errors.hasErrors()) {
                 model.addAttribute("title", "Create User Account");
                 /*model.addAttribute("errorMsg", "Bad data!");*/
-                return goUserCreate;
+                return "create";
             }
 
             User currentUser = userRepository.findByEmail(userDTO.getEmail());
@@ -94,14 +82,14 @@ public class CreateUserController {
             if (currentUser != null) {
                 errors.rejectValue("email", "email.exists", "An account with this email address already exists");
                 model.addAttribute("title", "Create User Account");
-                return goUserCreate;
+                return "create";
             }
 
             if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
                 errors.rejectValue("password", "passwords.nomatch", "Passwords do not match");
                 model.addAttribute("pwdError", "Passwords do not match");
                 model.addAttribute("title", "Create User Account");
-                return goUserCreate;
+                return "create";
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);

@@ -7,7 +7,6 @@ import org.launchcode.closettracker.repositories.ItemRepository;
 import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -16,10 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
@@ -35,7 +31,7 @@ public class ResetUserController {
     private ItemRepository itemRepository;
 
     @Autowired
-    private HomeController homeController;
+    private LoginController loginController;
 
     @Autowired
     private PasswordTokenRepository passwordTokenRepository;
@@ -44,11 +40,13 @@ public class ResetUserController {
     private MailSender mailSender;
 
 // Thymeleaf template page strings
-    private static final String goUserCreate = "create";
+    private static final String goUserReset1st = "user/reset";
+    private static final String goUserReset2nd = "user/reset-int";
+    public static final String goUserUpdate = "user/update";
 
 // A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
-        int leftLimit = 48; // numeral '0'
+        int leftLimit = 48; // number '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = strLength;
         Random random = new Random();
@@ -61,19 +59,6 @@ public class ResetUserController {
 
         return generatedString;
     }
-
- /*   // get current users username - in progress
-
-    public String currentUserName(HttpSession session) {
-    User currentUser = homeController.getUserFromSession(session);
-    currentUser.getUserName();
-    }
-*/
-
-// Thymeleaf template page strings
-    private static final String goUserReset1st = "user/reset";
-    private static final String goUserReset2nd = "user/reset-int";
-    public static final String goUserUpdate = "user/update";
 
 // RECOVERY PART 1 - Reset password - enter email to generate token needed for step 2
 

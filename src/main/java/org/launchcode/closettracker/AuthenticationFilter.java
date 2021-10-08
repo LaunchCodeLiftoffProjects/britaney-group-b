@@ -1,6 +1,6 @@
 package org.launchcode.closettracker;
 
-import org.launchcode.closettracker.controllers.HomeController;
+import org.launchcode.closettracker.controllers.LoginController;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
     UserRepository userRepository;
 
     @Autowired
-    HomeController homeController;
+    LoginController loginController;
 
     private static final List<String> whitelist = Arrays.asList("/index", "/create", "/user/reset", "/user/reset-int", "/user/update", "/css");
 
@@ -44,7 +44,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
         }
 
         HttpSession session = request.getSession();
-        User user = homeController.getUserFromSession(session);
+        User user = loginController.getUserFromSession(session);
 
         // The user is logged in
         if (user != null) {

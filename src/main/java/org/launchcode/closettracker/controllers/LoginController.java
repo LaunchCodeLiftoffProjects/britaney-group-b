@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
-public class HomeController {
+public class LoginController {
 
     @Autowired
     private UserRepository userRepository;
