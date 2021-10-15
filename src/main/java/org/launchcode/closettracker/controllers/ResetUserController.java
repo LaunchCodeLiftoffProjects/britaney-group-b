@@ -39,7 +39,7 @@ public class ResetUserController {
     @Autowired
     private MailSender mailSender;
 
-// Thymeleaf template page strings
+// Thymeleaf template page strings -- NOT YET IMPLEMENTED
     private static final String goUserReset1st = "user/reset";
     private static final String goUserReset2nd = "user/reset-int";
     public static final String goUserUpdate = "user/update";

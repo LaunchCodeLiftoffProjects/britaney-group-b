@@ -3,11 +3,9 @@ package org.launchcode.closettracker.controllers;
 import org.launchcode.closettracker.models.User;
 import org.launchcode.closettracker.models.dto.*;
 import org.launchcode.closettracker.repositories.ItemRepository;
-import org.launchcode.closettracker.repositories.PasswordTokenRepository;
 import org.launchcode.closettracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -31,7 +29,7 @@ public class CreateUserController {
     @Autowired
     private LoginController loginController;
 
-// Thymeleaf template page strings
+// Thymeleaf template page strings -- NOT YET IMPLEMENTED
     private static final String goUserCreate = "create";
 
 // A function to generate a random string of letters and numbers
@@ -49,14 +47,6 @@ public class CreateUserController {
 
         return generatedString;
     }
-
- /*   // get current users username - in progress
-
-    public String currentUserName(HttpSession session) {
-    User currentUser = homeController.getUserFromSession(session);
-    currentUser.getUserName();
-    }
-*/
 
 // User --> Show create user form
     @GetMapping("create")
@@ -93,7 +83,7 @@ public class CreateUserController {
             }
 
             User newUser = new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false, true);
-        // This line for debugging
+        // TODO: Debug code
             User activeUser = newUser;
             userRepository.save(newUser);
             return "redirect:";

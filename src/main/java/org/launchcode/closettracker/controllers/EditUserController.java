@@ -27,13 +27,13 @@ public class EditUserController {
     @Autowired
     private MailSender mailSender;
 
-// Thymeleaf template page strings
+// Thymeleaf template page strings -- NOT YET IMPLEMENTED
     private static final String goUserCreate = "create";
     private static final String goUserEditInfo = "user/edit-info";
     private static final String goUserEditPassword = "user/edit-password";
 
 
-    // A function to generate a random string of letters and numbers
+// A function to generate a random string of letters and numbers
     public String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'

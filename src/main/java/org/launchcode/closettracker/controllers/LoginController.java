@@ -32,12 +32,12 @@ public class LoginController {
 
     public static final String userSessionKey = "user";
 
-// Thymeleaf global page template strings
-   /* public static final String goIndex = "index";
+// Thymeleaf global page template strings -- NOT YET IMPLEMENTED
+    public static final String goIndex = "index";
     public static final String goRedirect = "redirect:";
     public static final String goRedirectIndex = "redirect:/index";
     private static final String goRedirectUserUpdate = "redirect:user/update";
-    private static final String goRedirectUserCloset = "redirect:items/closet";*/
+    private static final String goRedirectUserCloset = "redirect:items/closet";
 
 // Function to retrieve userid from browser session
     public User getUserFromSession(HttpSession session) {
@@ -80,7 +80,7 @@ public class LoginController {
         return "index";
     }
 
-    // User --> Process login form
+// User --> Process login form
     @PostMapping("/index")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
@@ -98,7 +98,7 @@ public class LoginController {
             return "user/update";
         }
 
-    // A final check to ensure there is
+    // A final check to ensure there is a user object
         if (theUser == null) {
             errors.rejectValue("email", "user.invalid", "Not a valid user");
             model.addAttribute("title", "Welcome to Closet Tracker");
@@ -107,7 +107,6 @@ public class LoginController {
 
         String password = loginFormDTO.getPassword();
 
-    // I don't believe this works correctly; still allows log in with an incorrect password
         if (!theUser.isEncodedPasswordEqualsInputPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
             model.addAttribute("title", "Welcome to Closet Tracker");
