@@ -1,6 +1,7 @@
 package org.launchcode.closettracker.models;
 
 import org.launchcode.closettracker.controllers.EditUserController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -10,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.launchcode.closettracker.controllers.EditUserController.createRandomString;
 
 @Entity
 public class User extends AbstractEntity {
@@ -31,6 +34,12 @@ public class User extends AbstractEntity {
     @Transient
     private String password;
 
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Column(name = "display_phrase")
+    private String displayPhrase;
+
     @Column(name = "pw_hash")
     private String pwHash;
 
@@ -45,12 +54,14 @@ public class User extends AbstractEntity {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    // CREATE: Capture user data to create a new account
+// CREATE: Capture user data to create a new account
     public User(String username, String email, String password, boolean pwReset, boolean newUser) {
         this.username = username;
         this.email = email;
         this.pwHash = encoder.encode(password);
         this.password = password;
+        this.displayName = makeDisplayName(username);
+        this.displayPhrase = makeDisplayPhrase(displayName);
         this.passwordReset = pwReset;
         this.isNewUser = newUser;
     }
@@ -64,6 +75,14 @@ public class User extends AbstractEntity {
 
     public void setUsername(String username) { this.username = username; }
 
+    public String getDisplayName() { return displayName; }
+
+    public void setDisplayName(String username) { this.displayName = makeDisplayName(username); }
+
+    public String getDisplayPhrase() { return displayPhrase; }
+
+    public void setDisplayPhrase(String displayName) { this.displayPhrase = makeDisplayPhrase(displayName); }
+
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
@@ -72,7 +91,7 @@ public class User extends AbstractEntity {
 
     public String getPwHash() { return pwHash; }
 
-    public void setPwHash(String pwHash) { this.pwHash = pwHash; }
+    private void setPwHash(String pwHash) { this.pwHash = pwHash; }
 
     public void setPassword(String password) {
         this.password = password;
@@ -87,11 +106,44 @@ public class User extends AbstractEntity {
 
     public void setNewUser(boolean newUser) { isNewUser = newUser; }
 
-    // Compare input password with its encoded password and assign it in pw_hash
+// Compare input password with its encoded password and assign it in pw_hash
     public boolean isEncodedPasswordEqualsInputPassword(String password) {
         return encoder.matches(password, pwHash);
     }
 
     public User() {
     }
+
+    public String makeDisplayName(String name) {
+        String[] firstName = name.split(" ");
+        return firstName[0];
+    }
+
+    public String makeDisplayPhrase(String name) {
+        String[] lastLetter = name.split("");
+        int ind = lastLetter.length - 1;
+        String lastChar = lastLetter[ind].toLowerCase();
+        if (lastChar.equals("s")) {
+            return name + "'" + " Closet";
+        }
+        else {
+            return name + "'s" + " Closet";
+        }
+    }
+
+// Handles a fix to allow the user to keep their current password but allows the User object to save
+// The User object is set to require a value for the "password" field
+// The field is Transient and not persisted but is still required
+// So this function, strictly limited to the User model class...
+    public static User passwordFixForSaveEditInfo(User activeUser) {
+    // Saves the users current password hash to a variable
+        final String currentPwHash = activeUser.getPwHash();
+    // Sets the password field to a random string so it has a value
+        activeUser.setPassword(createRandomString(7));
+    // Since just the user info has changed, resets the password hash back to the original so the user can still log in
+        activeUser.setPwHash(currentPwHash);
+    // Returns the currently active user with updated User object field values
+        return activeUser;
+    }
+
 }

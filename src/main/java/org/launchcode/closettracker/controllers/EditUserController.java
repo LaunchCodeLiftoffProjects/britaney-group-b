@@ -16,6 +16,8 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.Random;
 
+import static org.launchcode.closettracker.models.User.passwordFixForSaveEditInfo;
+
 @Controller
 public class EditUserController {
 
@@ -35,7 +37,7 @@ public class EditUserController {
 
 
 // A function to generate a random string of letters and numbers
-    public String createRandomString(int strLength) {
+    public static String createRandomString(int strLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = strLength;
@@ -48,18 +50,6 @@ public class EditUserController {
                 .toString();
 
         return generatedString;
-    }
-
-// Handles a fix to allow the user to keep their current password but allows the User object to save
-    User passwordFixForSaveEditInfo(String password, User activeUser) {
-    // Saves a copy of the users current password hash
-        String currentPwHash = activeUser.getPwHash();
-    // Sets the password field to a random string so the password field has a value
-        activeUser.setPassword(createRandomString(8));
-    // Since just the user info has changed, resets the password hash back to the original so the user can still log in
-        activeUser.setPwHash(currentPwHash);
-    // Returns the currently active user with updated User object field values
-        return activeUser;
     }
 
 // User --> Show edit account info
@@ -137,14 +127,17 @@ public class EditUserController {
     // Before any actual updating takes place, need to verify that the changed email does not belong to another user account
         if (isEmailChanged) {
             User changedUser = userRepository.findByEmail(editInfoDTO.getEmail());
-            if (changedUser == null || changedUser.getId() != currentUser.getId()) {
+            if (changedUser == null) {
+                //
+            }
+            else if (changedUser.getId() != currentUser.getId()) {
                 errors.rejectValue("email", "user.invalid", "Not a valid user");
-                model.addAttribute("message","That email is not available");
+                model.addAttribute("message","That email is not available. Please try again.");
                 return "user/edit-info";
             }
         }
 
-    // Now that changes dsadsadsadasdsd
+    // Now that changes are verified as valid and unique, load the user messages into the model based on change(s) made and return the page
         if (isUserNameChanged && isEmailChanged) {
             currentUser.setUsername(editInfoDTO.getUsername());
             currentUser.setEmail(editInfoDTO.getEmail());
@@ -179,11 +172,11 @@ public class EditUserController {
 */
     // While the User model does not persist the 'password' field, it is still a required field for the user object. So...
         // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
-        currentUser = passwordFixForSaveEditInfo(createRandomString(8), currentUser);
+        User verifiedUser = passwordFixForSaveEditInfo(currentUser);
     // TODO: Debug code
-        User anotherActiveUser = currentUser;
-        // X) Persist the finished User object
-        userRepository.save(currentUser);
+        User anotherActiveUser = verifiedUser;
+    // X) Persist the finished User object
+//        userRepository.save(currentUser);
 
         return "user/edit-info";
     }
