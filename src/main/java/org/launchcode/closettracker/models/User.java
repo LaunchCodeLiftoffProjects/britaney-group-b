@@ -1,5 +1,6 @@
 package org.launchcode.closettracker.models;
 
+import org.launchcode.closettracker.controllers.EditUserController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -59,9 +60,9 @@ public class User extends AbstractEntity {
         this.passwordReset = false;
     }
 
-    public String getUserName() { return username; }
+    public String getUsername() { return username; }
 
-    public void setUserName(String userName) { this.username = username; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getEmail() { return email; }
 
@@ -70,6 +71,8 @@ public class User extends AbstractEntity {
     public List<Item> getItems() { return items; }
 
     public String getPwHash() { return pwHash; }
+
+    public void setPwHash(String pwHash) { this.pwHash = pwHash; }
 
     public void setPassword(String password) {
         this.password = password;

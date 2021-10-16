@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -49,6 +50,18 @@ public class EditUserController {
         return generatedString;
     }
 
+// Handles a fix to allow the user to keep their current password but allows the User object to save
+    User passwordFixForSaveEditInfo(String password, User activeUser) {
+    // Saves a copy of the users current password hash
+        String currentPwHash = activeUser.getPwHash();
+    // Sets the password field to a random string so the password field has a value
+        activeUser.setPassword(createRandomString(8));
+    // Since just the user info has changed, resets the password hash back to the original so the user can still log in
+        activeUser.setPwHash(currentPwHash);
+    // Returns the currently active user with updated User object field values
+        return activeUser;
+    }
+
 // User --> Show edit account info
     @GetMapping("user/edit-info")
     public String showEditAccountInfoForm(@ModelAttribute EditInfoDTO editInfoDTO,
@@ -67,7 +80,7 @@ public class EditUserController {
         }
 
     // Set DTO fields with values from User db
-        editInfoDTO.setUsername(currentUser.getUserName());
+        editInfoDTO.setUsername(currentUser.getUsername());
         editInfoDTO.setEmail(currentUser.getEmail());
         model.addAttribute(editInfoDTO);
         return "user/edit-info";
@@ -93,28 +106,64 @@ public class EditUserController {
             return "user/edit-info";
         }
 
-    // If DTO validation errors, display error message(s)
-        if (errors.hasErrors()) {
-            // Unsure why it always clears the entered and confirm password fields
-            return "user/edit-info";
-        }
-
     // Check if username has changed
         String activeUserName = editInfoDTO.getUsername();
-        String currentUserName = currentUser.getUserName();
+        String currentUserName = currentUser.getUsername();
         boolean doUserNamesMatch = currentUserName.equals(activeUserName);
+    // TODO: Debug code
+        boolean asdasdasdsad = doUserNamesMatch;
         boolean isUserNameChanged = false;
-        boolean isEmailChanged = false;
-        if (!currentUser.getUserName().equals(editInfoDTO.getUsername())) {
-            model.addAttribute("message","No info has changed so you're all good!");
+    // TODO: Debug code
+        boolean asdasdasdd = isUserNameChanged;
+
+        if (!currentUser.getUsername().equals(editInfoDTO.getUsername())) {
             isUserNameChanged = true;
-            return "user/edit-info";
         }
-        currentUser.setUserName(editInfoDTO.getUsername());
+
+    // Check if email has changed
+        String activeEmail = editInfoDTO.getEmail();
+        String currentEmail = currentUser.getEmail();
+        boolean isEmailChanged = false;
+    // TODO: Debug code
+        boolean asdasdsad = isEmailChanged;
+
+        if (!currentUser.getEmail().equals(editInfoDTO.getEmail())) {
+            isEmailChanged = true;
+        }
+
+    // TODO: Debug code
         User activeUser = currentUser;
+
+    // Before any actual updating takes place, need to verify that the changed email does not belong to another user account
+        if (isEmailChanged) {
+            User changedUser = userRepository.findByEmail(editInfoDTO.getEmail());
+            if (changedUser == null || changedUser.getId() != currentUser.getId()) {
+                errors.rejectValue("email", "user.invalid", "Not a valid user");
+                model.addAttribute("message","That email is not available");
+                return "user/edit-info";
+            }
+        }
+
+    // Now that changes dsadsadsadasdsd
+        if (isUserNameChanged && isEmailChanged) {
+            currentUser.setUsername(editInfoDTO.getUsername());
+            currentUser.setEmail(editInfoDTO.getEmail());
+            model.addAttribute("message","Username and email address have been successfully updated.");
+        }
+        else if (isUserNameChanged) {
+            currentUser.setUsername(editInfoDTO.getUsername());
+            model.addAttribute("message","Username has been successfully updated.");
+        }
+        else if (isEmailChanged) {
+            currentUser.setEmail(editInfoDTO.getEmail());
+            model.addAttribute("message","Email has been successfully updated.");
+        }
+        else {
+            model.addAttribute("message","No info has changed so you're all good!");
+        }
 /*
-        // Creates and sends an email to the user
-        // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
+    // Creates and sends an email to the user
+    // If you receive an error about an outgoing email server not being configured, you need to add in the group Gmail
         // login credentials in the properties file
         try {
             mailSender.send(constructResetTokenEmail(request.getLocale(), null, currentUser));
@@ -125,18 +174,17 @@ public class EditUserController {
             } else {
                 errors.rejectValue("email", "some.unknownError", "An unknown error occurred.");
             }
-            return goUserEditInfo;
+            return "user/edit-info";
         }
 */
-// While the User model does not persist the 'password' field, it is still a required field for the user object. So...
+    // While the User model does not persist the 'password' field, it is still a required field for the user object. So...
         // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
-        currentUser.setPassword(createRandomString(8));
-        // 2) To ensure the user will have to update their password upon next login, set the flag to true
-        currentUser.setPasswordReset(true);
-        // 3) Persist the finished User object
+        currentUser = passwordFixForSaveEditInfo(createRandomString(8), currentUser);
+    // TODO: Debug code
+        User anotherActiveUser = currentUser;
+        // X) Persist the finished User object
         userRepository.save(currentUser);
 
-        model.addAttribute("message", "");
         return "user/edit-info";
     }
 
@@ -147,4 +195,10 @@ public class EditUserController {
         return "user/edit-password";
     }
 
+// User --> Process edit password
+    @PostMapping("user/edit-password")
+    public String processEditPasswordForm(Model model, HttpSession session) {
+        model.addAttribute(new EditPasswordDTO());
+        return "user/edit-password";
+    }
 }
