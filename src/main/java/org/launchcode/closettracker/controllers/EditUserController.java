@@ -137,6 +137,7 @@ public class EditUserController {
             }
         }
 
+        boolean groupChangeFlag = isUserNameChanged || isEmailChanged;
     // Now that changes are verified as valid and unique, load the user messages into the model based on change(s) made and return the page
         if (isUserNameChanged && isEmailChanged) {
             currentUser.setUsername(editInfoDTO.getUsername());
@@ -171,27 +172,45 @@ public class EditUserController {
         }
 */
     // While the User model does not persist the 'password' field, it is still a required field for the user object. So...
-        // 1) Since 'password' is still a required field, use a random string to set the password value and replace the hash
-        User verifiedUser = passwordFixForSaveEditInfo(currentUser);
-    // TODO: Debug code
-        User anotherActiveUser = verifiedUser;
-    // X) Persist the finished User object
-//        userRepository.save(currentUser);
-
+        // 1) Since 'password' is still a required field, call the special "fixer" function
+        if (groupChangeFlag) {
+            User verifiedUser = passwordFixForSaveEditInfo(currentUser);
+        // TODO: Debug code
+            User anotherActiveUser = verifiedUser;
+        // Persist the finished User object
+            userRepository.save(currentUser);
+        }
         return "user/edit-info";
     }
 
 // User --> Show edit password
     @GetMapping("user/edit-password")
-    public String showEditPasswordForm(Model model) {
+    public String showEditPasswordForm(Model model, HttpSession session) {
         model.addAttribute(new EditPasswordDTO());
+        model.addAttribute("phrase", loginController.getPhraseFromSession(session));
         return "user/edit-password";
     }
 
 // User --> Process edit password
     @PostMapping("user/edit-password")
-    public String processEditPasswordForm(Model model, HttpSession session) {
-        model.addAttribute(new EditPasswordDTO());
+    public String processEditPasswordForm(@ModelAttribute @Valid EditPasswordDTO editPasswordDTO, Model model,
+                                          HttpSession session, Errors errors) {
+
+    // Get current user & that user's phrase
+        User currentUser = loginController.getUserFromSession(session);
+        String userDisplayPhrase = loginController.getPhraseFromSession(session);
+    // Notes
+        // 1) First check if the entered 'current' password matches stored password
+        // 2) Next check if the new password matches the reentered new password
+        // 3) If both checks pass, update the user object with the new password
+        // 4) Persist
+
+
+
+
+        errors.rejectValue("email", "user.invalid", "Not a valid user");
+        model.addAttribute("message","That email is not available. Please try again.");
+
         return "user/edit-password";
     }
 }

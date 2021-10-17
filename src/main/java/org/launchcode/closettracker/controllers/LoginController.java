@@ -31,6 +31,7 @@ public class LoginController {
     private ItemRepository itemRepository;
 
     public static final String userSessionKey = "user";
+    public static final String userDisplayPhrase = "phrase";
 
 // Thymeleaf global page template strings -- NOT YET IMPLEMENTED
     public static final String goIndex = "index";
@@ -51,13 +52,30 @@ public class LoginController {
         if (user.isEmpty()) {
             return null;
         }
-
         return user.get();
+    }
 
+    // Function to retrieve userid from browser session
+    public String getPhraseFromSession(HttpSession session) {
+        String displayPhrase = (String) session.getAttribute(userDisplayPhrase);
+        if (displayPhrase == null) {
+            return "My Closet";
+        }
+        else {
+            return displayPhrase;
+        }
     }
 
     private void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
+        String phrase;
+        if (user.getDisplayPhrase().isEmpty()) {
+            phrase = "My Closet";
+        }
+        else {
+            phrase = user.getDisplayPhrase();
+        }
+        session.setAttribute(userDisplayPhrase, phrase);
     }
 
     public String home(HttpServletResponse response) {

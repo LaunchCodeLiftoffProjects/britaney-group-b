@@ -14,28 +14,17 @@ public class EditPasswordDTO {
     private String newPassword;
 
     @Size(min=3, max = 15,  message = "Confirm Password must be between 3 and 15 characters long")
-    private String confirmPassword;
+    private String confirmNewPassword;
 
     public String getCurrentPassword() { return currentPassword; }
 
-    public void setCurrentPassword(String password) {
-        this.currentPassword = currentPassword;
-    }
+    public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
 
-    public String getNewPassword() {
-        return newPassword;
-    }
+    public String getNewPassword() { return newPassword; }
 
-    public void setNewPassword(String password) {
-        this.newPassword = newPassword;
-    }
+    public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
+    public String getConfirmNewPassword() { return confirmNewPassword; }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
+    public void setConfirmNewPassword(String confirmNewPassword) { this.confirmNewPassword = confirmNewPassword; }
 }
