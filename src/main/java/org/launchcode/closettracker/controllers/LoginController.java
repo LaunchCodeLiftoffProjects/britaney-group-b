@@ -92,8 +92,8 @@ public class LoginController {
 
 // User --> Show login form
     @GetMapping("/index")
-    public String index (Model model){
-        model.addAttribute("title", "Welcome to Closet Tracker");
+    public String index (Model model) {
+        model.addAttribute("title", "Welcome to Closet TrackerXXX");
         model.addAttribute(new LoginFormDTO());
         return "index";
     }
